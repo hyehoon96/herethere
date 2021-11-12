@@ -1,0 +1,21 @@
+.box {
+    width: 100vw !important;
+    height: 100vh;
+    display: flex;
+}
+
+.sidebar {
+    width: 30%;
+    height: 100vh;
+    background-color: whitesmoke;
+}
+
+.map-area {
+    width: 70%;
+    height: 100vh;
+    background-color: cadetblue;
+}
+
+.row {
+    flex-direction: column;
+}
