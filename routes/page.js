@@ -8,17 +8,17 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get('/mypage', (req, res) => {
-    res.render('main', { 
-        name: 'ASP',
-        isLogin: true
-    });
-});
-
 router.get('/', (req, res, next)=> {
     res.render('main', {
         title: 'Welcome',
         name:'ASP'
+    });
+});
+
+router.get('/mypage', (req, res) => {
+    res.render('main', { 
+        name: 'ASP',
+        isLogin: true
     });
 });
 

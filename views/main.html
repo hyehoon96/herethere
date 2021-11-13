@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title>
-    <link rel="stylesheet" href="/main.css">
-    <link rel="stylesheet" href="./css/bootstrap.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet"/>
-
-    
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="/main.css">
+  <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet"/>
 </head>
 <body>
   <!-- 
@@ -25,34 +23,35 @@ Padding right: pe-value
 Padding bottom: pb-value
 Paddig left: ps-value. -->
     <div class="box">
-        <div class="sidebar">
-            {{name}}님의 지역은 {{area}} 입니다.
-            <form method="post">
-                <!-- action="/mypage" page 이동 -->
-                <div class="form-group row">
-                  <label for="area1" class="col-sm-2 col-form-label">지역1</label>
-                  <div class="col-sm-10">
-                    <input type="text" name="area1" class="form-control" id="area1" placeholder="주소를 입력해주세요.">
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label for="area2" class="col-sm-2 col-form-label">지역2</label>
-                  <div class="col-sm-10">
-                    <input type="text" name="area2" class="form-control" id="area2" placeholder="주소를 입력해주세요.">
-                  </div>
-                </div>
-                
-                  <button class="btn btn-primary" type="submit" onclick="calcCoordinate()">
-                    <i class="fas fa-user-friends"></i>
-                  </button>
-                  <a href="/mypage" class="btn btn-success">로그인</a>
-                  {% if isLogin==true %} 
-                  <div>로그인 했다!!</div>
-                  {% else %}
-                  <div>로그인 안했다!!</div>
-                  {% endif %}
-            </form>
+      <div class="sidebar">
+        <div class="sidebar-header">{{name}}님의 지역은 {{area}} 입니다.
+          <button class="btn btn-primary" type="submit" onclick="calcCoordinate()">
+            <i class="fas fa-user-friends"></i>
+          </button>
+          <a href="/mypage" class="btn btn-success">로그인{{num}}</a>
+          {% if isLogin==true %} 
+          <div>로그인 했다!!</div>
+          {% else %}
+          <div>로그인 안했다!!</div>
+          {% endif %}
         </div>
+
+        <form method="post">
+          <!-- action="/mypage" page 이동 -->
+          {% set numOfPlace = 3 %}
+          {% for i in range(0, numOfPlace) %}
+          <div class="form-group row search-bar">
+            <label for="area1" class="col-sm-2 col-form-label area-label">지역{{i}}</label>
+            <div class="col-sm-9 d-flex">
+              <input type="text" name="area1" class="form-control" id="area1" placeholder="주소를 입력해주세요.">
+              <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+            </div>
+          </div>
+          {% endfor %}
+          </form>
+        </div>
+
+
         <div class="map-area">
           <div id="map" style="width:100%;height:100%;"></div>
         </div>
@@ -65,15 +64,17 @@ Paddig left: ps-value. -->
       let secArea = document.getElementById('area2').value;
 
       console.log(firArea, secArea);
-    };
+    }; 
+    //테스트 함수
+    var num = 3;
 
 		var container = document.getElementById('map');
 		var options = {
 			center: new kakao.maps.LatLng(33.450701, 126.570667),
 			level: 3
 		};
-
 		var map = new kakao.maps.Map(container, options);
+    //맵 API 호출
 	</script>
 </body>
 </html>

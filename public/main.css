@@ -16,6 +16,18 @@
     background-color: cadetblue;
 }
 
-.row {
-    flex-direction: column;
+.form-control{
+    max-width: 90%;
+
+}
+.search-bar{
+    margin-top: 2rem !important;
+}
+
+.sidebar-header{
+    text-align: center;
+}
+
+.area-label{
+    margin-left: 1rem;
 }
