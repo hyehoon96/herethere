@@ -58,14 +58,17 @@ a, a:link, a:visited {
 .input-box {
     width: 440px;
     height: 100%;
-    border: 3px solid #19ce60;
+    /* border: 3px solid #19ce60; */
     border-radius: 4px;
+    box-shadow: 3px 3px 3px grey;
+    padding: 10px;
 }
 
 .map-box{
     margin-left: 50px;
-    border: 3px solid #fee102;
+    /* border: 3px solid #fee102; */
     border-radius: 4px;
+    box-shadow: 3px 3px 3px grey;
 }
 
 #map{
