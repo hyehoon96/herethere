@@ -14,6 +14,8 @@ router.get('/', (req, res, next)=> {
     res.render('main', null);
 });
 
+
+
 // router.get('/mypage', (req, res) => {
 //     res.render('main', { 
 //         name: 'ASP',

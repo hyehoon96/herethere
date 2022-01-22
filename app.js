@@ -18,10 +18,13 @@ nunjucks.configure('views', {
     watch: true, // html 파일이 변경될 때 템플릿 엔진을 다시 렌더링함
     autoescape:true, // 보안설정
 });
+app.use(express.static(path.join(__dirname, "src")));
 app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css'))) //static : 정적인 파일 제공
 app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')))
-app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(morgan('dev'));
+
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));

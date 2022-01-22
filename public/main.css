@@ -41,8 +41,9 @@ a, a:link, a:visited {
 }
 /* ▲ 네비게이션 바 */
 #map{
-    width: 550px;
-    height: 500px;
+    position:relative;
+    overflow:hidden;
+    width:100%;
+    min-height: 65vh;
     box-shadow:  0 0 10px rgb(0 0 0 / 80%);
 }
-

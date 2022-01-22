@@ -1,99 +1,110 @@
-<!-- 
-    Margin
-    Margin top: mt-value
-    Margin right: me-value
-    Margin bottom: mb-value
-    Margin left: ms-value
-
-    Padding
-    Padding top: pt-value
-    Padding right: pe-value
-    Padding bottom: pb-value
-    Paddig left: ps-value.
-  -->
-    <!-- <div class="box">
-      <div class="sidebar">
-        <div class="sidebar-header">{{name}}님의 지역은 {{area}} 입니다.
-          <button class="btn btn-primary" type="submit" onclick="calcCoordinate()">
-            <i class="fas fa-user-friends"></i>
-          </button>
-          <a href="/mypage" class="btn btn-success">로그인{{num}}</a>
-          {% if isLogin==true %} 
-          <div>로그인 했다!!</div>
-          {% else %}
-          <div>로그인 안했다!!</div>
-          {% endif %}
-        </div>
-
-        <form method="post">
-          {% set numOfPlace = 3 %}
-          {% for i in range(0, numOfPlace) %}
-          <div class="form-group row search-bar">
-            <label for="area1" class="col-sm-2 col-form-label area-label">지역{{i}}</label>
-            <div class="col-sm-9 d-flex">
-              <input type="text" name="area1" class="form-control" id="area1" placeholder="주소를 입력해주세요.">
-              <button class="btn btn-primary"><i class="fas fa-search"></i></button>
-            </div>
-          </div>
-          {% endfor %}
-          </form>
-        </div>
-
-
-        <div class="map-area">
-          <div id="map" style="width:100%;height:100%;"></div>
-        </div>
-    </div> -->
 {% extends 'layout.html' %}
 
 {% block content %}
   <div class="container" style="height: calc(100vh - 64px);">
     <div class="row h-100">
-      <div class="col my-auto">
+      <div class="col-6 my-auto">
         <div class="card " style="min-height: 500px;">
-          <div class="card-body ">
-            <h5 class="card-title">입력창</h5>
-            <form method="post" >
-              <div class="d-flex">
-                <div class="row w-100">
-                  <div class="col-9 d-flex">
-                    <input type="text" name="area1" class="form-control" placeholder="주소를 입력해주세요.">
-                    <button class="btn btn-primary"><i class="fas fa-search"></i></button>
-                  </div>
-                  <div class="col-1"><i class="fas fa-plus-circle" style="color: #5caceb; font-size: 35px;"></i></div>
-                </div>
+          <div class="card-title" style="border-bottom: 1px solid rgba(0,0,0,.125)"><h5 class="text-center my-3" >주소검색</h5></div>
+          <div class="card-body d-flex flex-column">
+            <div class="row justify-content-center mb-5 row-create">
+              <div class="col-12 d-flex justify-content-center">
+                <input type="number" value="2" class="form-control counter text-center" style="max-width: 70px;">
+                <button class="btn btn-light btn-plus"><i class="fas fa-plus"></i></button>
+                <button class="btn btn-light btn-minus"><i class="fas fa-minus"></i></button>
+                <button class="btn btn-primary btn-creater">생성하기</button>
               </div>
-            </form>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+              
+              
+            </div>
+            <div class="row row-search mb-5">
+              <div class="col-12">
+                
+                <div class="row w-100 d-flex">
+                  <div class="col-10 d-flex">
+                    <form method="post" class="text-center d-flex justify-content-center"></form>
+                      <input type="text" name="area1" class="form-control area1" placeholder="주소를 입력해주세요." value="">
+                      <button class="btn btn-primary btn-search" type="button"><i class="fas fa-search"></i></button>
+                    </form>
+                  </div>
+                  <div class="col-2"><i class="fas fa-plus-circle" style="color: #5caceb; font-size: 35px;"></i></div>
+                  <div class="col-12 "><p id="clickLatlng1"></p> </div>
+                </div>
+                  
+                
+              </div>
+            </div> <!-- row -->
+            <div class="row row-search mb-5">
+              <div class="col-12">
+                
+                <div class="row w-100 d-flex">
+                  <div class="col-10 d-flex">
+                    <form method="post" class="text-center d-flex justify-content-center"></form>
+                      <input type="text" name="area2" class="form-control area2" placeholder="주소를 입력해주세요.">
+                      <button class="btn btn-primary btn-search" type="button"><i class="fas fa-search"></i></button>
+                    </form>
+                  </div>
+                  <div class="col-2"><i class="fas fa-plus-circle" style="color: #5caceb; font-size: 35px;"></i></div>
+                  <div class="col-12 "><p id="clickLatlng2"></p> </div>
+                </div>
+                  
+                
+              </div>
+            </div> <!-- row -->
+          
+          </div> <!-- card-body -->
+          <div class="card-footer">
+            <div class="row">
+              <div class="col-12 text-center">
+                <button class="btn btn-primary" type="button">Go somewhere</button> 
+              </div>
+            </div>
           </div>
-        </div>
+        </div> <!-- card -->
       </div>
       <!-- 입력창 -->
-      <div class="col my-auto">
-        <div id="map"></div>
+      <div class="col-6 my-auto">
+        <div id="map" style="min-height: 500px;"></div>
+        <div id="clickLatlng"></div>
       </div>
       <!-- 맵 -->
     </div>
   </div>
   
-	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8f122b1b033b2188d2a62e257cd3a039"></script>
-	<script>
-    function calcCoordinate() {
-      let firArea = document.getElementById('area1').value;
-      let secArea = document.getElementById('area2').value;
-
-      console.log(firArea, secArea);
-    }; 
-    //테스트 함수
-    var num = 3;
-
-		var container = document.getElementById('map');
-		var options = {
-			center: new kakao.maps.LatLng(33.450701, 126.570667),
-			level: 3
-		};
-		var map = new kakao.maps.Map(container, options);
-    //맵 API 호출
-	</script>
+	
 
 {% endblock %}
+
+<!-- <div class="box">
+  <div class="sidebar">
+    <div class="sidebar-header">{{name}}님의 지역은 {{area}} 입니다.
+      <button class="btn btn-primary" type="submit" onclick="calcCoordinate()">
+        <i class="fas fa-user-friends"></i>
+      </button>
+      <a href="/mypage" class="btn btn-success">로그인{{num}}</a>
+      {% if isLogin==true %} 
+      <div>로그인 했다!!</div>
+      {% else %}
+      <div>로그인 안했다!!</div>
+      {% endif %}
+    </div>
+
+    <form method="post">
+      {% set numOfPlace = 3 %}
+      {% for i in range(0, numOfPlace) %}
+      <div class="form-group row search-bar">
+        <label for="area1" class="col-sm-2 col-form-label area-label">지역{{i}}</label>
+        <div class="col-sm-9 d-flex">
+          <input type="text" name="area1" class="form-control" id="area1" placeholder="주소를 입력해주세요.">
+          <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+      {% endfor %}
+      </form>
+    </div>
+
+
+    <div class="map-area">
+      <div id="map" style="width:100%;height:100%;"></div>
+    </div>
+</div> -->
