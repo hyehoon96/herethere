@@ -1,10 +1,12 @@
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const morgan = require('morgan'); // 서버 요청에 따라 log 기록용
-const path = require('path'); //파일 경로
-const session = require('express-session'); // 사용자의 데이터를 임시적으로 저장함
-const nunjucks = require('nunjucks');
-const dotenv = require('dotenv');
+const express       = require('express');
+const cookieParser  = require('cookie-parser');
+const morgan        = require('morgan'); // 서버 요청에 따라 log 기록용
+const path          = require('path'); //파일 경로
+const session       = require('express-session'); // 사용자의 데이터를 임시적으로 저장함
+const nunjucks      = require('nunjucks');
+const dotenv        = require('dotenv');
+const database      = require('./server/database');
+const conn          = database.connect();
 
 dotenv.config();
 const pageRouter = require('./routes/page');
@@ -59,4 +61,9 @@ app.listen(app.get('port'), () => {
     console.log(app.get('port'), '번 포트에서 대기중');
 })
 
-
+// 데이터베이스 SELECT 쿼리 테스트
+conn.query('SELECT * FROM USER', (error, rows, fields) => {
+    if (error) throw error;
+    console.log("User info:", rows);
+    conn.close();
+});
