@@ -1,0 +1,14 @@
+{% if page !== 'search' %}
+<div class="sidebar">
+  <a href="/">
+      <header><i class="fas fa-location-arrow pe-2"></i>HereThere</header>
+  </a>
+  <ul class="">
+    <li><a href="/regist"><i class="fas fa-location-arrow pe-2"></i>회원가입</a></li>
+    <li><a data-bs-toggle="modal" data-bs-target="#exampleModal" id="search" href="/search"><i class="fas fa-location-arrow pe-2"></i>장소찾기</a></li>
+    <li><a href="/history"><i class="fas fa-location-arrow pe-2"></i>검색기록</a></li>
+    <li><a href="/guide"><i class="fas fa-location-arrow pe-2"></i>이용안내</a></li>
+  </ul>
+</div>
+
+{% endif %}

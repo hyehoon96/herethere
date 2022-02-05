@@ -1,4 +1,5 @@
 const express       = require('express');
+const bodyParser    = require('body-parser');    // 1
 const cookieParser  = require('cookie-parser');
 const morgan        = require('morgan'); // 서버 요청에 따라 log 기록용
 const path          = require('path'); //파일 경로
@@ -23,6 +24,7 @@ nunjucks.configure('views', {
 app.use(express.static(path.join(__dirname, "src")));
 app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css'))) //static : 정적인 파일 제공
 app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')))
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(morgan('dev'));
@@ -62,8 +64,9 @@ app.listen(app.get('port'), () => {
 })
 
 // 데이터베이스 SELECT 쿼리 테스트
-conn.query('SELECT * FROM USER', (error, rows, fields) => {
-    if (error) throw error;
-    console.log("User info:", rows);
-    conn.close();
-});
+
+// conn.query('SELECT * FROM USER', (error, rows, fields) => {
+//     if (error) throw error;
+//     console.log("User info:", rows);
+//     conn.close();
+// });
