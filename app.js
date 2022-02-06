@@ -5,6 +5,7 @@ const path          = require('path');              // 파일 경로
 const session       = require('express-session');   // 사용자의 데이터를 임시적으로 저장함
 const nunjucks      = require('nunjucks');
 const database      = require('./database.js');
+const bcrypt        = require('bcrypt');
 
 /*
   Node.js 서버의 설정(환경변수)을 받아오기 위한 dotenv 모듈 불러오기
@@ -69,6 +70,24 @@ app.delete('/users/:id', (req, res) => {
             return res.status(404).json({err: 'Unknown user'});
         }
         return res.status(204).send();
+    });
+});
+
+// 회원정보를 생성하는 API
+app.post('/users', (req, res) => {
+    console.log(req.body);
+    const param = [
+        req.body.id,
+        req.body.password,
+        req.body.name,
+        req.body.nickname
+    ];
+    bcrypt.hash(param[1], 10, (err, hash) => {
+        param[1] = hash;
+        conn.query('INSERT INTO user(`id`,`password`,`name`,`nickname`) VALUES (?,?,?,?)', param, (err, row) => {
+            if (err) { console.log(err); }
+            return res.status(201).json(row);
+        });
     });
 });
 
