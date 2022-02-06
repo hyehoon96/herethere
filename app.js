@@ -1,7 +1,7 @@
 const express       = require('express');
 const cookieParser  = require('cookie-parser');
-const morgan        = require('morgan');    // 서버 요청에 따라 log 기록용
-const path          = require('path');      // 파일 경로
+const morgan        = require('morgan');            // 서버 요청에 따라 log 기록용
+const path          = require('path');              // 파일 경로
 const session       = require('express-session');   // 사용자의 데이터를 임시적으로 저장함
 const nunjucks      = require('nunjucks');
 const database      = require('./database.js');
@@ -34,7 +34,7 @@ app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist
 app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')))
 
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+//app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
     resave: false,
@@ -45,6 +45,19 @@ app.use(session({
         secure: false,
     },
 }));
+
+// 회원정보를 가져오는 API
+app.get('/users/:id', (req, res) => {
+    const id = req.params.id;
+    conn.query('SELECT * FROM user WHERE id = ?', id, (err, row) => {
+        if (err) { console.log(err); }
+        let user = row[0];
+        if (!user) {
+            return res.status(404).json({err: 'Unknown user'});
+        }
+        res.json(user);
+    });
+});
 
 // page router 연결
 app.use('/', pageRouter);
