@@ -29,7 +29,14 @@ router.post('/search', function (req, res) {
         area: req.body.purpose,
         page: 'search'
     });
-    // res.send('POST request to the homepage');
 });
 
+router.get('/regist', (req, res, next)=> {
+    console.log('regist');
+    res.render('regist', null);
+});
+router.get('/login', (req, res, next)=> {
+    console.log('login');
+    res.render('login', null);
+});
 module.exports = router;

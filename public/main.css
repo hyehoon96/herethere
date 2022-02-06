@@ -72,6 +72,15 @@ ul li:hover a {
     width: 100%;
     max-height: 400px;
 }
+
+.vertical-center{
+    min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+    min-height: 100vh; /* These two lines are counted as one       */
+    display: flex;
+    align-items: center;
+
+}
+
 #pagination {margin:10px auto;text-align: center;}
 #pagination a {display:inline-block;margin-right:10px;}
 #pagination .on {font-weight: bold; cursor: default;color:#777;}

@@ -1,0 +1,90 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row d-flex justify-content-center">
+    <div class="col-6">
+      <div class="card mt-5">
+        <h5 class="card-header">회원가입</h5>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-12">
+              <h5 class="card-title">회원을 등록하시면 추가적인 서비스를 이용할 수 있습니다.</h5>
+              <p class="text-muted">* 항목은 필수입니다.
+            </div>
+          </div>
+          <div class="row mt-5">
+            <div class="col-12">
+              <form>
+                <div class="form-group row">
+                  <label for="ID" class="col-sm-2 col-form-label">아이디</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="ID" placeholder="아이디">
+                  </div>
+                </div>
+                <div class="form-group row mt-5">
+                  <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+                  <div class="col-sm-10">
+                    <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+                  </div>
+                </div>
+                <div class="form-group row mt-5">
+                  <label for="name" class="col-sm-2 col-form-label">이름</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="name" placeholder="이름">
+                  </div>
+                </div>
+                <div class="form-group row mt-5">
+                  <label for="gender" class="col-sm-2 col-form-label">성별</label>
+                  <div class="col-sm-10">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                      <label class="form-check-label" for="inlineCheckbox1">남성</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                      <label class="form-check-label" for="inlineCheckbox2">여성</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row mt-5">
+                  <label for="age" class="col-sm-2 col-form-label">연령대</label>
+                  <div class="col-sm-10">
+                    <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                      <option selected>...</option>
+                      <option value="1">10대</option>
+                      <option value="2">20대</option>
+                      <option value="3">30대</option>
+                      <option value="3">40대</option>
+                      <option value="3">50대 이상</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row mt-5">
+                  <label for="question" class="col-sm-2 col-form-label">* 질문</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="question" placeholder="비밀번호를 찾을 때 사용 할 본인 확인용 질문">
+                  </div>
+                </div>
+                <div class="form-group row mt-5">
+                  <label for="answer" class="col-sm-2 col-form-label">* 답변</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="answer" placeholder="답변">
+                    <p class="text-muted">비밀번호를 찾을 때 사용됩니다.</p>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-center">
+            <button class="btn btn-primary">등록</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
