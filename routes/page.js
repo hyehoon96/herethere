@@ -31,12 +31,14 @@ router.post('/search', function (req, res) {
     });
 });
 
-router.get('/regist', (req, res, next)=> {
-    console.log('regist');
-    res.render('regist', null);
+router.get('/register', (req, res, next)=> {
+    console.log('register');
+    res.render('register', null);
 });
+
 router.get('/login', (req, res, next)=> {
     console.log('login');
     res.render('login', null);
 });
+
 module.exports = router;

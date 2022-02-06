@@ -67,10 +67,3 @@ app.use((err, req, res, next)=> {
 app.listen(app.get('port'), () => {
     console.log(app.get('port'), '번 포트에서 대기중');
 })
-
-// 데이터베이스 연동 테스트
-conn.query('SELECT * FROM user', (error, rows) => {
-     if (error) throw error;
-     console.log("User info:", rows);
-     conn.end();
-});
