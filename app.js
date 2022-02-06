@@ -4,7 +4,7 @@ const morgan        = require('morgan');    // 서버 요청에 따라 log 기�
 const path          = require('path');      // 파일 경로
 const session       = require('express-session');   // 사용자의 데이터를 임시적으로 저장함
 const nunjucks      = require('nunjucks');
-const mysql         = require('mysql');
+const database      = require('./database.js');
 
 /*
   Node.js 서버의 설정(환경변수)을 받아오기 위한 dotenv 모듈 불러오기
@@ -17,20 +17,8 @@ const app = express();
 app.set('port', process.env.PORT || 8001);
 
 // 데이터베이스 연결
-const conn = mysql.createConnection({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
-});
-conn.connect(function(err) {
-    if (err) {
-        console.error('Connection failed: ' + err.stack);
-        return;
-    }
-    console.log('Connected successfully! threadId: ' + conn.threadId);
-});
+const conn = database.init();
+database.connect(conn);
 
 app.set('view engine', 'html'); // DB등의 내용을 HTML에 보여줄 수 있도록 하는 엔진, html 내부에서 반복문, 조건문을 사용할 수 있게 한다.
 nunjucks.configure('views', {
