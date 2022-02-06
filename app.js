@@ -59,6 +59,19 @@ app.get('/users/:id', (req, res) => {
     });
 });
 
+// 회원정보를 삭제하는 API
+app.delete('/users/:id', (req, res) => {
+    const id = req.params.id;
+    conn.query('DELETE FROM user WHERE id = ?', id, (err, row) => {
+        if (err) { console.log(err); }
+        let user = row[0];
+        if (!user) {
+            return res.status(404).json({err: 'Unknown user'});
+        }
+        return res.status(204).send();
+    });
+});
+
 // page router 연결
 app.use('/', pageRouter);
 
