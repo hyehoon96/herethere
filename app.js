@@ -95,6 +95,17 @@ app.post('/users', (req, res) => {
     });
 });
 
+// 아이디 유효성 검사 API
+app.get('/users/checkId/:id', (req, res) => {
+    const id = req.params.id;
+    conn.query('SELECT id FROM user WHERE id = LOWER(?)', id, (err, row) => {
+        if (err) { console.log(err); }
+        return res.status(200).json({
+            result: row[0] ? false : true
+        });
+    })
+});
+
 // page router 연결
 app.use('/', pageRouter);
 
