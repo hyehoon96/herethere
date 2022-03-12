@@ -9,7 +9,7 @@ const bcrypt        = require('bcrypt');
 
 /*
   Node.js 서버의 설정(환경변수)을 받아오기 위한 dotenv 모듈 불러오기
-  *** 꼭 맨위에 작성해야한다 *** (설정이 적용된 후에, 나머지 코드들이 실행되기 위해서)
+  설정이 적용된 후에, 나머지 코드들이 실행되기 위해서 꼭 맨위에 작성해야 한다
 */
 require('dotenv').config();
 const pageRouter = require('./routes/page');
@@ -35,7 +35,6 @@ app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist
 app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')))
 
 app.use(express.json());
-//app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
     resave: false,
@@ -50,7 +49,7 @@ app.use(session({
 // 회원정보를 가져오는 API
 app.get('/users/:id', (req, res) => {
     const id = req.params.id;
-    conn.query('SELECT * FROM user WHERE id = ?', id, (err, row) => {
+    conn.query('SELECT id, password, name, nickname FROM user WHERE id = ? AND is_deleted = "N"', id, (err, row) => {
         if (err) { console.log(err); }
         let user = row[0];
         if (!user) {
@@ -74,19 +73,26 @@ app.delete('/users/:id', (req, res) => {
 });
 
 // 회원정보를 생성하는 API
+// 조건1. 중복이 아닌 아이디
+// 조건2. 생성 규칙을 준수하는 비밀번호
 app.post('/users', (req, res) => {
-    console.log(req.body);
-    const param = [
-        req.body.id,
+    const params = [
+        req.body.id.toLowerCase(), // 소문자로 변환
         req.body.password,
         req.body.name,
         req.body.nickname
     ];
-    bcrypt.hash(param[1], 10, (err, hash) => {
-        param[1] = hash;
-        conn.query('INSERT INTO user(`id`,`password`,`name`,`nickname`) VALUES (?,?,?,?)', param, (err, row) => {
+    bcrypt.hash(params[1], 10, (err, hash) => {
+        params[1] = hash;
+        conn.query('INSERT INTO user(`id`,`password`,`name`,`nickname`) VALUES (?,?,?,?)', params, (err, row) => {
             if (err) { console.log(err); }
-            return res.status(201).json(row);
+            return res.status(201).json({
+                no: row['insertId'],
+                id: params[0],
+                password: params[1],
+                name: params[2],
+                nickname: params[3]
+            });
         });
     });
 });
