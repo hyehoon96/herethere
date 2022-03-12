@@ -60,14 +60,12 @@ app.get('/users/:id', (req, res) => {
 });
 
 // 회원정보를 삭제하는 API
+// 1. 테이블에서 데이터를 삭제하는 방법
+// 2. 플래그를 사용하여 데이터가 삭제되었다고 표시 -> 이거 적용!
 app.delete('/users/:id', (req, res) => {
     const id = req.params.id;
-    conn.query('DELETE FROM user WHERE id = ?', id, (err, row) => {
+    conn.query('UPDATE user SET is_deleted = "Y", deleted_date = CURRENT_TIMESTAMP WHERE id = ?', id, (err, row) => {
         if (err) { console.log(err); }
-        let user = row[0];
-        if (!user) {
-            return res.status(404).json({err: 'Unknown user'});
-        }
         return res.status(204).send();
     });
 });
