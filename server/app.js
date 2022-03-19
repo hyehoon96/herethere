@@ -12,7 +12,7 @@ const bcrypt        = require('bcrypt');
   설정이 적용된 후에, 나머지 코드들이 실행되기 위해서 꼭 맨위에 작성해야 한다
 */
 require('dotenv').config();
-const pageRouter = require('./routes/page');
+const pageRouter = require('../routes/page');
 
 const app = express();
 app.set('port', process.env.PORT || 8001);
@@ -29,10 +29,10 @@ nunjucks.configure('views', {
 });
 
 app.use(morgan('dev'));
-app.use(express.static(path.join(__dirname, 'public'))); // express.static: express에서 정적 파일 제공
-app.use(express.static(path.join(__dirname, "src")));
-app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')))
-app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')))
+app.use(express.static(path.join(__dirname, '../public'))); // express.static: express에서 정적 파일 제공
+app.use(express.static(path.join(__dirname, "../src")));
+app.use('/css', express.static(path.join(__dirname, '../node_modules/bootstrap/dist/css')))
+app.use('/js', express.static(path.join(__dirname, '../node_modules/bootstrap/dist/js')))
 
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
