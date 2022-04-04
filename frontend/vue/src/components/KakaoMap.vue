@@ -47,7 +47,8 @@ export default {
       infowindow: null,
       debounce: null,
       searchText: null,
-      currentCenterLatlng: null
+      currentCenterLatlng: null,
+      polygonBundle: {}
     }
   },
   mounted() {
@@ -205,6 +206,9 @@ export default {
 
     },
     displayCircle(place) {
+      if (!this.isEmpty(this.polygonBundle)) {
+        this.polygonBundle.setMap(null);
+      }
       let circle = new kakao.maps.Circle({
         center : new kakao.maps.LatLng(place.y, place.x),  // 원의 중심좌표 입니다 
         radius: 1000, // 미터 단위의 원의 반지름입니다 
@@ -215,6 +219,8 @@ export default {
         fillColor: '#2962ff', // 채우기 색깔입니다
         fillOpacity: 0.2  // 채우기 불투명도 입니다   
       }); 
+      
+      this.polygonBundle = circle;
       circle.setMap(this.map);
     },
     closeInfowindow() {
