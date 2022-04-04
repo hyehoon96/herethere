@@ -1,2 +1,0 @@
-# asp
-asp node project
