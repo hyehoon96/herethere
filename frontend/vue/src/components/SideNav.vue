@@ -99,7 +99,8 @@
             <div class="text-start" v-if="isEmpty(searchResult)"> 
               1. 주소를 입력하세요. <br>
               2. 주소 목록을 클릭해주세요. <br>
-              3. 하단의 "어디서 만날까요?" 버튼을 눌러주세요. 
+              3. 하단의 "어디서 만날까요?" 버튼을 눌러주세요. <br>
+              4. 화면 우측 하단의 카테고리를 설정해주세요.
             </div>
           </v-card>
           <v-divider class="my-3"></v-divider> 
@@ -122,14 +123,12 @@
               <v-list-item-content @mouseover="moveMaptoTarget(item, i)" @mouseout="closeInfowindow">
                 <v-list-item-title class="font-weight-black">{{item.place_name}}</v-list-item-title>
               </v-list-item-content>
-              <v-list-item-icon @click="linkToKakaMap(item.id)">
+              <!-- <v-list-item-icon @click="linkToKakaMap(item.id)">
                 <v-btn tile depressed> 
                   <v-icon color="primary">mdi-navigation-variant-outline</v-icon>
                   <div>길찾기</div>
                 </v-btn>
-                
-                
-              </v-list-item-icon>
+              </v-list-item-icon> -->
             </v-list-item>
             </transition-group>
           </v-card>
@@ -285,9 +284,9 @@ export default {
         
         this.$emit('markCenterLatlng', centerOfSquare, this.latlngBundle);
       },
-      linkToKakaMap(item) {
-        window.open('https://map.kakao.com/link/to/' + item, '길찾기');
-      }
+      // linkToKakaMap(item) {
+      //   window.open('https://map.kakao.com/link/to/' + item, '길찾기');
+      // }
   }
 }
 </script>
@@ -318,7 +317,7 @@ a {
   color:#000;
 }
 .list-enter-active, .list-leave-active {
-  transition: all 1s;
+  transition: all 0.5s;
 }
 .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
   opacity: 0;
