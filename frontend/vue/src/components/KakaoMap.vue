@@ -198,7 +198,11 @@ export default {
       kakao.maps.event.addListener(tempMarker, 'mouseover', () => {
         // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
         //console.log('hi', place.place_name);
-        this.displayInfowindow(place.place_name, tempMarker);
+        if (this.isEmpty(place.place_name)) {
+          this.displayInfowindow('중간지점', tempMarker);
+        } else {
+          this.displayInfowindow(place.place_name, tempMarker);
+        }
       });
       kakao.maps.event.addListener(tempMarker, 'mouseout', () => {
         this.closeInfowindow();
@@ -211,7 +215,7 @@ export default {
       }
       let circle = new kakao.maps.Circle({
         center : new kakao.maps.LatLng(place.y, place.x),  // 원의 중심좌표 입니다 
-        radius: 1000, // 미터 단위의 원의 반지름입니다 
+        radius: 1500, // 미터 단위의 원의 반지름입니다 
         strokeWeight: 5, // 선의 두께입니다 
         strokeColor: '#0039cb', // 선의 색깔입니다
         strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
@@ -276,8 +280,8 @@ export default {
       this.moveMap(this.currentCenterLatlng);
       let moveLatLon = new kakao.maps.LatLng(this.currentCenterLatlng.y, this.currentCenterLatlng.x);
       this.bounds.extend(moveLatLon);
-      let level = this.map.getLevel();
-      this.map.setLevel(level - 4);
+      //let level = this.map.getLevel();
+      this.map.setLevel(5);
       
       placeObj.categorySearch(code, this.placesSearchCB, {useMapBounds:true}); 
     }
