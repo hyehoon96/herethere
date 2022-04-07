@@ -11,19 +11,21 @@
         @submit="submitDialog"
       >
         <template v-slot:body>
-          <v-row class="mt-3" v-for="item in loginForm" :key="item.label" justify="center">
+          <v-row class="mt-3" v-for="(item, i) in loginForm" :key="item.label" justify="center">
             <v-col cols="11">
               <v-select
                 v-if="item.list"
-                append-icon="mdi-account"
+                :append-icon="item.icon"
                 :label="item.label"
                 :items="item.list"
+                v-model="item[i].model"
                 outlined
               />
               <v-text-field
                 v-else
                 outlined
-                append-icon="mdi-account"
+                :append-icon="item.icon"
+                v-model="item[i].model"
                 :label="item.label"
               />
             </v-col>
@@ -90,12 +92,12 @@ export default {
     displayDialog: false,
     loginForm: [
       {label : '아이디 *', icon: 'mdi-account', model: null},
-      {label : '비밀번호 *', icon: 'mdi-account', model: null},
-      {label : '비밀번호 확인 *', icon: 'mdi-account', model: null},
-      {label : '연령대', icon: 'mdi-account', model: null, list: ['10대', '20대', '30대', '40대', '50대', '60대 이상']},
-      {label : '성별', icon: 'mdi-account', model: null, list: ['여성', '남성']},
-      {label : '질문 *', icon: 'mdi-account', model: null, list: ['애완동물의 이름은?', '좋아하는 음식은?']},
-      {label : '답변 *', icon: 'mdi-account', model: null},
+      {label : '비밀번호 *', icon: 'mdi-lock', model: null},
+      {label : '비밀번호 확인 *', icon: 'mdi-lock-check', model: null},
+      {label : '연령대', icon: 'mdi-tag-faces', model: null, list: ['10대', '20대', '30대', '40대', '50대', '60대 이상']},
+      {label : '성별', icon: 'mdi-human-male-female', model: null, list: ['여성', '남성']},
+      {label : '질문 *', icon: 'mdi-account-question', model: null, list: ['애완동물의 이름은?', '좋아하는 음식은?']},
+      {label : '답변 *', icon: 'mdi-forum', model: null},
     ]
   }),
   methods: {
