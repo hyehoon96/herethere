@@ -10,7 +10,7 @@ export default {
 
     async $axiosAPI(url, method, data) {
       return (await axios({
-        baseURL: '/api/',
+        // baseURL: '/api/',
         method,
         url,
         data,

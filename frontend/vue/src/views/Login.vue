@@ -74,6 +74,7 @@
             <v-col cols="12" class="justify-center d-flex">
               <v-btn color="primary">로그인</v-btn>
               <v-btn color="green" dark @click="displayDialog = true;">회원가입</v-btn>
+              <v-btn color="amber" dark @click="getUserInfo">API연동테스트</v-btn>
             </v-col>
           </v-row>
         </v-card>
@@ -106,6 +107,14 @@ export default {
       console.log('submit 완료!')
       this.displayDialog = false;
     },
+
+    async getUserInfo() {
+      // url method data
+      // https://medium.com/hivelab-dev/vue-express-mysql-part1-98f68408d444
+      let temp = await this.$axiosAPI('/api/user/0', 'get');
+      console.log(temp);
+      
+    }
   }
 }
 </script>

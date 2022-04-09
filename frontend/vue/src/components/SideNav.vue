@@ -3,7 +3,6 @@
     <v-navigation-drawer
       app  
       width="360px"
-      disable-resize-watcher
       class="d-flex"
     >
       <v-card color="#258fff" dark tile>
