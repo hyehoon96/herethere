@@ -111,7 +111,7 @@ export default {
     async getUserInfo() {
       // url method data
       // https://medium.com/hivelab-dev/vue-express-mysql-part1-98f68408d444
-      let temp = await this.$axiosAPI('/api/user/0', 'get');
+      let temp = await this.$axiosAPI('/api/user/'+'min', 'get');
       console.log(temp);
       
     }

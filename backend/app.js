@@ -17,8 +17,8 @@ app.set('view engine', 'pug');
 app.set('port', process.env.PORT || 8080);
 
 // 데이터베이스 연결
-// const conn = database.init();
-// database.connect(conn);
+const conn = database.init();
+database.connect(conn);
 
 app.use(morgan('dev'));
 app.use(express.json());
@@ -63,7 +63,7 @@ app.listen(app.get('port'), () => {
 // todo: 서버 종료 시 데이터베이스 연결이 종료되도록 수정
 process.on('SIGINT', function() {
     console.log('프로세스를 종료합니다');
-    database.end(conn);
+    database.end(conn)
     process.exit(0);
 })
 

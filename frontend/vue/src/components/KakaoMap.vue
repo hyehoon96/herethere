@@ -171,7 +171,7 @@ export default {
     },
     displayInfowindow(place_name, tempMarker, i) {
       this.infowindow.setContent(`<div class="info_title"">${place_name}</div>`);
-      console.log(this.markers, i);
+      //console.log(this.markers, i);
       this.isEmpty(i) ? this.infowindow.open(this.map, tempMarker) : this.infowindow.open(this.map, this.markers[i])
       this.setInfoStyle();
 
@@ -183,7 +183,7 @@ export default {
         newMarker = new kakao.maps.MarkerImage(image, imageSize); 
         this.displayCircle(place);
       }
-      console.log(newMarker);
+      //console.log(newMarker);
       this.marker = new kakao.maps.Marker({
         map: this.map,
         position: new kakao.maps.LatLng(place.y, place.x),
@@ -192,7 +192,6 @@ export default {
       let tempMarker = this.marker;
       this.markers.push(tempMarker);
       this.bounds.extend(new kakao.maps.LatLng(place.y, place.x));
-      console.log(this.bounds);
       this.map.setBounds(this.bounds);
       // 마커에 클릭이벤트를 등록합니다
       kakao.maps.event.addListener(tempMarker, 'mouseover', () => {
@@ -273,6 +272,7 @@ export default {
     },
 
     searchCategory(code) {
+      this.removeMarker();
       let placeObj = new kakao.maps.services.Places(this.map);
       console.log(placeObj);
       
