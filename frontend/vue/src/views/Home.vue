@@ -13,6 +13,12 @@ export default {
   name: 'Home',
   components: {
     Map
+  },
+  mounted() {
+    
+  },
+  methods:{
+    
   }
 }
 </script>

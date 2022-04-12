@@ -11,6 +11,7 @@
       @closeInfowindow="closeInfowindow"
       @moveMap="moveMap"
       @markCenterLatlng="markCenterLatlng"
+      @serachAddrFromCoords="serachAddrFromCoords"
     />
     <div class="map_wrap">
       <div id="map" style="position:relative; overflow:hidden;">
@@ -90,11 +91,12 @@ export default {
         //마커 position을 출력합니다.
         let latlng = mouseEvent.latLng;
         this.marker.setPosition(latlng);
-        //console.log(latlng);
+        // console.log(latlng);
         if( this.marker.fa.src !== 'http://t1.daumcdn.net/mapjsapi/images/marker.png') {
           this.marker.fa.src = 'http://t1.daumcdn.net/mapjsapi/images/marker.png';
         }
       });
+      this.bounds = new kakao.maps.LatLngBounds();
     },
 
     setMapType(maptype) {
@@ -284,6 +286,29 @@ export default {
       this.map.setLevel(5);
       
       placeObj.categorySearch(code, this.placesSearchCB, {useMapBounds:true}); 
+    },
+    serachAddrFromCoords(coords) {
+      console.log(coords);
+      let geocoder = new kakao.maps.services.Geocoder();
+      let currentCoords = new kakao.maps.LatLng(coords.y, coords.x);
+      geocoder.coord2RegionCode(currentCoords.getLng(), currentCoords.getLat(), (result, status) => {
+        console.log(result, status);
+        if (status === kakao.maps.services.Status.OK) {
+          //eslint-disable-next-line
+          let detailAddr = !!(result[0].road_address) 
+          ? result[0].road_address.address_name 
+          : result[0].address_name; 
+          //도로명 주소 : 지번 주소
+          console.log(detailAddr);
+          let coordsObj = {
+            place_name: detailAddr,
+            y: coords.y,
+            x: coords.x
+          }
+          this.displayMarker(coordsObj);
+          this.$refs.sideNav.setSearchText(detailAddr);
+        }
+      })
     }
   } 
 }

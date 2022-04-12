@@ -18,7 +18,7 @@
               icon
               background-color="#258fff"
               class="flex-grow-1 d-flex flex-column" 
-              v-for="item in btnGroup" :key="item.text"
+              v-for="item in menuGroup" :key="item.text"
               :to="item.route"
               :rounded="false"
               tile
@@ -42,9 +42,28 @@
               v-model="searchText"
               @click:append="callSearchFunc"
               @keyup.enter="callSearchFunc"
+              hide-details
             >
             </v-text-field>
 
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col class="d-flex mb-3" cols="12">
+            <v-btn 
+              icon
+              background-color="#258fff"
+              class="flex-grow-1 d-flex flex-column" 
+              v-for="item in roomBtnGroup" :key="item.text"
+              :rounded="false"
+              tile
+              @click="item.onClick"
+              min-height="40"
+            >
+              
+              <v-icon size="20">{{item.icon}}</v-icon>
+              <div class="font-weight-black" style="font-size: 13px;">{{item.text}}</div>
+            </v-btn>
           </v-col>
         </v-row>
       </v-card>
@@ -144,30 +163,68 @@
 </template>
 
 <script>
+//https://stackoverflow.com/questions/46966689/how-can-i-call-method-from-data-on-vue-js
 export default {
-  data: () => ({
-    btnGroup: [
-      { text:'로그인', icon: 'mdi-login', route: 'login' },
-      { text:'정보', icon: 'mdi-information-outline', route: 'info' },
-      { text:'기록', icon: 'mdi-history', route: 'history' },
-      { text:'설정', icon: 'mdi-cog', route: 'setting' },
-    ],
-    searchText: null,
-    targetLocate: null,
-    targetRadio: [],
-    searchResult: [],
-    paginationObj : {},
-    currentPage: 1,
-    latlngBundle: [],
-    debounce1: null,
-    debounce2: null,
-  }),
+  data() {
+    var self = this;
+    return {
+      menuGroup: [
+        { text:'로그인', icon: 'mdi-login', route: 'login' },
+        { text:'정보', icon: 'mdi-information-outline', route: 'info' },
+        { text:'기록', icon: 'mdi-history', route: 'history' },
+        { text:'설정', icon: 'mdi-cog', route: 'setting' },
+      ],
+      roomBtnGroup: [
+        { text: '내 위치', 
+          icon: 'mdi-crosshairs-gps', 
+          onClick: function() {
+            self.getCurrentLocate();
+          }},
+        { text: '방 생성', 
+          icon: 'mdi-folder-plus',
+          onClick: () => {
+            self.test();
+          }},
+        { text: '방 찾기', 
+          icon: 'mdi-folder-search-outline',
+          onClick: () => {
+            self.test();
+        }},
+          
+
+      ],
+      searchText: null,
+      targetLocate: null,
+      targetRadio: [],
+      searchResult: [],
+      paginationObj : {},
+      currentPage: 1,
+      latlngBundle: [],
+      debounce1: null,
+      debounce2: null,
+    }
+  },
   
   mounted() {
     
   },
   
   methods: {
+    test() {
+      alert('hi');
+    },
+    getCurrentLocate() {
+      if('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          console.log(position);
+          this.$emit('serachAddrFromCoords', {y: position.coords.latitude, x: position.coords.longitude});
+        },
+        error => alert(error, '에러가 발생하였습니다.'),
+        {enableHighAccuracy: true});
+      } else {
+        alert('지원하지 않는 브라우저입니다.');
+      }
+    },
     getListItem(item) {
       this.searchResult = item;
     },
@@ -283,6 +340,9 @@ export default {
         
         this.$emit('markCenterLatlng', centerOfSquare, this.latlngBundle);
       },
+      setSearchText(text) {
+        this.searchText = text;
+      }
       // linkToKakaMap(item) {
       //   window.open('https://map.kakao.com/link/to/' + item, '길찾기');
       // }
