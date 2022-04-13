@@ -2,11 +2,38 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
 const database = require('../database');
-// 회원정보를 가져오는 API
+// 회원정보를 생성하는 API
+// 조건1. 중복이 아닌 아이디
+// 조건2. 생성 규칙을 준수하는 비밀번호
 
+router.post('/', (req, res) => {
+  conn = database.init();
+  console.log(req.body);
+  const params = [
+    req.body.id.toLowerCase(), // 소문자로 변환
+    req.body.password,
+    req.body.name,
+    req.body.nickname
+  ];
+  bcrypt.hash(params[1], 10, (err, hash) => {
+    params[1] = hash;
+    conn.query('INSERT INTO user(`userid`,`password`,`name`,`nickname`) VALUES (?,?,?,?)', params, (err, row) => {
+      if (err) { console.log(err); }
+      return res.status(201).json({
+        // no: row['insertId'],
+        userid: params[0],
+        password: params[1],
+        name: params[2],
+        nickname: params[3]
+      });
+    });
+    database.end(conn);
+  });
+})
 
 router.route('/:id')
   .all((req, res, next) => {
+    console.log(rotuer.route);
     req.conn = database.init();
     next();
   })
@@ -24,33 +51,6 @@ router.route('/:id')
     });
   })
   
-  // 회원정보를 생성하는 API
-  // 조건1. 중복이 아닌 아이디
-  // 조건2. 생성 규칙을 준수하는 비밀번호
-  
-  .post((req, res) => {
-    const params = [
-      req.body.id.toLowerCase(), // 소문자로 변환
-      req.body.password,
-      req.body.name,
-      req.body.nickname
-    ];
-    bcrypt.hash(params[1], 10, (err, hash) => {
-      params[1] = hash;
-      conn.query('INSERT INTO user(`id`,`password`,`name`,`nickname`) VALUES (?,?,?,?)', params, (err, row) => {
-        if (err) { console.log(err); }
-        return res.status(201).json({
-          no: row['insertId'],
-          id: params[0],
-          password: params[1],
-          name: params[2],
-          nickname: params[3]
-        });
-      });
-      database.end(conn);
-    });
-  })
-
   // 회원정보를 삭제하는 API
   // 1. 테이블에서 데이터를 삭제하는 방법
   // 2. 플래그를 사용하여 데이터가 삭제되었다고 표시 -> 적용!

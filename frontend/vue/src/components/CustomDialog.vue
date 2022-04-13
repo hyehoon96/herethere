@@ -9,15 +9,6 @@
       </slot>
     </v-card-text>
     <v-card-actions class="justify-end mr-2 pb-4">
-        <v-btn 
-            color="amber"
-            dark
-            rounded
-            small
-            @click="$emit('hide')"
-        >
-            닫기
-        </v-btn>
         <template v-if="footerSubmit">
             <v-btn
                 color="success"
@@ -28,6 +19,15 @@
                 {{ footerSubmitTitle }}
             </v-btn>
         </template>
+        <v-btn 
+            color="amber"
+            dark
+            rounded
+            small
+            @click="$emit('hide')"
+        >
+            닫기
+        </v-btn>
     </v-card-actions>
   </v-card>
 </template>
