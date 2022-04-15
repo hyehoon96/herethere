@@ -86,11 +86,8 @@
 </template>
 
 <script>
-import CustomDialog from '@/components/CustomDialog'
 export default {
-  components: {
-    CustomDialog,
-  },
+  
   data: () => ({
     displayDialog: false,
     loginForm: [

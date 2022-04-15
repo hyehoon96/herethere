@@ -1,5 +1,31 @@
 <template>
   <v-card elevation="48" tile width="360px">
+    <v-dialog
+      max-width="500"
+      v-model="displayDialog"
+    > 
+      <custom-dialog
+        :header-title=" dialogType === 'create' ? '방 생성하기' : '방 찾기' "
+        @hide="displayDialog = false;"
+        @submit="dialogType === 'create' ? createRoom : findRoom"
+        :footerSubmitTitle="'찾기'"
+      >
+        <template v-slot:body>
+          <v-row class="mt-3"  justify="center">
+            <v-col cols="11">
+              <v-text-field
+                v-model="roomNumber"
+                outlined
+                hide-details
+                :rules="[rules.counter, rules.required]"
+                label="방 번호 6자리를 입력해주세요."
+              />
+            </v-col>
+          </v-row>
+          
+        </template>
+      </custom-dialog>
+    </v-dialog> 
     <v-navigation-drawer
       app  
       width="360px"
@@ -168,6 +194,13 @@ export default {
   data() {
     var self = this;
     return {
+      displayDialog: false,
+      roomNumber: null,
+      dialogType: null,
+      rules: {
+        required: value => !!value || 'Required.',
+        counter: value => value.length <= 6 || 'Max 20 characters',
+      },
       menuGroup: [
         { text:'로그인', icon: 'mdi-login', route: 'login' },
         { text:'정보', icon: 'mdi-information-outline', route: 'info' },
@@ -183,12 +216,14 @@ export default {
         { text: '방 생성', 
           icon: 'mdi-folder-plus',
           onClick: () => {
-            self.test();
+            self.displayDialog = true;
+            self.dialogType = 'create';
           }},
         { text: '방 찾기', 
           icon: 'mdi-folder-search-outline',
           onClick: () => {
-            self.test();
+            self.displayDialog = true;
+            self.dialogType = 'find'
         }},
           
 
@@ -277,75 +312,75 @@ export default {
       }
         paginationEl.appendChild(fragment);
       },
-      removePagination() {
-        let paginationEl = document.getElementById('pagination');
-        while (paginationEl.hasChildNodes()) {
-          paginationEl.removeChild (paginationEl.lastChild);
-        }
-
-      },
-      closeInfowindow() {
-        clearTimeout(this.debounce2);
-        this.debounce2 = setTimeout(() => {
-          this.$emit('closeInfowindow');  
-        }, 300) ;
-        
-      },
-      pushInCalcBundle(item) {
-        const isNew = (element) =>  element.address_name !== item.address_name;
-        if(this.latlngBundle.every(isNew)) {
-          this.latlngBundle.push(item);
-        }
-        this.$emit('displayMarker', item);
-      },
-
-      moveMaptoTarget(item, i) {
-        clearTimeout(this.debounce1);
-        this.debounce1 = setTimeout(() => {
-          this.$emit('moveMap', item);
-          this.$emit('displayInfowindow', item.place_name, null, i)
-        }, 300);
-        
-      },
-      getCenterLatlng() {
-        if ( this.latlngBundle.length < 2) {
-          alert('장소를 최소 두 곳 입력해주세요!');
-          return;
-        }
-        console.log(this.latlngBundle);
-        let latlngArr = [];
-        this.latlngBundle.forEach( (element) => {
-          let temp = {
-            x: element.x,
-            y: element.y
-          };
-          latlngArr.push(temp);
-        })
-        console.log(latlngArr);
-        let xSort = latlngArr.sort(function(a, b) {
-          return a.x - b.x;
-        })
-        let ySort= latlngArr.sort(function(a, b) {
-          return a.y - b.y;
-        })
-        let xLargest = Number(xSort[xSort.length - 1].x);  
-        let xSmallest = Number(xSort[0].x);
-        let yLargest = Number(ySort[ySort.length - 1].y);
-        let ySmallest = Number(ySort[0].y);
-        
-        let centerOfSquare = {
-          x: (xSmallest + ((xLargest - xSmallest) / 2)).toFixed(6),
-          y: (ySmallest + ((yLargest - ySmallest) /2)).toFixed(6)
-        }
-        
-        this.$emit('markCenterLatlng', centerOfSquare, this.latlngBundle);
-      },
-      setSearchText(text) {
-        this.searchText = text;
+    removePagination() {
+      let paginationEl = document.getElementById('pagination');
+      while (paginationEl.hasChildNodes()) {
+        paginationEl.removeChild (paginationEl.lastChild);
       }
-      // linkToKakaMap(item) {
-      //   window.open('https://map.kakao.com/link/to/' + item, '길찾기');
-      // }
+
+    },
+    closeInfowindow() {
+      clearTimeout(this.debounce2);
+      this.debounce2 = setTimeout(() => {
+        this.$emit('closeInfowindow');  
+      }, 300) ;
+      
+    },
+    pushInCalcBundle(item) {
+      const isNew = (element) =>  element.address_name !== item.address_name;
+      if(this.latlngBundle.every(isNew)) {
+        this.latlngBundle.push(item);
+      }
+      this.$emit('displayMarker', item);
+    },
+
+    moveMaptoTarget(item, i) {
+      clearTimeout(this.debounce1);
+      this.debounce1 = setTimeout(() => {
+        this.$emit('moveMap', item);
+        this.$emit('displayInfowindow', item.place_name, null, i)
+      }, 300);
+      
+    },
+    getCenterLatlng() {
+      if ( this.latlngBundle.length < 2) {
+        alert('장소를 최소 두 곳 입력해주세요!');
+        return;
+      }
+      console.log(this.latlngBundle);
+      let latlngArr = [];
+      this.latlngBundle.forEach( (element) => {
+        let temp = {
+          x: element.x,
+          y: element.y
+        };
+        latlngArr.push(temp);
+      })
+      console.log(latlngArr);
+      let xSort = latlngArr.sort(function(a, b) {
+        return a.x - b.x;
+      })
+      let ySort= latlngArr.sort(function(a, b) {
+        return a.y - b.y;
+      })
+      let xLargest = Number(xSort[xSort.length - 1].x);  
+      let xSmallest = Number(xSort[0].x);
+      let yLargest = Number(ySort[ySort.length - 1].y);
+      let ySmallest = Number(ySort[0].y);
+      
+      let centerOfSquare = {
+        x: (xSmallest + ((xLargest - xSmallest) / 2)).toFixed(6),
+        y: (ySmallest + ((yLargest - ySmallest) /2)).toFixed(6)
+      }
+      
+      this.$emit('markCenterLatlng', centerOfSquare, this.latlngBundle);
+    },
+    setSearchText(text) {
+      this.searchText = text;
+    },
+    createRoom() {
+      alert('hi');
+    }
   }
 }
 </script>
