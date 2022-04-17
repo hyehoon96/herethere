@@ -105,17 +105,19 @@ router.route('/:id')
     });
   })
   .delete((req, res) => {
-    console.log(req.body);
+    //console.log('delete user from user router');
     const id = req.params.id;
-    conn.query('UPDATE user SET is_deleted = "Y", deleted_date = CURRENT_TIMESTAMP WHERE id = ?'
+    req.conn.query('UPDATE user SET is_deleted = "Y", deleted_date = CURRENT_TIMESTAMP WHERE userid = ?'
         , id, (err, row) => {
       if (err) { console.log(err); }
       return res.status(204).send();
     });
-    database.end(conn);
+    database.end(req.conn);
   })
 
-// 아이디 유효성 검사 API
+/**
+ * 아이디 유효성 검사 API
+ */
 router.get('/checkId/:id', (req, res) => {
   const id = req.params.id;
   conn.query('SELECT id FROM user WHERE id = LOWER(?)', id, (err, row) => {
@@ -123,7 +125,7 @@ router.get('/checkId/:id', (req, res) => {
     let result = row[0] ? false : true;
     return res.status(200).json({result: result});
   })
-  database.end(conn);
+  //database.end(conn);
 });
 
 module.exports = router;
