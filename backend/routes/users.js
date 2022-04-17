@@ -73,53 +73,57 @@ router.post('/', (req, res) => {
   });
 })
 
+/**
+ * [GET] 회원정보 단건조회 API
+ * [DEL] 회원정보 삭제 API
+ */
 router.route('/:id')
   .all((req, res, next) => {
-    console.log(rotuer.route);
+    console.log(router.route);
     req.conn = database.init();
     next();
   })
   .get((req, res) => {
     console.log('get user from user router');
     const id = req.params.id;
-    req.conn.query('SELECT userid, password, name, nickname FROM user WHERE userid = ? AND is_deleted = "N"', id, (err, row) => {
+    req.conn.query('SELECT userid, password, name, nickname, age_group, gender FROM user WHERE userid = ? AND is_deleted = "N"'
+        , id, (err, row) => {
       if (err) { console.log(err); }
-      let user = row[0];
-      if (!user) {
+      if (user = row[0]) {
+        return res.status(200).json({
+          userid: user.userid,
+          password: user.password,
+          name: user.name,
+          nickname: user.nickname,
+          ageGroup: user.age_group,
+          gender: user.gender
+        });
+      } else {
         return res.status(404).json({err: 'Unknown user'});
       }
-      res.json(user);
       database.end(req.conn);
     });
   })
-  
-  // 회원정보를 삭제하는 API
-  // 1. 테이블에서 데이터를 삭제하는 방법
-  // 2. 플래그를 사용하여 데이터가 삭제되었다고 표시 -> 적용!
-
   .delete((req, res) => {
+    console.log(req.body);
     const id = req.params.id;
-    conn.query('UPDATE user SET is_deleted = "Y", deleted_date = CURRENT_TIMESTAMP WHERE id = ?', id, (err, row) => {
+    conn.query('UPDATE user SET is_deleted = "Y", deleted_date = CURRENT_TIMESTAMP WHERE id = ?'
+        , id, (err, row) => {
       if (err) { console.log(err); }
       return res.status(204).send();
     });
     database.end(conn);
   })
 
-  
-
-
-
 // 아이디 유효성 검사 API
 router.get('/checkId/:id', (req, res) => {
   const id = req.params.id;
   conn.query('SELECT id FROM user WHERE id = LOWER(?)', id, (err, row) => {
     if (err) { console.log(err); }
-    return res.status(200).json({
-        result: row[0] ? false : true
-    });
+    let result = row[0] ? false : true;
+    return res.status(200).json({result: result});
   })
-  // database.end(conn);
+  database.end(conn);
 });
 
 module.exports = router;
