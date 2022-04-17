@@ -378,8 +378,8 @@ export default {
     setSearchText(text) {
       this.searchText = text;
     },
-    createRoom() {
-      alert('hi');
+    async createRoom() {
+      await this.$axiosAPI('/api/room/' + this.roomNumber , 'post');
     }
   }
 }

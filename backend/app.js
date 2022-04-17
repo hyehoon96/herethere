@@ -4,7 +4,7 @@ const morgan        = require('morgan');            // 서버 요청에 따라 l
 const path          = require('path');              // 파일 경로
 const session       = require('express-session');   // 사용자의 데이터를 임시적으로 저장함
 const database      = require('./database.js');
-
+const webSocket     = require('./socket.js');
 
 /*
   Node.js 서버의 설정(환경변수)을 받아오기 위한 dotenv 모듈 불러오기
@@ -54,10 +54,10 @@ app.use((err, req, res, next)=> {
 });
 
 // port에서 대기
-app.listen(app.get('port'), () => {
+const server = app.listen(app.get('port'), () => {
     console.log(app.get('port'), '번 포트에서 대기중');
 })
-
+webSocket(server);
 
 
 // todo: 서버 종료 시 데이터베이스 연결이 종료되도록 수정

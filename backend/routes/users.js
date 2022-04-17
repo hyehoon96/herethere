@@ -33,7 +33,6 @@ router.post('/', (req, res) => {
 
 router.route('/:id')
   .all((req, res, next) => {
-    console.log(rotuer.route);
     req.conn = database.init();
     next();
   })
