@@ -7,18 +7,37 @@
       <custom-dialog
         :header-title=" dialogType === 'create' ? '방 생성하기' : '방 찾기' "
         @hide="displayDialog = false;"
-        @submit="dialogType === 'create' ? createRoom : findRoom"
-        :footerSubmitTitle="'찾기'"
+        @submit="dialogType === 'create' ? createRoom() : findRoom()"
+        :footerSubmitTitle="dialogType === 'create' ? '생성' : '접속'"
       >
         <template v-slot:body>
           <v-row class="mt-3"  justify="center">
+            <v-col cols="11" v-if="dialogType === 'find'">
+              <v-text-field
+                v-model="userName"
+                outlined
+                hide-details
+                type="string"
+                label="채팅방에서 사용할 이름을 입력하세요."
+              />
+            </v-col>
+
+            <v-col cols="11" v-else>
+              <v-text-field
+                v-model="roomMax"
+                outlined
+                hide-details
+                type="number"
+                label="채팅방 인원을 입력해주세요."
+              />
+            </v-col>
+
             <v-col cols="11">
               <v-text-field
                 v-model="roomNumber"
                 outlined
                 hide-details
-                :rules="[rules.counter, rules.required]"
-                label="방 번호 6자리를 입력해주세요."
+                label="채팅방 비밀번호를 입력해주세요."
               />
             </v-col>
           </v-row>
@@ -195,7 +214,9 @@ export default {
     var self = this;
     return {
       displayDialog: false,
+      userName: null,
       roomNumber: null,
+      roomMax: 4,
       dialogType: null,
       rules: {
         required: value => !!value || 'Required.',
@@ -379,7 +400,30 @@ export default {
       this.searchText = text;
     },
     async createRoom() {
-      await this.$axiosAPI('/api/room/' + this.roomNumber , 'post');
+      let room = await this.$axiosAPI('/api/room/' + this.roomNumber ,'get');
+      console.log(room);
+      if (!room.empty) {
+        alert('다른 비밀번호를 사용해주세요.');
+      } else {
+        console.log('createRoom');
+        await this.$axiosAPI('/api/room/', 'post', {owner: 'user0418', password: this.roomNumber, max: this.roomMax});
+        this.$router.push({ name: 'ChatRoom', params: {roomNumber: btoa(this.roomNumber), roomMax: this.roomMax, role: 'owner'} });
+        this.displayDialog = false;
+      }
+    },
+
+    async findRoom() {
+      let room = await this.$axiosAPI('/api/room/' + this.roomNumber ,'get');
+      if(!room.empty) {
+        if(room.max === room.currentClient) {
+          alert('채팅방 인원이 초과하였습니다.');
+          return;
+        }
+        this.$router.push({ name: 'ChatRoom', params: {roomNumber: btoa(this.roomNumber), roomMax: room.max, user: this.userName, role: 'guest'} });
+        this.displayDialog = false;
+      } else {
+        alert('채팅방을 찾을 수 없습니다.');
+      }
     }
   }
 }

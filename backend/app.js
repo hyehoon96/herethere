@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(session({
+const sessionMiddleware = session({
     resave: false,
     saveUninitialized: false,
     secret: process.env.COOKIE_SECRET,
@@ -33,13 +33,15 @@ app.use(session({
         httpOnly: true,
         secure: false,
     },
-}));
+})
+app.use(sessionMiddleware);
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');        
+var usersRouter = require('./routes/users');
+var roomRouter = require('./routes/room');        
 app.use('/', indexRouter);
 app.use('/api/user', usersRouter);
-
+app.use('/api/room', roomRouter);
 app.use((req, res, next) => {
     const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
     error.status = 404;
@@ -57,7 +59,7 @@ app.use((err, req, res, next)=> {
 const server = app.listen(app.get('port'), () => {
     console.log(app.get('port'), '번 포트에서 대기중');
 })
-webSocket(server);
+webSocket(server, app, sessionMiddleware);
 
 
 // todo: 서버 종료 시 데이터베이스 연결이 종료되도록 수정

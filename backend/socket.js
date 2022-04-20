@@ -1,36 +1,83 @@
 const SocketIO = require('socket.io');
+const axios = require('axios');
 
-module.exports = (server) => {
-  const io =SocketIO(server, {
+module.exports = (server, app, sessionMiddleware) => {
+  const io = SocketIO(server, {
     path: '/socket.io',
     cors: {origin: '*'}
   });
+  app.set('io', io);
+  const room = io.of('/room');
+  io.use((socket, next) => {
+    sessionMiddleware(socket.request, socket.request.res, next);
+  })
 
-  io.on('connection', (socket)=> {
+  room.on('connection', (socket)=> {
+    console.log('room 네임스페이스 접속');
+
     const req = socket.request;
-    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    console.log('새로운 클라이언트 접속!', ip, socket.id, req.ip);
-    socket.on('disconnect', () => {
-      console.log('클라이언트 접속 해제', ip, socket.id);
-    })
+    const { headers: {referer} } = req;
+    var roomId = null;
+    var user = null; // current client name
+    var currentClient = null; // count
 
-    socket.on('error', (error) => {
-      console.error(error);
+    socket.on('roomId', (data) => {
+      roomId = data.roomId;
+      user = data.user;
+      currentClient = data.currentClient;
+      console.log(user);
+      let systemMsg = {
+        user: '',
+        chat: '',
+        isMine: false,
+        systemMsg: `${data.user}님이 접속했습니다.`
+      }
+      socket.join(roomId);
+      socket.to(roomId).emit('join',systemMsg);
+      console.log('socket.js 입니다.', currentClient);
+      axios.put(`http://localhost:8080/api/room/${roomId}`, {currentClient})
+        .then(() => {
+          console.log(`현재 인원 ${data.currentClient}`);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
     })
-
+   
     socket.on('chat', (data) => {
-      console.log(data);
-      let rtnMessage = {
-        message: data.message
-      };
-      socket.broadcast.emit('chat', rtnMessage);
-    })
-    socket.on('send', (data) => {
-      console.log(data);
-      let rtnMessage = {
-        message: data.message
-      };
-      socket.broadcast.emit('chat', rtnMessage);
+      socket.to(roomId).broadcast.emit(data);
+    });
+    
+    socket.on('disconnect', () => {
+      console.log('room 네임스페이스 접속 해제', roomId);
+      socket.leave(roomId);
+      axios.put(`http://localhost:8080/api/room/${roomId}`, {currentClient: currentClient - 1})
+        .then(() => {
+          console.log(`현재 인원 ${currentClient -1}`);
+        })
+        .catch( (error)=> {
+          console.log(error);
+        })
+      // console.log(socket.adapter.rooms.get(roomId).size);
+      const currentRoom = socket.adapter.rooms.get(roomId);      
+      const userCount = currentRoom ? currentRoom.size : 0;
+      if (userCount <= 0) {
+        axios.delete(`http://localhost:8080/api/room/`, {data: {password: roomId} })
+          .then(() => {
+            console.log('방 제거');
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+      } else {
+        let systemMsg = {
+          user: '',
+          chat: '',
+          isMine: false,
+          systemMsg: `${user}님이 퇴장했습니다.`
+        }
+        socket.broadcast.to(roomId).emit('exit', systemMsg);
+      }
     })
   })
 }

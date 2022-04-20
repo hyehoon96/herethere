@@ -16,6 +16,7 @@
         dark
         fab
         large
+        style="box-shadow: 2px 2px 3px #999;"
       >
         <v-icon v-if="fab">
           mdi-close
@@ -68,7 +69,7 @@ export default {
     categoryObj: [
       { label: '맛집', icon: 'mdi-silverware-fork-knife', code: 'FD6', color: 'green' },
       { label: '카페', icon: 'mdi-coffee', code: 'CE7', color: 'red' },
-      { label: '숙박', icon: 'mdi-bed', code: 'AD5', color: 'oragne' },
+      { label: '숙박', icon: 'mdi-bed', code: 'AD5', color: 'pink' },
       { label: '지하철역', icon: 'mdi-subway', code: 'SW8', color: 'indigo' },
       { label: '약국', icon: 'mdi-mortar-pestle-plus', code: 'PM9', color: 'purple' },
 
