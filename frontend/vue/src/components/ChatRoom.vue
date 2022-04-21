@@ -53,6 +53,7 @@
           no-resize
           height="120"
           v-model="chatInput"
+          @keyup="sendMessage"
         >
           <template slot="append">
             <div class="d-flex" style="flex-direction: column;">
