@@ -49,6 +49,7 @@
       app  
       width="360px"
       class="d-flex"
+      style="overflow-y: hidden;"
     >
       <v-card color="#258fff" dark tile>
         <v-row>
@@ -173,7 +174,7 @@
       
       <v-row>
         <v-col cols="12" class="my-5">
-          <v-card style="max-height: 30vh; overflow-y: scroll;">
+          <v-card style="max-height: 25vh; overflow-y: scroll;">
             <transition-group name="list" tag="p">
             <v-list-item
               v-for="(item, i) in latlngBundle"
@@ -199,7 +200,7 @@
       </v-row>
 
       <div>
-        <v-btn fixed bottom block color="primary" @click="getCenterLatlng">어디서 만날까요?</v-btn>
+        <v-btn fixed bottom block color="primary" style="bottom: 0;" @click="getCenterLatlng">어디서 만날까요?</v-btn>
       </div>
       
       
@@ -429,10 +430,14 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 nav {
   box-shadow: 0px 0px 2px 2px rgba(0,0,0,0.35);
 }
+::v-deep .v-navigation-drawer__content {
+ overflow: hidden
+}
+
 .v-item-group {
   max-height: 35vh;
   overflow-y: scroll;

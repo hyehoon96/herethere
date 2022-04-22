@@ -45,6 +45,8 @@ export default {
       markers: [],
       sample: 'abc',
       bounds: null,
+      placeObj: null,
+      geocoder: null,
       infowindow: null,
       debounce: null,
       searchText: null,
@@ -77,6 +79,7 @@ export default {
         center : new kakao.maps.LatLng(33.450701, 126.570667),
         level: 5
       }
+      /*------------------------- kakao 맵 객체 초기화 -------------------------*/
       this.map = new kakao.maps.Map(container, options);
       this.infowindow = new kakao.maps.InfoWindow({zIndex:9999});
       this.marker = new kakao.maps.Marker({ 
@@ -85,7 +88,10 @@ export default {
       });
       //마커를 표시합니다. 
       this.marker.setMap(this.map);
-      
+      this.bounds = new kakao.maps.LatLngBounds();
+      this.placeObj = new kakao.maps.services.Places();
+      this.geocoder = new kakao.maps.services.Geocoder();
+      /*-------------------------------------------------------------------------*/
       //마커 이벤트 등록
       kakao.maps.event.addListener(this.map, 'click', (mouseEvent) => {
         //마커 position을 출력합니다.
@@ -96,7 +102,7 @@ export default {
           this.marker.fa.src = 'http://t1.daumcdn.net/mapjsapi/images/marker.png';
         }
       });
-      this.bounds = new kakao.maps.LatLngBounds();
+      
     },
 
     setMapType(maptype) {
@@ -119,9 +125,8 @@ export default {
       // const kakaoMapObj
       this.searchText = text;
       this.removeMarker();
-      let placeObj = new kakao.maps.services.Places();
       this.bounds = new kakao.maps.LatLngBounds(); // 초기화
-      placeObj.keywordSearch(text, this.placesSearchCB);
+      this.placeObj.keywordSearch(text, this.placesSearchCB);
     },
 
     placesSearchCB(data, status, pagination) {
@@ -154,9 +159,8 @@ export default {
       // 주소로 검색한 경우 
       alert('키워드 검색 결과가 없습니다. addressSearch 함수로 검색합니다.');
       this.$refs.sideNav.removePagination();
-      let geocoder = new kakao.maps.services.Geocoder();
       // 주소로 좌표를 검색합니다
-      geocoder.addressSearch(text, (result, status) => {
+      this.geocoder.addressSearch(text, (result, status) => {
 
         // 정상적으로 검색이 완료됐으면 
         if (status === kakao.maps.services.Status.OK) {
@@ -275,8 +279,8 @@ export default {
 
     searchCategory(code) {
       this.removeMarker();
-      let placeObj = new kakao.maps.services.Places(this.map);
-      console.log(placeObj);
+      this.placeObj = new kakao.maps.services.Places(this.map);
+      //console.log(placeObj);
       
       this.bounds = new kakao.maps.LatLngBounds();
       this.moveMap(this.currentCenterLatlng);
@@ -285,13 +289,13 @@ export default {
       //let level = this.map.getLevel();
       this.map.setLevel(5);
       
-      placeObj.categorySearch(code, this.placesSearchCB, {useMapBounds:true}); 
+      this.placeObj.categorySearch(code, this.placesSearchCB, {useMapBounds:true}); 
+      this.placeObj = new kakao.maps.services.Places();
     },
     serachAddrFromCoords(coords) {
       console.log(coords);
-      let geocoder = new kakao.maps.services.Geocoder();
       let currentCoords = new kakao.maps.LatLng(coords.y, coords.x);
-      geocoder.coord2RegionCode(currentCoords.getLng(), currentCoords.getLat(), (result, status) => {
+      this.geocoder.coord2RegionCode(currentCoords.getLng(), currentCoords.getLat(), (result, status) => {
         console.log(result, status);
         if (status === kakao.maps.services.Status.OK) {
           //eslint-disable-next-line
