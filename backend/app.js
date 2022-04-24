@@ -62,11 +62,5 @@ const server = app.listen(app.get('port'), () => {
 webSocket(server, app, sessionMiddleware);
 
 
-// todo: 서버 종료 시 데이터베이스 연결이 종료되도록 수정
-process.on('SIGINT', function() {
-    console.log('프로세스를 종료합니다');
-    database.end(conn)
-    process.exit(0);
-})
 
 module.exports = app;
