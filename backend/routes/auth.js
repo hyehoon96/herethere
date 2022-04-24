@@ -39,4 +39,16 @@ router.post('/login', (req, res) => {
     }
 });
 
+router.get('/logout', (req, res) => {
+    if (req.session.user) {
+        req.session.destroy(err => {
+            if (err) { console.log(err); }
+            res.clearCookie('session_cookie_name');
+            return res.status(200).json({message: '사용자의 세션을 삭제했습니다.'});
+        });
+    } else {
+        return res.status(400).json({message: '로그인 되지 않은 사용자입니다.'});
+    }
+});
+
 module.exports = router;
