@@ -3,14 +3,12 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 const database = require('../database');
 
-
 /**
  * 회원정보 생성 API
  * - 조건1. 중복이 아닌 아이디
  * - 조건2. 작성규칙을 준수하는 비밀번호
  */
 router.post('/', (req, res) => {
-  conn = database.init();
   console.log(req.body);
   const params = [
     req.body.id.toLowerCase(), // 소문자로 변환
@@ -52,6 +50,7 @@ router.post('/', (req, res) => {
     gender = (gender === "남성") ? 'M' : 'W';
   }
 
+  conn = database.init();
   bcrypt.hash(params[1], 10, (err, hash) => {
     params[1] = hash;
     params[4] = ageGroup;
@@ -73,20 +72,20 @@ router.post('/', (req, res) => {
   });
 })
 
-/**
- * [GET] 회원정보 단건조회 API
- * [DEL] 회원정보 삭제 API
- */
 router.route('/:id')
   .all((req, res, next) => {
     console.log(router.route);
     req.conn = database.init();
     next();
   })
+    /**
+     * 회원정보 단건조회 API
+     */
   .get((req, res) => {
     console.log('get user from user router');
     const id = req.params.id;
-    req.conn.query('SELECT userid, password, name, nickname, age_group, gender FROM user WHERE userid = ? AND is_deleted = "N"'
+
+    req.conn.query('SELECT `userid`, `password`, `name`, `nickname`, `age_group`, `gender` FROM user WHERE `userid` = ? AND `is_deleted` = "N"'
         , id, (err, row) => {
       if (err) { console.log(err); }
       if (user = row[0]) {
@@ -104,10 +103,13 @@ router.route('/:id')
       database.end(req.conn);
     });
   })
+    /**
+     * 회원정보 삭제 API
+     */
   .delete((req, res) => {
     //console.log('delete user from user router');
     const id = req.params.id;
-    req.conn.query('UPDATE user SET is_deleted = "Y", deleted_date = CURRENT_TIMESTAMP WHERE userid = ?'
+    req.conn.query('UPDATE user SET `is_deleted` = "Y", `deleted_date` = CURRENT_TIMESTAMP WHERE `userid` = ?'
         , id, (err, row) => {
       if (err) { console.log(err); }
       return res.status(204).send();
@@ -115,17 +117,15 @@ router.route('/:id')
     database.end(req.conn);
   })
 
-/**
- * 아이디 유효성 검사 API
- */
+// todo: 회원정보 생성 API 에 포함시키기
 router.get('/checkId/:id', (req, res) => {
   const id = req.params.id;
-  conn.query('SELECT id FROM user WHERE id = LOWER(?)', id, (err, row) => {
+  conn.query('SELECT `id` FROM user WHERE `id` = LOWER(?)', id, (err, row) => {
     if (err) { console.log(err); }
     let result = row[0] ? false : true;
     return res.status(200).json({result: result});
   })
   //database.end(conn);
-});
+})
 
 module.exports = router;
