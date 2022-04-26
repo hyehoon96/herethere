@@ -12,6 +12,7 @@
       @moveMap="moveMap"
       @markCenterLatlng="markCenterLatlng"
       @serachAddrFromCoords="serachAddrFromCoords"
+      :latlngBundle="latlngBundle"
     />
     <div class="map_wrap">
       <div id="map" style="position:relative; overflow:hidden;">
@@ -48,7 +49,6 @@ export default {
       placeObj: null,
       geocoder: null,
       infowindow: null,
-      debounce: null,
       searchText: null,
       currentCenterLatlng: null,
       polygonBundle: {}
@@ -71,7 +71,15 @@ export default {
       this.loadMap();
     }
   }, 
-  
+  watch: {
+    markers() {
+      console.log(this.markers);
+      //markers this.markers
+      //circle this.polygonBundle
+      //basket this.refs.sideNav.latlngBundle
+
+    }
+  },
   methods: {
     loadMap() {
       const container = document.getElementById('map');
@@ -218,7 +226,7 @@ export default {
       if (!this.isEmpty(this.polygonBundle)) {
         this.polygonBundle.setMap(null);
       }
-      let circle = new kakao.maps.Circle({
+      this.polygonBundle = new kakao.maps.Circle({
         center : new kakao.maps.LatLng(place.y, place.x),  // 원의 중심좌표 입니다 
         radius: 1500, // 미터 단위의 원의 반지름입니다 
         strokeWeight: 5, // 선의 두께입니다 
@@ -229,8 +237,7 @@ export default {
         fillOpacity: 0.2  // 채우기 불투명도 입니다   
       }); 
       
-      this.polygonBundle = circle;
-      circle.setMap(this.map);
+      this.polygonBundle.setMap(this.map);
     },
     closeInfowindow() {
       this.infowindow.close();
