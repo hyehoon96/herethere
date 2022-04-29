@@ -12,8 +12,9 @@
       @moveMap="moveMap"
       @markCenterLatlng="markCenterLatlng"
       @serachAddrFromCoords="serachAddrFromCoords"
-      :latlngBundle="latlngBundle"
+      @hideSideNav="hideSideNav"
     />
+    
     <div class="map_wrap">
       <div id="map" style="position:relative; overflow:hidden;">
         <div class="map_type_controller">
@@ -51,11 +52,19 @@ export default {
       infowindow: null,
       searchText: null,
       currentCenterLatlng: null,
-      polygonBundle: {}
+      polygonBundle: {},
+      showSideNav: true
     }
   },
+  // watch: {
+  //   '$vuetify.breakpoint.lgAndUp' : {
+  //     handler() {
+  //       this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
+  //     }
+  //   }
+  // },
   mounted() {
-    
+    this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
     if( !window.kakao || !window.kakao.maps) {
       const script = document.createElement('script');
       const lib = document.createElement('script');
@@ -71,16 +80,17 @@ export default {
       this.loadMap();
     }
   }, 
-  watch: {
-    markers() {
-      console.log(this.markers);
-      //markers this.markers
-      //circle this.polygonBundle
-      //basket this.refs.sideNav.latlngBundle
-
-    }
-  },
+  // watch: {
+  //   markers() {
+  //     console.log(this.markers);
+      
+  //   }
+  // },
   methods: {
+    hideSideNav() {
+      this.showSideNav = false;
+      document.querySelector('.map_wrap').style.width = '100vw';
+    },
     loadMap() {
       const container = document.getElementById('map');
       const options = {
@@ -270,12 +280,12 @@ export default {
       this.map.panTo(moveLatLon);
       console.log('move');
     },
-    markCenterLatlng(latlng, latlngBundle) {
+    markCenterLatlng(latlng, latlngArr) {
       console.log(latlng);
       this.currentCenterLatlng = latlng;
       this.removeMarker();
       this.bounds = new kakao.maps.LatLngBounds();
-      for (let value of latlngBundle) {
+      for (let value of latlngArr) {
         this.displayMarker(value);
       }
       let moveLatLon = new kakao.maps.LatLng(latlng.y, latlng.x);
@@ -327,7 +337,7 @@ export default {
 
 <style>
 .map_wrap {
-  position:relative;
+  position: absolute;
   overflow:hidden;
   width:calc( 100vw - 360px );
   height:100vh;
@@ -346,6 +356,7 @@ export default {
   padding:10px;
   z-index:10;
   font-size:12px;
+  right: 40px;
 }
 
 .map_type_controller span {
@@ -410,5 +421,20 @@ export default {
   line-height:22px;
   border-radius:4px;
   padding:0px 10px;
+}
+
+.mobile_header{
+  position: absolute;
+  top: 11px;
+  left: calc( 50% - 80px );
+  z-index: 11;
+  width: 80px;
+  padding: 0 10px;
+}
+
+@media screen and (max-width: 1264px) {
+  .map_wrap {
+    width: 100vw;
+  }
 }
 </style>

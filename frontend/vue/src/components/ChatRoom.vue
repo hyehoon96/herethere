@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-btn fab class="float-btn" @click="displayChatRoom = true;" v-if="displayChatRoom === false">채팅</v-btn>
-    <v-card style="z-index: 99; position: absolute; bottom: 0; min-width: 350px;" v-if="displayChatRoom">
+    <v-card style="z-index: 11; position: absolute; bottom: 0; min-width: 350px;" v-if="displayChatRoom">
       <v-toolbar color="primary" height="35">
         <v-toolbar-title style="color: white;">
           <span>Group</span>
@@ -201,6 +201,6 @@ export default {
   border-radius: 50px;
   text-align: center;
   box-shadow: 2px 2px 3px #999;
-  z-index: 999;
+  z-index: 12;
 }
 </style>

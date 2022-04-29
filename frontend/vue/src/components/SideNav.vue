@@ -45,18 +45,51 @@
         </template>
       </custom-dialog>
     </v-dialog> 
+
+    <div style="position: absolute; z-index:11;" class="d-flex pa-5" v-if="$vuetify.breakpoint.mdAndDown && showSideNav === false">
+      <v-toolbar dense >
+        <v-btn  
+          style="height: 100%;"
+          elevation="0" 
+          @click="showSideNav = !showSideNav"
+          icon
+        >
+          <v-icon>mdi-menu</v-icon>
+        </v-btn>
+        <v-spacer></v-spacer>
+        <v-toolbar-title>
+          <v-text-field
+            solo
+            label="장소를 검색해주세요!"
+            append-icon="mdi-magnify"
+            light
+            flat
+            hide-details
+            @click:append="callSearchFunc"
+            @keyup.enter="callSearchFunc"
+            v-model="searchText"
+          >
+          </v-text-field>
+        </v-toolbar-title>
+      </v-toolbar>
+    </div>
+
+
     <v-navigation-drawer
-      app  
+      app
+      permanent
       width="360px"
-      class="d-flex"
+      class=""
       style="overflow-y: hidden;"
+      v-if="showSideNav"
     >
       <v-card color="#258fff" dark tile>
-        <v-row>
-          <v-col class="text-h6 text-center" cols="12">
-            <v-icon>mdi-cellphone-marker</v-icon> HereThere
-          </v-col>
-        </v-row>
+        <div class="d-flex justify-center">
+          <h1>HereThere</h1>
+          <v-btn v-if="$vuetify.breakpoint.mdAndDown" icon style="left: 100px;" @click="showSideNav = !showSideNav">
+            <v-icon>mdi-menu</v-icon>
+          </v-btn>
+        </div>
         <v-row>
           <v-col cols="12" class="d-flex">
             
@@ -173,27 +206,30 @@
       </v-row>
       
       <v-row>
-        <v-col cols="12" class="my-5">
-          <v-card style="max-height: 25vh; overflow-y: scroll;">
-            <transition-group name="list" tag="p">
-            <v-list-item
-              v-for="(item, i) in latlngBundle"
-              :key="item.place_name"
-              style="border-bottom: 1px solid #eaeaea;"
-            >
-              <v-list-item-icon @click="latlngBundle.splice(i,1)">
-                <v-icon color="accent">mdi-minus</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content @mouseover="moveMaptoTarget(item, i)" @mouseout="closeInfowindow">
-                <v-list-item-title class="font-weight-black">{{item.place_name}}</v-list-item-title>
-              </v-list-item-content>
-              <!-- <v-list-item-icon @click="linkToKakaMap(item.id)">
-                <v-btn tile depressed> 
-                  <v-icon color="primary">mdi-navigation-variant-outline</v-icon>
-                  <div>길찾기</div>
-                </v-btn>
-              </v-list-item-icon> -->
-            </v-list-item>
+        <v-col cols="12" class="my-5 ">
+          <v-card 
+            style="max-height: 25vh; overflow-y: scroll;"
+            :elevation="latlngBundle.length > 0 ? 4 : 0"  
+          >
+            <transition-group name="list" tag="p" style="padding: 0; margin: 0;">
+              <v-list-item
+                v-for="(item, i) in latlngBundle"
+                :key="item.place_name"
+                style="border-bottom: 1px solid #eaeaea;"
+              >
+                <v-list-item-icon @click="latlngBundle.splice(i,1)">
+                  <v-icon color="accent">mdi-minus</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content @mouseover="moveMaptoTarget(item, i)" @mouseout="closeInfowindow">
+                  <v-list-item-title class="font-weight-black">{{item.place_name}}</v-list-item-title>
+                </v-list-item-content>
+                <!-- <v-list-item-icon @click="linkToKakaMap(item.id)">
+                  <v-btn tile depressed> 
+                    <v-icon color="primary">mdi-navigation-variant-outline</v-icon>
+                    <div>길찾기</div>
+                  </v-btn>
+                </v-list-item-icon> -->
+              </v-list-item>
             </transition-group>
           </v-card>
         </v-col>
@@ -215,6 +251,7 @@ export default {
     var self = this;
     return {
       displayDialog: false,
+      showSideNav: true,
       userName: null,
       roomNumber: null,
       roomMax: 4,
@@ -263,7 +300,7 @@ export default {
   },
   
   mounted() {
-    
+    this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
   },
   
   methods: {
