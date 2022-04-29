@@ -46,8 +46,8 @@
       </custom-dialog>
     </v-dialog> 
 
-    <div style="position: absolute; z-index:11;" class="d-flex pa-5" v-if="$vuetify.breakpoint.mdAndDown && showSideNav === false">
-      <v-toolbar dense >
+    <div style="position: absolute; z-index:11;" class="pa-5" v-if="$vuetify.breakpoint.mdAndDown && showSideNav === false">
+      <v-toolbar dense style="flex-basis: 100%;">
         <v-btn  
           style="height: 100%;"
           elevation="0" 
@@ -72,6 +72,53 @@
           </v-text-field>
         </v-toolbar-title>
       </v-toolbar>
+
+      <div v-if="searchResult.length > 0">
+        <v-card
+            class="mx-auto"
+            max-height="250"
+            flat
+            tile
+          >
+          <!-- 검색 결과 -->
+          <v-list>
+            <v-list-item-group v-model="targetLocate">
+              <v-list-item
+                v-for="(item, i) in searchResult"
+                :key="i"
+                style="border-bottom: 1px solid #eaeaea;"
+              >
+                <v-list-item-icon>
+                  <v-icon color="primary">mdi-map-marker</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content 
+                  @mouseover="moveMaptoTarget(item, i)"
+                  @mouseout="closeInfowindow"
+                  @click="pushInCalcBundle(item)"  
+                >
+                  <v-list-item-title class="font-weight-black">{{item.place_name}}</v-list-item-title>
+                  <v-list-item-subtitle>
+                    <div style="color: #3d75cc;">{{item.address_name}}</div>
+                    <div style="color: green;" v-if="item.road_address">{{item.road_address.zone_no}}</div>
+                    <div style="color: green;">{{item.phone}}</div>
+                    
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+                <div style="font-size: 11px;" v-if="item.category_name">
+                  {{item.category_name.split('>')[item.category_name.split('>').length-1]}}
+                </div>
+                
+              </v-list-item>
+              <div class="text-center">
+                <ul id="placesList"></ul>
+                <div id="pagination">
+                  <!-- a tag -->
+                </div>
+              </div>
+            </v-list-item-group>
+          </v-list>
+        </v-card>
+      </div>
     </div>
 
 
@@ -480,21 +527,21 @@ nav {
   overflow-y: scroll;
 }
 #pagination {
-  margin:10px auto;
-  text-align: center;
+  margin:10px auto !important;
+  text-align: center !important;
 }
-#pagination a {
-  display:inline-block;
-  margin-right:10px;
+#pagination >>> a {
+  display:inline-block !important;
+  margin-right:10px !important;
 }
-#pagination .on {
-  font-weight: bold; 
-  cursor: default;
-  color:#777;
+#pagination >>> .on {
+  font-weight: bold !important; 
+  cursor: default !important;
+  color:#777 !important;
 }
 a {
-  text-decoration: none;
-  color:#000;
+  text-decoration: none !important;
+  color:#000 !important;
 }
 .list-enter-active, .list-leave-active {
   transition: all 0.5s;
