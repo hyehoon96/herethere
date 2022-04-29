@@ -47,7 +47,7 @@
     </v-dialog> 
 
     <div style="position: absolute; z-index:11;" class="pa-5" v-if="$vuetify.breakpoint.mdAndDown && showSideNav === false">
-      <v-toolbar dense style="flex-basis: 100%;">
+      <v-toolbar dense>
         <v-btn  
           style="height: 100%;"
           elevation="0" 
@@ -57,7 +57,7 @@
           <v-icon>mdi-menu</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
-        <v-toolbar-title>
+        <v-toolbar-title class="d-flex justify-center align-center">
           <v-text-field
             solo
             label="장소를 검색해주세요!"
@@ -70,18 +70,30 @@
             v-model="searchText"
           >
           </v-text-field>
+          <v-btn
+            :color="showSearchResult ? 'green' : 'primary'"
+            fab
+            dark
+            small
+            right
+            style="z-index: 13;"
+            @click="showSearchResult = !showSearchResult"
+          >
+            <v-icon v-text="showSearchResult ? 'mdi-basket': 'mdi-format-list-bulleted'"></v-icon>
+            <div v-if="showSearchResult">{{resultBundle}}</div>
+          </v-btn>
         </v-toolbar-title>
       </v-toolbar>
-
+      <!-- tablet / mobile ui -->
       <div v-if="searchResult.length > 0">
         <v-card
-            class="mx-auto"
-            max-height="250"
-            flat
-            tile
-          >
+          class="mx-auto"
+          max-height="250"
+          flat
+          tile
+        >
           <!-- 검색 결과 -->
-          <v-list>
+          <v-list v-if="showSearchResult">
             <v-list-item-group v-model="targetLocate">
               <v-list-item
                 v-for="(item, i) in searchResult"
@@ -117,11 +129,30 @@
               </div>
             </v-list-item-group>
           </v-list>
+
+          <v-list v-else style="max-height: 35vh; overflow-y: scroll;">
+            <v-list-item
+              v-for="(item, i) in latlngBundle"
+              :key="item.place_name"
+              style="border-bottom: 1px solid #eaeaea;"
+            >
+              <v-list-item-icon @click="latlngBundle.splice(i,1)">
+                <v-icon color="accent">mdi-minus</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content @mouseover="moveMaptoTarget(item, i)" @mouseout="closeInfowindow">
+                <v-list-item-title class="font-weight-black">{{item.place_name}}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            
+            <div>
+              <v-btn block color="primary" @click="getCenterLatlng">어디서 만날까요?</v-btn>
+            </div>
+          </v-list>
         </v-card>
       </div>
     </div>
 
-
+    <!-- pc ui -->
     <v-navigation-drawer
       app
       permanent
@@ -143,6 +174,7 @@
             <v-btn 
               icon
               background-color="#258fff"
+              color="white"
               class="flex-grow-1 d-flex flex-column" 
               v-for="item in menuGroup" :key="item.text"
               :to="item.route"
@@ -298,6 +330,7 @@ export default {
     var self = this;
     return {
       displayDialog: false,
+      showSearchResult: true,
       showSideNav: true,
       userName: null,
       roomNumber: null,
@@ -336,7 +369,6 @@ export default {
       ],
       searchText: null,
       targetLocate: null,
-      targetRadio: [],
       searchResult: [],
       paginationObj : {},
       currentPage: 1,
@@ -349,7 +381,11 @@ export default {
   mounted() {
     this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
   },
-  
+  computed: {
+    resultBundle() {
+      return this.latlngBundle.length;
+    }
+  },
   methods: {
     test() {
       alert('hi');
@@ -392,7 +428,8 @@ export default {
     },
     
     displayPagination(pagination) {
-      this.paginationObj = pagination;
+      this.$nextTick(() => {
+        this.paginationObj = pagination;
       let paginationEl = document.getElementById('pagination');
       let fragment = document.createDocumentFragment();
 
@@ -417,13 +454,15 @@ export default {
         fragment.appendChild(el);
       }
         paginationEl.appendChild(fragment);
-      },
+      })
+    },
     removePagination() {
-      let paginationEl = document.getElementById('pagination');
-      while (paginationEl.hasChildNodes()) {
-        paginationEl.removeChild (paginationEl.lastChild);
-      }
-
+      this.$nextTick(() => {
+        let paginationEl = document.getElementById('pagination');
+        while (paginationEl.hasChildNodes()) {
+          paginationEl.removeChild (paginationEl.lastChild);
+        }
+      })
     },
     closeInfowindow() {
       clearTimeout(this.debounce2);
