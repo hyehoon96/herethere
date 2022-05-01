@@ -1,17 +1,61 @@
 <template>
-  <v-card elevation="48" tile width="360px">
+  <v-card elevation="48" tile :width="$vuetify.breakpoint.xs ? '100%' : '360px'">
     <v-dialog
-      max-width="500"
       v-model="displayDialog"
-    > 
+      max-width="500"
+    >
       <custom-dialog
-        :header-title=" dialogType === 'create' ? '방 생성하기' : '방 찾기' "
+        :header-title="'채팅 방 목록'"
         @hide="displayDialog = false;"
         @submit="dialogType === 'create' ? createRoom() : findRoom()"
-        :footerSubmitTitle="dialogType === 'create' ? '생성' : '접속'"
+        :footerSubmit="beforeConnect"
+        :footerSubmitTitle="'접속'"
+        :footerCloseBtn="beforeConnect"
       >
         <template v-slot:body>
-          <v-row class="mt-3"  justify="center">
+          <v-card v-if="!beforeConnect">
+            <div class="d-flex">
+              <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+                class="px-3"
+              ></v-text-field>
+              <div class="text-end">
+                <v-btn
+                  color="primary"
+                  dark
+                  class="my-5 px-3"
+                  @click="beforeConnect = true; dialogType = 'create';"
+                >
+                  채팅방 생성
+                </v-btn>
+              </div>
+            </div>
+              
+            <v-data-table
+              :headers="headers"
+              :items="chatList"
+              :search="search"
+              mobile-breakpoint="0"
+              @click:row="connectChatRoom"
+            >
+              
+              <!-- eslint-disable-next-line -->
+              <template v-slot:item.title="{ item }">
+                <v-chip
+                  dark
+                  :color="item.max === item.current ? 'amber' : 'success'"
+                >
+                  {{ item.title }}
+                </v-chip>
+              </template>
+            </v-data-table>
+          </v-card>
+
+          <v-row class="mt-3"  justify="center" v-if="beforeConnect">
             <v-col cols="11" v-if="dialogType === 'find'">
               <v-text-field
                 v-model="userName"
@@ -21,40 +65,51 @@
                 label="채팅방에서 사용할 이름을 입력하세요."
               />
             </v-col>
-
-            <v-col cols="11" v-else>
-              <v-text-field
-                v-model="roomMax"
-                outlined
-                hide-details
-                type="number"
-                label="채팅방 인원을 입력해주세요."
-              />
-            </v-col>
+            <div class="d-flex justify-center" style="width: 100%;" v-else>
+              <v-col cols="7">
+                <v-text-field
+                  v-model="roomTitle"
+                  outlined
+                  hide-details
+                  type="string"
+                  label="채팅방 제목"
+                />
+              </v-col>
+              <v-col cols="4">
+                <v-text-field
+                  v-model="roomMax"
+                  outlined
+                  hide-details
+                  type="number"
+                  label="인원"
+                />
+              </v-col>
+            </div>
+            
 
             <v-col cols="11">
               <v-text-field
                 v-model="roomNumber"
                 outlined
                 hide-details
-                label="채팅방 비밀번호를 입력해주세요."
+                label="비밀번호"
               />
             </v-col>
           </v-row>
           
         </template>
       </custom-dialog>
-    </v-dialog> 
+    </v-dialog>
 
-    <div style="position: absolute; z-index:11;" class="pa-5" v-if="$vuetify.breakpoint.mdAndDown && showSideNav === false">
-      <v-toolbar dense>
+    <div class="pa-5 mini-bar" v-if="$vuetify.breakpoint.mdAndDown">
+      <v-toolbar dense width="100%">
         <v-btn  
           style="height: 100%;"
           elevation="0" 
           @click="showSideNav = !showSideNav"
           icon
         >
-          <v-icon>mdi-menu</v-icon>
+          <v-icon v-text="$vuetify.breakpoint.xs ? 'mdi-login' : 'mdi-menu'"></v-icon>
         </v-btn>
         <v-spacer></v-spacer>
         <v-toolbar-title class="d-flex justify-center align-center">
@@ -151,21 +206,27 @@
         </v-card>
       </div>
     </div>
-
+    <div class="mini-menu d-lg-none">
+      <v-chip label color="cyan" class="mx-5" text-color="white">
+        이용안내
+      </v-chip>
+      <v-chip label color="cyan" text-color="white">
+        문의/버그
+      </v-chip>
+    </div>
     <!-- pc ui -->
     <v-navigation-drawer
       app
-      permanent
       width="360px"
-      class=""
+      id="sideNav"
+      :permanent="showSideNav"
       style="overflow-y: hidden;"
-      v-if="showSideNav"
     >
       <v-card color="#258fff" dark tile>
-        <div class="d-flex justify-center">
+        <div class="d-flex justify-center py-3">
           <h1>HereThere</h1>
-          <v-btn v-if="$vuetify.breakpoint.mdAndDown" icon style="left: 100px;" @click="showSideNav = !showSideNav">
-            <v-icon>mdi-menu</v-icon>
+          <v-btn v-if="$vuetify.breakpoint.mdAndDown" icon style="left: 100px;" @click="test">
+            <v-icon size="36px">mdi-menu</v-icon>
           </v-btn>
         </div>
         <v-row>
@@ -325,17 +386,35 @@
 
 <script>
 //https://stackoverflow.com/questions/46966689/how-can-i-call-method-from-data-on-vue-js
+import chat from '@/chat.js';
 export default {
+  mixins: [chat],
   data() {
     var self = this;
     return {
       displayDialog: false,
       showSearchResult: true,
       showSideNav: true,
+      roomList: [],
+      beforeConnect: false,
       userName: null,
-      roomNumber: null,
       roomMax: 4,
-      dialogType: null,
+      roomNumber: null,
+      roomTitle: null,
+      search: '',
+      dialogType: 'find',
+      headers: [
+        { text: '제목', align: 'center', sortable: false, value: 'title',},
+        { text: '최대인원', align: 'center', sortable: false, value: 'max' },
+        { text: '현재인원', align: 'center', sortable: false, value: 'current' },
+      ],
+      chatList: [
+        {
+          title: 'new chat room',
+          max: 4,
+          current: 1,
+        },
+      ],
       rules: {
         required: value => !!value || 'Required.',
         counter: value => value.length <= 6 || 'Max 20 characters',
@@ -343,29 +422,31 @@ export default {
       menuGroup: [
         { text:'로그인', icon: 'mdi-login', route: 'login' },
         { text:'정보', icon: 'mdi-information-outline', route: 'info' },
-        { text:'기록', icon: 'mdi-history', route: 'history' },
-        { text:'설정', icon: 'mdi-cog', route: 'setting' },
+        { text:'북마크', icon: 'mdi-history', route: 'history' },
+        { text:'문의/버그', icon: 'mdi-bug-outline', route: '' },
       ],
       roomBtnGroup: [
         { text: '내 위치', 
           icon: 'mdi-crosshairs-gps', 
           onClick: function() {
             self.getCurrentLocate();
-          }},
-        { text: '방 생성', 
+          }
+        },
+        { text: '채팅방', 
           icon: 'mdi-folder-plus',
-          onClick: () => {
+          onClick: async () => {
+            if(self.$store.state.usingChat) {
+              alert('채팅방을 사용중입니다. 기존 채팅방을 종료해주세요.');
+              return;
+            }
             self.displayDialog = true;
-            self.dialogType = 'create';
-          }},
-        { text: '방 찾기', 
-          icon: 'mdi-folder-search-outline',
-          onClick: () => {
-            self.displayDialog = true;
-            self.dialogType = 'find'
-        }},
-          
-
+            if (self.$store.state.usingChat === false ) {
+              self.chatList = await self.$axiosAPI('api/room', 'get');  
+              self.displayDialog = true;
+            } 
+            // self.dialogType = 'create';
+          }
+        },
       ],
       searchText: null,
       targetLocate: null,
@@ -377,9 +458,17 @@ export default {
       debounce2: null,
     }
   },
-  
+  watch: {
+    '$vuetify.breakpoint.lgAndUp': {
+      handler() {
+        this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
+        this.$emit('setMapFull');
+      }
+    }
+  },
   mounted() {
     this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
+    this.$emit('setMapFull');
   },
   computed: {
     resultBundle() {
@@ -388,8 +477,20 @@ export default {
   },
   methods: {
     test() {
-      alert('hi');
+      // let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      if( this.$vuetify.breakpoint.xs ) {
+        this.$router.push('/login')
+      } else {
+        this.showSideNav = ! this.showSideNav
+      }
     },
+    // lowerBtnClick(item) {
+    //   switch { 
+    //     case:
+    //     case:
+    //     case:
+    //   }
+    // },
     getCurrentLocate() {
       if('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition((position) => {
@@ -523,32 +624,7 @@ export default {
     setSearchText(text) {
       this.searchText = text;
     },
-    async createRoom() {
-      let room = await this.$axiosAPI('/api/room/' + this.roomNumber ,'get');
-      console.log(room);
-      if (!room.empty) {
-        alert('다른 비밀번호를 사용해주세요.');
-      } else {
-        console.log('createRoom');
-        await this.$axiosAPI('/api/room/', 'post', {owner: 'user0418', password: this.roomNumber, max: this.roomMax});
-        this.$router.push({ name: 'ChatRoom', params: {roomNumber: btoa(this.roomNumber), roomMax: this.roomMax, role: 'owner'} });
-        this.displayDialog = false;
-      }
-    },
 
-    async findRoom() {
-      let room = await this.$axiosAPI('/api/room/' + this.roomNumber ,'get');
-      if(!room.empty) {
-        if(room.max === room.currentClient) {
-          alert('채팅방 인원이 초과하였습니다.');
-          return;
-        }
-        this.$router.push({ name: 'ChatRoom', params: {roomNumber: btoa(this.roomNumber), roomMax: room.max, user: this.userName, role: 'guest'} });
-        this.displayDialog = false;
-      } else {
-        alert('채팅방을 찾을 수 없습니다.');
-      }
-    }
   }
 }
 </script>
@@ -588,6 +664,22 @@ a {
 .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
   opacity: 0;
   transform: translateY(30px);
+}
+.mini-bar {
+  position: absolute; 
+  z-index:11;
+}
+.mini-menu {
+  position: absolute;
+  z-index:10;
+  width:100%;
+  text-align: center;
+  top: 9.5vh;
+}
+@media screen and (max-width: 600px ) {
+  .mini-bar {
+    width: 100vw
+  }
 }
 
 </style>

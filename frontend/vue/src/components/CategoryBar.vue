@@ -16,7 +16,6 @@
         dark
         fab
         large
-        style="box-shadow: 2px 2px 3px #999;"
       >
         <v-icon v-if="fab">
           mdi-close
@@ -34,7 +33,7 @@
       v-for="item in categoryObj"
       :key="item.label"
       :color="item.color"
-      @click="searchCategory(item.code)"
+      @click="searchCategory(item)"
     >
       <v-icon>{{item.icon}}</v-icon>
       <div class="" style="font-size: 13px;">{{item.label}}</div>
@@ -86,9 +85,9 @@ export default {
     transition: 'slide-y-reverse-transition',
   }),
   methods: {
-    searchCategory(code) {
-      console.log(code);
-      this.$emit('searchCategory', code);
+    searchCategory(item) {
+      console.log(item);
+      this.$emit('searchCategory', item);
 
     }
   }

@@ -7,15 +7,24 @@ router.route('/')
     req.conn = database.init();
     next();
   })
-  
+  .get((req, res) => {
+    req.conn.query('SELECT * FROM room', (err, row) => {
+      if(err) {
+        console.log(err);
+        return res.status(404).send('Not found');
+      }
+      return res.status(201).json(row)
+    })
+  })
   .post((req, res) => {
     console.log(req.body);
     const params = [
+      req.body.title,
       req.body.max,
       req.body.password,
       0
     ]
-    req.conn.query('INSERT INTO room( `max`, `password`, `currentClient`) VALUES (?,?,?)', params, (err, row) => {
+    req.conn.query('INSERT INTO room( `title`, `max`, `password`, `currentClient`) VALUES (?,?,?,?)', params, (err, row) => {
       if(err) { 
         console.log(err); 
         return res.status(404).send('Not found');

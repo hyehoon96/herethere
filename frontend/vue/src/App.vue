@@ -1,6 +1,6 @@
 <template>
-  <v-app>
-    <v-main>
+  <v-app style="width: 100%; hegiht: 100%; padding: 0; margin: 0;">
+    <v-main >
       <v-scroll-x-transition mode="out-in">
         <router-view/>
       </v-scroll-x-transition>
@@ -14,7 +14,9 @@ export default {
   data: () => ({
     
   }),
-
+  mounted() {
+    //this.$store.commit('checkMobileConnect', /iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+  },
   methods: {
     
   }

@@ -1,17 +1,26 @@
 <template>
-  <div>
-    <v-btn fab class="float-btn" @click="displayChatRoom = true;" v-if="displayChatRoom === false">채팅</v-btn>
-    <v-card style="z-index: 11; position: absolute; bottom: 0; min-width: 350px;" v-if="displayChatRoom">
+  <div v-show="$store.state.userView === 'chat'">
+    <v-btn fab class="float-btn" @click="displayChatRoom = true;" v-if="displayChatRoom === false">
+      <v-icon>mdi-chat-processing</v-icon>
+      <div>채팅</div>
+    </v-btn>
+    <v-card class="chat-card" 
+      :style="$vuetify.breakpoint.lgAndUp ? 'width: 25vw;' : $vuetify.breakpoint.xs ? 'width: 100vw; height: calc(100vh - 56px);': 'width: 30vw;'" 
+      v-if="displayChatRoom"
+    >
       <v-toolbar color="primary" height="35">
         <v-toolbar-title style="color: white;">
-          <span>Group</span>
+          <span>채팅방</span>
         </v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn icon height="35" width="35" color="white" @click="displayChatRoom = false">
+        <v-btn icon height="35" width="35" color="white" @click="displayChatRoom = false; socket.disconnect();">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
-      <div class style="height: 300px; overflow-y: scroll;">
+      <div 
+        :style="$vuetify.breakpoint.xs ? 'height: 70vh; overflow-y: auto;' : 'height: 30vh; overflow-y: scroll;'"
+        id="chat-area"
+      >
         <div class="d-flex my-1" v-for="(item, i) in chatArr" :key="i">
           <v-chip
             class="ma-2"
@@ -27,33 +36,39 @@
             </p>
           </div>
           <div v-if="item.systemMsg">
-            <p style="color: #6c757d; text-align: center;">{{item.systemMsg}}</p>
+            <p class="pa-2" style="color: #6c757d; white-space: break-spaces">{{item.systemMsg}}</p>
           </div>
         </div>
       </div>
       
-      <div v-if="showMenu">
+      <div v-if="showMenu" class="text-center">
         <v-chip
           label
-          class="ma-2"
         >
           지도 공유
         </v-chip>
         <v-chip
           label
+          class="ma-2"
         >
-          투표
+          내 위치 공유
         </v-chip>
+        <v-chip
+          label
+        >
+          약속장소 투표
+        </v-chip>
+        
       </div>
-      <div class="d-flex" style="border-top: 1px solid #eaeaea;">
+      <div class="d-flex" style="border-top: 1px solid #dcdcdc; max-height: 30vh;">
         <v-textarea 
           flat
           solo
           hide-details
           no-resize
-          height="120"
+          :height="$vuetify.breakpoint.xs ? 'height: 30vh;' : 'height: 15vh;'"
           v-model="chatInput"
-          @keyup="sendMessage"
+          @keyup.enter="sendMessage"
         >
           <template slot="append">
             <div class="d-flex" style="flex-direction: column;">
@@ -87,7 +102,8 @@ export default {
         // { user:'', chat: 'hello', isMine: true },
         // { user:'', chat: 'hello', isMine: true },
         // { user:'이혜훈1', chat: 'hi', isMine: false },
-        { user:'', chat: '', isMine: false, systemMsg: '환영합니다. 채팅방에 접속한 사람이 없으면 방이 삭제됩니다.' }
+        { user:'', chat: '', isMine: false, 
+          systemMsg: '환영합니다. 방문해주셔서 감사합니다.\n - 채팅방에 접속한 사람이 없으면 방이 삭제됩니다.\n - 대화 내용은 저장되지 않습니다. ' }
       ],
       chatInput: [],
     }
@@ -111,9 +127,8 @@ export default {
 
   async mounted() {
     this.chatRoom = atob(this.roomNumber);
-    console.log(this.chatRoom);
     let findRoom = await this.$axiosAPI('/api/room/'+ this.chatRoom, 'get');
-    
+  
     if (findRoom.empty) {
       alert('잘못된 링크입니다.');
       this.$router.push('/');
@@ -129,14 +144,26 @@ export default {
     } else {
       this.userNameInChat = 'user' + Math.floor(Math.random() * 100);
     }
-    console.log(findRoom);
-    this.socket.emit('roomId', {roomId: this.chatRoom, user: this.userNameInChat, currentClient: findRoom.currentClient + 1});
+    if (this.$store.state.usingChat === false) {
+      console.log('usingChat change');
+      await this.socket.emit('roomId', {roomId: this.chatRoom, user: this.userNameInChat, currentClient: findRoom.currentClient + 1});
+      this.$store.commit('setUsingChat', true);
+    } else {
+      // show dialog
+      console.log('show dialog');
+    }
+    
     this.socket.on('chat', (data) => {
       console.log('chat received', data);
       if( data.vapidKey === this.vapidKey ) {
         data.isMine = true;
       }
       this.chatArr.push(data);
+      this.$nextTick(() => {
+        let chat = document.getElementById("chat-area");
+        chat.scrollTo(0, chat.offsetHeight);
+      })
+      
     })
     this.socket.on('join', (data) => {
       this.chatArr.push(data);
@@ -147,12 +174,24 @@ export default {
     this.socket.on('system', (data) => {
       this.chatArr.push(data);
     })
-  },
- 
-  async destroyed() {
+    
     
   },
-
+  
+  watch: {
+    '$route.name': {
+      handler () {
+        console.log('라우터가 변경되었습니다.');
+        this.socket.disconnect();
+        this.$store.commit('setUsingChat', false);
+      }
+      
+    }
+  },
+  unmounted() {
+    console.log('unmount!!');
+  },
+  
   methods: {
     async sendMessage() {
       let msg = {
@@ -161,6 +200,7 @@ export default {
         vapidKey: this.vapidKey,
         systemMsg: null
       }
+      console.log('chat!', msg);
       await this.$axiosAPI('/api/room/'+ this.chatRoom, 'post', msg)
       this.chatInput = '';
     },
@@ -190,12 +230,20 @@ export default {
   width: 100%;
 }
 
+.chat-card{
+  z-index: 11; 
+  position: absolute; 
+  bottom: 0;  
+  box-shadow: unset !important;
+  margin-bottom: 1px;
+}
+
 .float-btn {
   position: absolute;
   width: 64px !important;
   height: 64px !important;
-  bottom: 100px;
-  right: 18px;
+  bottom: 16px;
+  left: 18px;
   background-color: #e91e63 !important;
   color: #FFF !important;
   border-radius: 50px;

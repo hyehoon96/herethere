@@ -12,7 +12,7 @@
       @moveMap="moveMap"
       @markCenterLatlng="markCenterLatlng"
       @serachAddrFromCoords="serachAddrFromCoords"
-      @hideSideNav="hideSideNav"
+      @setMapFull="setMapFull"
     />
     
     <div class="map_wrap">
@@ -25,6 +25,12 @@
       <div class="map_zoom_controller">
         <span @click="map.setLevel(map.getLevel() - 1);"><v-icon>mdi-plus</v-icon></span>  
         <span @click="map.setLevel(map.getLevel() + 1);"><v-icon>mdi-minus</v-icon></span>
+      </div>
+      <div :class="$vuetify.breakpoint.smAndUp ? 'map_camera_xs' : 'map_camera' ">
+        <v-btn large fab color="accent">
+          <v-icon size="36">mdi-bookmark-plus</v-icon>
+          <div>북마크</div>
+        </v-btn>  
       </div>
     </div>
   </v-container>
@@ -45,7 +51,6 @@ export default {
       map: null,
       marker: null,
       markers: [],
-      sample: 'abc',
       bounds: null,
       placeObj: null,
       geocoder: null,
@@ -53,18 +58,10 @@ export default {
       searchText: null,
       currentCenterLatlng: null,
       polygonBundle: {},
-      showSideNav: true
     }
   },
-  // watch: {
-  //   '$vuetify.breakpoint.lgAndUp' : {
-  //     handler() {
-  //       this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
-  //     }
-  //   }
-  // },
+  
   mounted() {
-    this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
     if( !window.kakao || !window.kakao.maps) {
       const script = document.createElement('script');
       const lib = document.createElement('script');
@@ -87,10 +84,7 @@ export default {
   //   }
   // },
   methods: {
-    hideSideNav() {
-      this.showSideNav = false;
-      document.querySelector('.map_wrap').style.width = '100vw';
-    },
+   
     loadMap() {
       const container = document.getElementById('map');
       const options = {
@@ -122,7 +116,12 @@ export default {
       });
       
     },
-
+    setMapFull() {
+      this.$nextTick(()=> {
+        console.log('map width chagned');
+        document.querySelector('.map_wrap').style.width = '100vw';
+      })
+    },
     setMapType(maptype) {
       let roadmapControl = document.getElementById('btnRoadmap');
       let skyviewControl = document.getElementById('btnSkyview'); 
@@ -294,11 +293,14 @@ export default {
       this.displayMarker(latlng, img);
     },
 
-    searchCategory(code) {
+    searchCategory(item) {
       this.removeMarker();
       this.placeObj = new kakao.maps.services.Places(this.map);
       //console.log(placeObj);
-      
+      if ( this.isEmpty(this.currentCenterLatlng) ) {
+        this.searchLocation(item.label);
+        return;
+      }
       this.bounds = new kakao.maps.LatLngBounds();
       this.moveMap(this.currentCenterLatlng);
       let moveLatLon = new kakao.maps.LatLng(this.currentCenterLatlng.y, this.currentCenterLatlng.x);
@@ -306,7 +308,7 @@ export default {
       //let level = this.map.getLevel();
       this.map.setLevel(5);
       
-      this.placeObj.categorySearch(code, this.placesSearchCB, {useMapBounds:true}); 
+      this.placeObj.categorySearch(item.code, this.placesSearchCB, {useMapBounds:true}); 
       this.placeObj = new kakao.maps.services.Places();
     },
     serachAddrFromCoords(coords) {
@@ -431,10 +433,39 @@ export default {
   width: 80px;
   padding: 0 10px;
 }
+.map_camera{
+  position: absolute;
+  z-index: 11;
+  bottom: 70px;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
 
+.map_camera_xs {
+  position: absolute;
+  z-index: 11;
+  bottom: 16px;
+  transform: translate(0, -100%);
+  padding: 0 32px;
+  bottom: calc(50% - 64px);
+  left: unset !important;
+  right: 0;
+}
+@media screen and (max-width: 600px) {
+  .map_type_controller {
+    top: 14vh;
+    right: 3vw;
+  }
+  .map_zoom_controller {
+    top: 20vh;
+    right: 20px;
+  }
+}
+/* 
 @media screen and (max-width: 1264px) {
   .map_wrap {
     width: 100vw;
   }
-}
+ 
+} */
 </style>

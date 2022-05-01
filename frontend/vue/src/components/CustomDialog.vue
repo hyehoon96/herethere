@@ -20,6 +20,7 @@
             </v-btn>
         </template>
         <v-btn 
+            v-if="footerCloseBtn"
             color="amber"
             dark
             rounded
@@ -47,6 +48,10 @@
         type: String,
         default: '저장',
       },
+      footerCloseBtn: {
+        type: Boolean,
+        default: true
+      }
     },
   }
 </script>
