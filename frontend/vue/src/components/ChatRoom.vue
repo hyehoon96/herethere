@@ -86,7 +86,7 @@
 <script>
 import io from 'socket.io-client'
 export default {
-  name: 'ChatRoom',
+  name: 'roomId',
   data() {
     return {
       displayChatRoom: true,
@@ -94,7 +94,7 @@ export default {
       myMessage: '',
       vapidKey: null,
       socket: null,
-      chatRoom: null,
+      roomId: null,
       userNameInChat: null,
       showMenu: false,
       chatArr: [
@@ -113,10 +113,7 @@ export default {
     roomNumber: {
       type: String,
     },
-    roomMax: {
-      type: Number,
-      default: 4
-    },
+
     user: {
       type: String
     },
@@ -126,8 +123,8 @@ export default {
   },
 
   async mounted() {
-    this.chatRoom = atob(this.roomNumber);
-    let findRoom = await this.$axiosAPI('/api/room/'+ this.chatRoom, 'get');
+    this.roomId = atob(this.roomNumber);
+    let findRoom = await this.$axiosAPI('/api/room/'+ this.roomId, 'get');
   
     if (findRoom.empty) {
       alert('잘못된 링크입니다.');
@@ -146,7 +143,11 @@ export default {
     }
     if (this.$store.state.usingChat === false) {
       console.log('usingChat change');
-      await this.socket.emit('roomId', {roomId: this.chatRoom, user: this.userNameInChat, currentClient: findRoom.currentClient + 1});
+      await this.socket.emit('roomId', {
+        roomId: this.roomId, 
+        user: this.userNameInChat, 
+        currentClient: findRoom.currentClient + 1
+      });
       this.$store.commit('setUsingChat', true);
     } else {
       // show dialog
@@ -201,7 +202,7 @@ export default {
         systemMsg: null
       }
       console.log('chat!', msg);
-      await this.$axiosAPI('/api/room/'+ this.chatRoom, 'post', msg)
+      await this.$axiosAPI('/api/room/'+ this.roomId, 'post', msg)
       this.chatInput = '';
     },
     

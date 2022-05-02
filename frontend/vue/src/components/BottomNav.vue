@@ -39,7 +39,7 @@
               :items="chatList"
               :search="search"
               mobile-breakpoint="0"
-              @click:row="connectChatRoom"
+              @click:row="validConnection"
             >
               
               <!-- eslint-disable-next-line -->
@@ -190,7 +190,7 @@ export default {
       }
       this.$store.commit('setUserView', item.label); 
     },
-    // connectChatRoom() {
+    // validConnection() {
     //   this.beforeConnect = true;
     //   this.dialogType = 'find';
 

@@ -16,7 +16,11 @@ export default {
         }
         await this.$axiosAPI('/api/room/', 'post', roomObj);
         try {
-          this.$router.push({ name: 'ChatRoom', params: {roomNumber: btoa(this.roomNumber), roomMax: Number(this.roomMax), role: 'owner'} });
+          let roomParams = {
+            roomNumber : btoa(this.roomNumber),
+            role: 'owner'
+          }
+          this.$router.push({ name: 'ChatRoom', params: roomParams });
           this.$store.commit('setUserView', 'chat');
         } catch (e) {
           alert(e);
@@ -34,9 +38,13 @@ export default {
           return;
         }
         try {
-          this.$router.push({ name: 'ChatRoom', params: {roomNumber: btoa(this.roomNumber), roomMax: room.max, user: this.userName, role: 'guest'} });
-        this.$store.commit('setUserView', 'chat');
-        
+          let roomParams = {
+            roomNumber: btoa(this.roomNumber),
+            user: this.userName,
+            role: 'guest'
+          }
+          this.$router.push({ name: 'ChatRoom', params: roomParams });
+          this.$store.commit('setUserView', 'chat');
         } catch(e) {
           alert(e);
         }
@@ -46,7 +54,11 @@ export default {
       }
     },
 
-    connectChatRoom() {
+    validConnection(item) {
+      if (item.currentClient >= item.max) {
+        alert('채팅방에 빈자리가 없습니다.');
+        return;
+      }
       this.beforeConnect = true;
       this.dialogType = 'find';
 

@@ -40,7 +40,7 @@
               :items="chatList"
               :search="search"
               mobile-breakpoint="0"
-              @click:row="connectChatRoom"
+              @click:row="validConnection"
             >
               
               <!-- eslint-disable-next-line -->
