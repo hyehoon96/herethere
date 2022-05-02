@@ -69,6 +69,7 @@
               <v-col cols="7">
                 <v-text-field
                   v-model="roomTitle"
+                  disabled
                   outlined
                   hide-details
                   type="string"
@@ -432,6 +433,7 @@ export default {
               return;
             }
             self.displayDialog = true;
+            self.roomTitle = 'user' +  Math.floor(Math.random() * 100) + '님의 채팅방' // user Id
             if (self.$store.state.usingChat === false ) {
               self.chatList = await self.$axiosAPI('api/room', 'get');  
               self.displayDialog = true;
