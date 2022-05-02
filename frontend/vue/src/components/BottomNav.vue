@@ -101,7 +101,7 @@
     </v-dialog>
   
     <v-bottom-navigation
-      v-model="value"
+      v-model="$store.state.userView"
       color="primary"
       grow
       app
@@ -110,13 +110,13 @@
 
 
       <v-btn
-        v-for="(item, i) in [
+        v-for="(item) in [
           {text : '채팅창', label: 'chat', icon: 'mdi-chat-processing', value : 0},
           {text : '지도', label: 'map', icon: 'mdi-map', value :  1},
           {text : '북마크', label: 'bookmark', icon: 'mdi-bookmark-check' , value : 2}
         ]"
-        :value="i"
-        :key="item.value"
+        :value="item.label"
+        :key="item.label"
         class="font-weight-black"
         style="font-size: 15px;"
         @click="setPage(item)">
@@ -131,7 +131,7 @@
 <script>
 import chat from '@/chat.js';
 
-export default {  
+export default {
   mixins: [chat],
   data: () => (
     { 
@@ -166,17 +166,7 @@ export default {
         console.log(this.$store.state.userView);
       }
     },
-    'displayDialog': {
-      handler() {
-        console.log(this.displayDialog);
-        if (this.displayDialog === false) {
-          if( this.$store.state.usingChat === false) {
-            this.value = 1;
-          }
-          this.beforeConnect = false
-        } 
-      }
-    },
+    
     
   },
   methods: {
