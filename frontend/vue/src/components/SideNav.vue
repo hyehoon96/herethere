@@ -101,7 +101,7 @@
       </custom-dialog>
     </v-dialog>
 
-    <div class="pa-5 mini-bar" v-if="$vuetify.breakpoint.mdAndDown">
+    <div class="pa-5 mini-bar" v-if="$vuetify.breakpoint.lgAndDown && !showSideNav">
       <v-toolbar dense width="100%">
         <v-btn  
           style="height: 100%;"
@@ -206,7 +206,7 @@
         </v-card>
       </div>
     </div>
-    <div class="mini-menu d-lg-none">
+    <div class="mini-menu d-lg-none" v-if="!showSideNav">
       <v-chip label color="cyan" class="mx-5" text-color="white">
         이용안내
       </v-chip>
@@ -225,7 +225,7 @@
       <v-card color="#258fff" dark tile>
         <div class="d-flex justify-center py-3">
           <h1>HereThere</h1>
-          <v-btn v-if="$vuetify.breakpoint.mdAndDown" icon style="left: 100px;" @click="test">
+          <v-btn v-if="$vuetify.breakpoint.lgAndDown" icon style="left: 100px;" @click="test">
             <v-icon size="36px">mdi-menu</v-icon>
           </v-btn>
         </div>
@@ -475,7 +475,7 @@ export default {
       if( this.$vuetify.breakpoint.xs ) {
         this.$router.push('/login')
       } else {
-        this.showSideNav = ! this.showSideNav
+        this.showSideNav = !this.showSideNav
       }
     },
     // lowerBtnClick(item) {
@@ -675,5 +675,9 @@ a {
     width: 100vw
   }
 }
-
+@media screen and (min-width: 600px) {
+  .mini-menu {
+    top: 13vh; 
+  }
+}
 </style>

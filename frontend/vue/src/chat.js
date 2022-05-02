@@ -5,11 +5,18 @@ export default {
     'displayDialog': {
       handler() {
         this.beforeConnect = !this.displayDialog;
-        if( this.displayDialog === false) {
-          this.$store.commit('setUserView', 'map');
+        if ( this.displayDialog === false && this.$store.state.usingChat === false) {
+          this.value = 1;
         }
       }
     },
+    '$store.state.usingChat': {
+      handler() {
+        if ( this.$store.state.usingChat ) {
+          this.value = 0;
+        } 
+      }
+    }
   },
   methods: {
     async createRoom() {
@@ -63,6 +70,19 @@ export default {
       this.beforeConnect = true;
       this.dialogType = 'find';
 
+    },
+
+    closeChatRoom() {
+      
+      let result = window.confirm('채팅방을 종료하시겠습니까?');
+      if (result) {
+        this.socket.disconnect();
+        this.$store.commit('setUsingChat', false);
+        this.$store.commit('setUserView', 'map');
+        this.$router.push('/');
+        this.value = 1;
+        
+      }
     }
 
   }

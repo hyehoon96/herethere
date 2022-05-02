@@ -446,7 +446,7 @@ export default {
   z-index: 11;
   bottom: 16px;
   transform: translate(0, -100%);
-  padding: 0 32px;
+  padding: 0 16px;
   bottom: calc(50% - 64px);
   left: unset !important;
   right: 0;

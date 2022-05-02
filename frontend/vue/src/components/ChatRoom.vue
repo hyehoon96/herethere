@@ -1,11 +1,18 @@
 <template>
   <div v-show="$store.state.userView === 'chat'">
-    <v-btn fab class="float-btn" @click="displayChatRoom = true;" v-if="displayChatRoom === false">
+    <v-btn fab class="float-btn" 
+      @click="displayChatRoom = true;" 
+      v-if="displayChatRoom === false && !$vuetify.breakpoint.xs"
+    >
       <v-icon>mdi-chat-processing</v-icon>
       <div>채팅</div>
     </v-btn>
     <v-card class="chat-card" 
-      :style="$vuetify.breakpoint.lgAndUp ? 'width: 25vw;' : $vuetify.breakpoint.xs ? 'width: 100vw; height: calc(100vh - 56px);': 'width: 30vw;'" 
+      :style="$vuetify.breakpoint.lgAndUp 
+      ? 'width: 25vw;' 
+      : $vuetify.breakpoint.xs 
+        ? 'width: 100vw; height: calc(100vh - 56px);'
+        : 'width: 30vw;'" 
       v-if="displayChatRoom"
     >
       <v-toolbar color="primary" height="35">
@@ -13,7 +20,7 @@
           <span>채팅방</span>
         </v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn icon height="35" width="35" color="white" @click="displayChatRoom = false; socket.disconnect();">
+        <v-btn icon height="35" width="35" color="white" @click="closeChatRoom">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
@@ -85,7 +92,9 @@
 
 <script>
 import io from 'socket.io-client'
+import chat from '@/chat.js'
 export default {
+  mixins: [chat],
   name: 'roomId',
   data() {
     return {

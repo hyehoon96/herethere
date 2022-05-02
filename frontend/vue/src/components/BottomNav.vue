@@ -46,7 +46,7 @@
               <template v-slot:item.title="{ item }">
                 <v-chip
                   dark
-                  :color="item.max === item.current ? 'amber' : 'success'"
+                  :color="item.max === item.currentClient ? 'amber' : 'success'"
                 >
                   {{ item.title }}
                 </v-chip>
@@ -101,7 +101,7 @@
     </v-dialog>
   
     <v-bottom-navigation
-      v-model="$store.state.userView"
+      v-model="value"
       color="primary"
       grow
       app
@@ -115,7 +115,7 @@
           {text : '지도', label: 'map', icon: 'mdi-map', value :  1},
           {text : '북마크', label: 'bookmark', icon: 'mdi-bookmark-check' , value : 2}
         ]"
-        :value="item.label"
+        :value="item.value"
         :key="item.label"
         class="font-weight-black"
         style="font-size: 15px;"
@@ -148,18 +148,16 @@ export default {
       headers: [
         { text: '제목', align: 'center', sortable: false, value: 'title',},
         { text: '최대인원', align: 'center', sortable: false, value: 'max' },
-        { text: '현재인원', align: 'center', sortable: false, value: 'current' },
+        { text: '현재인원', align: 'center', sortable: false, value: 'currentClient' },
       ],
-      chatList: [
-        {
-          title: 'new chat room',
-          max: 4,
-          current: 1,
-        },
-      ],
+      chatList: [],
     }
     
   ),
+
+  mounted() {
+    
+  },
   watch: {
     '$store.state.userView': {
       handler() {
@@ -171,7 +169,6 @@ export default {
   },
   methods: {
     async setPage(item) {
-      this.$store.commit('setUserView', item.label);
       if(item.label === 'chat') {
         if (this.$store.state.usingChat === false ) {
           this.chatList = await this.$axiosAPI('api/room', 'get');  
@@ -180,11 +177,7 @@ export default {
       }
       this.$store.commit('setUserView', item.label); 
     },
-    // validConnection() {
-    //   this.beforeConnect = true;
-    //   this.dialogType = 'find';
-
-    // }
+    
   }
 }
 </script>
