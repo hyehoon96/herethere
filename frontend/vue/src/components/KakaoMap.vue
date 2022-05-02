@@ -27,7 +27,11 @@
         <span @click="map.setLevel(map.getLevel() + 1);"><v-icon>mdi-minus</v-icon></span>
       </div>
       <div :class="$vuetify.breakpoint.smAndUp ? 'map_camera_xs' : 'map_camera' ">
-        <v-btn large fab color="accent">
+        <v-btn 
+          fab 
+          color="accent"
+          :large="!$vuetify.breakpoint.mobile"
+        >
           <v-icon size="36">mdi-bookmark-plus</v-icon>
           <div>북마크</div>
         </v-btn>  
@@ -453,11 +457,11 @@ export default {
 }
 @media screen and (max-width: 600px) {
   .map_type_controller {
-    top: 14vh;
-    right: 3vw;
+    top: 11vh;
+    left: 2vw;
   }
   .map_zoom_controller {
-    top: 20vh;
+    top: 12vh;
     right: 20px;
   }
 }

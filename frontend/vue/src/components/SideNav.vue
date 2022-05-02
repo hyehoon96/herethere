@@ -206,28 +206,26 @@
         </v-card>
       </div>
     </div>
-    <div class="mini-menu d-lg-none" v-if="!showSideNav">
-      <v-chip label color="cyan" class="mx-5" text-color="white">
-        이용안내
-      </v-chip>
-      <v-chip label color="cyan" text-color="white">
-        문의/버그
-      </v-chip>
-    </div>
+    
     <!-- pc ui -->
     <v-navigation-drawer
       app
-      width="360px"
+      :width="$vuetify.breakpoint.mobile ? '90vw' : '360px'"
       id="sideNav"
       :permanent="showSideNav"
+      v-show="showSideNav"
       style="overflow-y: hidden;"
     >
       <v-card color="#258fff" dark tile>
         <div class="d-flex justify-center py-3">
-          <h1>HereThere</h1>
-          <v-btn v-if="$vuetify.breakpoint.lgAndDown" icon style="left: 100px;" @click="test">
-            <v-icon size="36px">mdi-menu</v-icon>
-          </v-btn>
+          <div style="width: 80%; text-align: center;">
+            <h1>HereThere</h1>
+          </div>
+          <div class="text-end" style="width: 20%;">
+            <v-btn v-if="$vuetify.breakpoint.lgAndDown" icon @click="test">
+              <v-icon size="36px">mdi-menu</v-icon>
+            </v-btn>
+          </div>
         </div>
         <v-row>
           <v-col cols="12" class="d-flex">
@@ -663,21 +661,14 @@ a {
   position: absolute; 
   z-index:11;
 }
-.mini-menu {
-  position: absolute;
-  z-index:10;
-  width:100%;
-  text-align: center;
-  top: 9.5vh;
-}
+
 @media screen and (max-width: 600px ) {
   .mini-bar {
     width: 100vw
   }
+
 }
 @media screen and (min-width: 600px) {
-  .mini-menu {
-    top: 13vh; 
-  }
+
 }
 </style>

@@ -15,7 +15,7 @@
         color="blue darken-2"
         dark
         fab
-        large
+        :large="!$vuetify.breakpoint.mobile"
       >
         <v-icon v-if="fab">
           mdi-close
@@ -29,7 +29,7 @@
     <v-btn
       fab
       dark
-      large
+      :large="!$vuetify.breakpoint.mobile"
       v-for="item in categoryObj"
       :key="item.label"
       :color="item.color"
