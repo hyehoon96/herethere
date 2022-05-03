@@ -112,7 +112,6 @@ export default {
         //마커 position을 출력합니다.
         let latlng = mouseEvent.latLng;
         this.marker.setPosition(latlng);
-
         // console.log(latlng);
         if( this.marker.fa.src !== 'http://t1.daumcdn.net/mapjsapi/images/marker.png') {
           this.marker.fa.src = 'http://t1.daumcdn.net/mapjsapi/images/marker.png';
@@ -252,11 +251,13 @@ export default {
       kakao.maps.event.addListener(tempMarker, 'click', () => {
         // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
         //console.log('hi', place.place_name);
+        this.moveMap(place);
         if (this.isEmpty(place.place_name)) {
           this.displayInfowindow('중간지점', tempMarker);
         } else {
           this.displayInfowindow(place, tempMarker);
         }
+
       });
       kakao.maps.event.addListener(tempMarker, 'mouseout', () => {
         this.closeInfowindow();
