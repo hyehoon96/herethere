@@ -112,9 +112,14 @@ export default {
         //마커 position을 출력합니다.
         let latlng = mouseEvent.latLng;
         this.marker.setPosition(latlng);
+
         // console.log(latlng);
         if( this.marker.fa.src !== 'http://t1.daumcdn.net/mapjsapi/images/marker.png') {
           this.marker.fa.src = 'http://t1.daumcdn.net/mapjsapi/images/marker.png';
+        }
+
+        if( this.$vuetify.breakpoint.xs && this.$refs.sideNav.showSearchResult) {
+          this.$refs.sideNav.showList = false; 
         }
       });
       
@@ -190,8 +195,38 @@ export default {
         } 
       });    
     },
-    displayInfowindow(place_name, tempMarker, i) {
-      this.infowindow.setContent(`<div class="info_title"">${place_name}</div>`);
+    displayInfowindow(place, tempMarker, i) {
+      console.log(place);
+      // if you have a global variable named "open" like "open = true;"
+      // or "var open = true" or something like that, 
+      // then the function "open()" would not work anymore.
+      this.infowindow.setContent(
+        `
+        <div class="info_title">
+          ${place.place_name} 
+        </div>
+        <div class="info_category">
+          ${place.category_name}
+        </div>
+        <div class="info_address">
+          <div>도로명 : ${place.road_address_name}</div>
+          <div>지번 : ${place.address_name}</div>
+          
+        </div>
+        <div class="info_detail">
+          <span class="info_phone">
+            ${place.phone}
+          </span>
+          
+          <span class="info_link">
+            <a href="${place.place_url}" target="_blank">링크</a>
+          </span>
+        </div>
+        
+        `
+
+
+      );
       //console.log(this.markers, i);
       this.isEmpty(i) ? this.infowindow.open(this.map, tempMarker) : this.infowindow.open(this.map, this.markers[i])
       this.setInfoStyle();
@@ -204,7 +239,6 @@ export default {
         newMarker = new kakao.maps.MarkerImage(image, imageSize); 
         this.displayCircle(place);
       }
-      //console.log(newMarker);
       this.marker = new kakao.maps.Marker({
         map: this.map,
         position: new kakao.maps.LatLng(place.y, place.x),
@@ -221,7 +255,7 @@ export default {
         if (this.isEmpty(place.place_name)) {
           this.displayInfowindow('중간지점', tempMarker);
         } else {
-          this.displayInfowindow(place.place_name, tempMarker);
+          this.displayInfowindow(place, tempMarker);
         }
       });
       kakao.maps.event.addListener(tempMarker, 'mouseout', () => {
@@ -259,17 +293,57 @@ export default {
     },
     setInfoStyle() {
       let infoTitle = document.querySelectorAll('.info_title');
+      let infoAddress = document.querySelectorAll('.info_address');
+      let infoDetail = document.querySelectorAll('.info_detail');
+      let infoPhone = document.querySelectorAll('.info_phone');
+      let infoCategory = document.querySelectorAll('.info_category');
+      let infoLink = document.querySelectorAll('.info_link');
       infoTitle.forEach( (e) => {
-        let w = e.offsetWidth + 10;
+        let w = e.offsetWidth;
         let ml = w/2;
-        e.parentElement.style.top = "82px";
-        e.parentElement.style.left = "50%";
+        // e.parentElement.style.top = "-10px";
+        e.parentElement.style.left = "57%";
         e.parentElement.style.marginLeft = -ml+"px";
-        e.parentElement.style.width = w+"px";
+        e.parentElement.style.width = "fit-content";
+        e.parentElement.style.background = "white";
+        e.parentElement.style.boxShadow = "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)";
+        e.parentElement.style.padding = "0.75em";
         e.parentElement.previousSibling.style.display = "none";
-        e.parentElement.parentElement.style.border = "0px";
+        e.parentElement.parentElement.style.border = "none";
         e.parentElement.parentElement.style.background = "unset";
       });
+      infoDetail.forEach((e) => {
+        e.style.display = 'flex';
+        e.style.fontSize = '13px';
+        e.style.margin = '5px 0px';
+      });
+      infoPhone.forEach( (e) => {
+        e.style.color = '#288756';
+      });
+
+      infoAddress.forEach((e) => {
+        e.style.overflow = 'hidden';
+        e.style.fontSize = '12px';
+        e.style.textOverflow = 'ellipsis';
+        e.style.wordWrap = 'break-word';
+        e.style.maxHeight = '34px';
+        e.style.display = 'block';
+        e.style.margin = '5px 0px';
+      });
+      infoLink.forEach( (e) => {
+        e.style.color = '#3d75cc';
+        e.style.height = '17px';
+        e.style.marginLeft = '1em';
+        e.style.float = 'left';
+        
+      });
+      infoCategory.forEach( (e) => {
+        e.style.color = '#919191';
+        e.style.height = '18px';
+        e.style.paddingTop = '2px';
+        e.style.fontSize = '12px';
+        e.style.lineHeight = '16px';
+      })
     },
     moveMap(item) {
       console.log(item.x, item.y);
@@ -414,8 +488,7 @@ export default {
 
 .info_title{
   display: block;
-  background: #50627F;
-  color: #fff;
+  font-weight: bold;
   text-align: center;
   height: 24px;
   line-height:22px;

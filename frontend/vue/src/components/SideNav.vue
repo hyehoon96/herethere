@@ -121,6 +121,7 @@
             light
             flat
             hide-details
+            @click="showList = true; "
             @click:append="callSearchFunc"
             @keyup.enter="callSearchFunc"
             v-model="searchText"
@@ -141,7 +142,7 @@
         </v-toolbar-title>
       </v-toolbar>
       <!-- tablet / mobile ui -->
-      <div v-if="searchResult.length > 0">
+      <div v-if="searchResult.length > 0 && showList">
         <v-card
           class="mx-auto"
           max-height="250"
@@ -200,7 +201,7 @@
               </v-list-item-content>
             </v-list-item>
             
-            <div>
+            <div v-if="showList">
               <v-btn block color="primary" @click="getCenterLatlng">어디서 만날까요?</v-btn>
             </div>
           </v-list>
@@ -402,6 +403,7 @@ export default {
       roomTitle: null,
       search: '',
       dialogType: 'find',
+      showList: true,
       headers: [
         { text: '제목', align: 'center', sortable: false, value: 'title',},
         { text: '최대인원', align: 'center', sortable: false, value: 'max' },
@@ -576,7 +578,7 @@ export default {
       clearTimeout(this.debounce1);
       this.debounce1 = setTimeout(() => {
         this.$emit('moveMap', item);
-        this.$emit('displayInfowindow', item.place_name, null, i)
+        this.$emit('displayInfowindow', item, null, i)
       }, 300);
       
     },
