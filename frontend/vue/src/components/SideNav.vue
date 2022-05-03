@@ -211,7 +211,7 @@
     <!-- pc ui -->
     <v-navigation-drawer
       app
-      :width="$vuetify.breakpoint.mobile ? '90vw' : '360px'"
+      :width="$vuetify.breakpoint.xs ? '90vw' : '360px'"
       id="sideNav"
       :permanent="showSideNav"
       v-show="showSideNav"
@@ -456,13 +456,11 @@ export default {
     '$vuetify.breakpoint.lgAndUp': {
       handler() {
         this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
-        this.$emit('setMapFull');
       }
     }
   },
   mounted() {
     this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
-    this.$emit('setMapFull');
   },
   computed: {
     resultBundle() {

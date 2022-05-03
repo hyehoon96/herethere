@@ -12,7 +12,6 @@
       @moveMap="moveMap"
       @markCenterLatlng="markCenterLatlng"
       @serachAddrFromCoords="serachAddrFromCoords"
-      @setMapFull="setMapFull"
     />
     
     <div class="map_wrap">
@@ -30,7 +29,7 @@
         <v-btn 
           fab 
           color="accent"
-          :large="!$vuetify.breakpoint.mobile"
+          :large="!$vuetify.breakpoint.xs"
         >
           <v-icon size="36">mdi-bookmark-plus</v-icon>
           <div>북마크</div>
@@ -120,12 +119,7 @@ export default {
       });
       
     },
-    setMapFull() {
-      this.$nextTick(()=> {
-        console.log('map width chagned');
-        document.querySelector('.map_wrap').style.width = '100vw';
-      })
-    },
+    
     setMapType(maptype) {
       let roadmapControl = document.getElementById('btnRoadmap');
       let skyviewControl = document.getElementById('btnSkyview'); 
@@ -345,7 +339,7 @@ export default {
 .map_wrap {
   position: absolute;
   overflow:hidden;
-  width:calc( 100vw - 360px );
+  width:100%;
   height:100vh;
 }
 #map {

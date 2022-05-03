@@ -105,7 +105,7 @@
       color="primary"
       grow
       app
-      v-if="$vuetify.breakpoint.mobile"
+      v-if="$vuetify.breakpoint.xs"
     >
 
 
