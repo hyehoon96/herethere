@@ -31,8 +31,8 @@
           color="accent"
           :large="!$vuetify.breakpoint.xs"
         >
-          <v-icon size="36">mdi-bookmark-plus</v-icon>
-          <div>북마크</div>
+          <v-icon size="36">mdi-camera</v-icon>
+          <div>기록하기</div>
         </v-btn>  
       </div>
     </div>

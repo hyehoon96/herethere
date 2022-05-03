@@ -158,7 +158,7 @@
                 style="border-bottom: 1px solid #eaeaea;"
               >
                 <v-list-item-icon>
-                  <v-icon color="primary">mdi-map-marker</v-icon>
+                  <v-icon color="primary">mdi-bookmark-check</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content 
                   @mouseover="moveMaptoTarget(item, i)"
@@ -224,7 +224,7 @@
             <h1>HereThere</h1>
           </div>
           <div class="text-end" style="width: 20%;">
-            <v-btn v-if="$vuetify.breakpoint.lgAndDown" icon @click="test">
+            <v-btn v-if="$vuetify.breakpoint.mdAndDown" icon @click="test">
               <v-icon size="36px">mdi-menu</v-icon>
             </v-btn>
           </div>
@@ -305,7 +305,7 @@
                   style="border-bottom: 1px solid #eaeaea;"
                 >
                   <v-list-item-icon>
-                    <v-icon color="primary">mdi-map-marker</v-icon>
+                    <v-icon color="primary">mdi-bookmark-check</v-icon>
                   </v-list-item-icon>
                   <v-list-item-content 
                     @mouseover="moveMaptoTarget(item, i)"
@@ -442,6 +442,10 @@ export default {
             } 
             // self.dialogType = 'create';
           }
+        },
+        { text: '검색기록', 
+          icon: 'mdi-card-search',
+            
         },
       ],
       searchText: null,
