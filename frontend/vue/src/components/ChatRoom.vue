@@ -39,7 +39,17 @@
           </v-chip>
           <div :class="item.isMine ? 'd-flex justify-end mx-2 w-100' : ''">
             <p :class="item.isMine ? 'my-chat': 'other-chat'" v-if="item.chat">
-              {{item.chat}}
+              {{item.chat}} 
+              <span >님의 현재 위치
+                <v-avatar
+                  color="white"
+                  size="36"
+                >
+                  <span>
+                    <v-icon color="primary">mdi-map-marker</v-icon>
+                  </span>
+                </v-avatar>
+              </span>
             </p>
           </div>
           <div v-if="item.systemMsg">
@@ -134,7 +144,7 @@ export default {
   async mounted() {
     this.roomId = atob(this.roomNumber);
     let findRoom = await this.$axiosAPI('/api/room/'+ this.roomId, 'get');
-  
+    console.log(findRoom);
     if (findRoom.empty) {
       alert('잘못된 링크입니다.');
       this.$router.push('/');

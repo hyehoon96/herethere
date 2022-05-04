@@ -603,6 +603,7 @@ export default {
     },
     pushInCalcBundle(item) {
       const isNew = (element) =>  element.address_name !== item.address_name;
+      //console.log(this.latlngBundle);
       if(this.latlngBundle.every(isNew)) {
         this.latlngBundle.push(item);
       }
