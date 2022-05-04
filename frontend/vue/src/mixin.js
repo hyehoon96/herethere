@@ -51,6 +51,14 @@ export default {
       // yyyy-mm-dd
       return (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10);
     },
-
+    
+    sendInquiry() {
+      console.log('hi');
+      if(this.inquiry.title.length > 100 ) {
+        alert(' 100자 이내로 작성해주세요. 감사합니다. ');
+        return;
+      }
+      // post inquiry
+    }
   }
 }

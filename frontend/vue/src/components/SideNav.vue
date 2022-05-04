@@ -5,16 +5,37 @@
       max-width="500"
     >
       <custom-dialog
-        :header-title="'채팅 방 목록'"
+        :header-title="dialogType === 'inquiry' ? '문의/버그' : '채팅방'"
         @hide="displayDialog = false;"
-        @submit="dialogType === 'create' ? createRoom() : findRoom()"
+        @submit="dialogType === 'create' ? createRoom() : dialogType === 'find' ? findRoom() : sendInquiry()"
         :footerSubmit="beforeConnect"
         :footerSubmitTitle="'접속'"
         :footerCloseBtn="beforeConnect"
       >
         <template v-slot:body>
-          <v-card v-if="!beforeConnect">
-            <div class="d-flex">
+          <v-row v-if="dialogType === 'inquiry'" justify="center">
+            <v-col cols="11" class="mt-5">
+              <v-text-field
+                solo
+                label="제목"
+                v-model="inquiry.title"
+              ></v-text-field>
+              {{inquiryLength}} / 100
+              <v-textarea
+                solo
+                label="내용을 입력해주세요."
+                v-model="inquiry.text"
+              >
+              </v-textarea>
+              <div class="text-end">
+                <v-btn color="primary" @click="sendInquiry">SUBMIT</v-btn>
+                <v-btn @click="displayDialog = false; dialogType = null;">CLOSE</v-btn>
+              </div>
+            </v-col>
+          </v-row>
+
+          <v-card v-if="!beforeConnect && dialogType !== 'inquiry'">
+            <div class="d-flex" >
               <v-text-field
                 v-model="search"
                 append-icon="mdi-magnify"
@@ -241,6 +262,7 @@
               :to="item.route"
               :rounded="false"
               tile
+              @click="item.text === '문의/버그' ? (displayDialog = true, dialogType = 'inquiry') : null"
               min-height="40"
             >
               
@@ -433,19 +455,20 @@ export default {
             if(self.$store.state.usingChat) {
               alert('채팅방을 사용중입니다. 기존 채팅방을 종료해주세요.');
               return;
-            }
-            self.displayDialog = true;
-            self.roomTitle = 'user' +  Math.floor(Math.random() * 100) + '님의 채팅방' // user Id
-            if (self.$store.state.usingChat === false ) {
+            } else {
               self.chatList = await self.$axiosAPI('api/room', 'get');  
               self.displayDialog = true;
-            } 
-            // self.dialogType = 'create';
+            }
+            self.roomTitle = 'user' +  Math.floor(Math.random() * 100) + '님의 채팅방' // user Id
+            self.dialogType = null;
           }
         },
-        { text: '검색기록', 
+        { 
+          text: '검색기록', 
           icon: 'mdi-card-search',
-            
+          onClick: function() {
+            console.log('sample');
+          }  
         },
       ],
       searchText: null,
@@ -454,10 +477,15 @@ export default {
       paginationObj : {},
       currentPage: 1,
       latlngBundle: [],
+      inquiry: {
+        title: '문의',
+        text: ''
+      },
       debounce1: null,
       debounce2: null,
     }
   },
+  
   watch: {
     '$vuetify.breakpoint.lgAndUp': {
       handler() {
@@ -471,7 +499,10 @@ export default {
   computed: {
     resultBundle() {
       return this.latlngBundle.length;
-    }
+    },
+    inquiryLength() {
+      return this.inquiry.text.length;
+    },
   },
   methods: {
     test() {
