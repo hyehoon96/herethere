@@ -47,8 +47,10 @@
 <script>
 import SideNav from './SideNav.vue'; 
 import CategoryBar from './CategoryBar.vue';
+import chat from '@/chat.js';
 export default {
   components: {SideNav, CategoryBar},
+  mixins: [chat],
   data() {
     return {
       map: null,
@@ -87,7 +89,9 @@ export default {
   //   }
   // },
   methods: {
-   
+    abcde() {
+      console.log('abced');
+    },
     loadMap() {
       const container = document.getElementById('map');
       const options = {

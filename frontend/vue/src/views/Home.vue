@@ -1,8 +1,13 @@
 <template>
   <v-container style="width: 100%; hegiht: 100%; padding: 0; margin: 0;">
-    <Map/>
+    <Map
+      ref="map"
+    />
     <keep-alive>
-      <router-view></router-view>
+      <router-view 
+        @sendCoordToMap="sendCoordToMap"
+      >
+      </router-view>
     </keep-alive>
     <BottomNav/>
   </v-container>
@@ -26,7 +31,9 @@ export default {
     
   },
   methods:{
-    
+    sendCoordToMap(item) {
+      this.$refs.map.serachAddrFromCoords(item);
+    }
   }
 }
 </script>

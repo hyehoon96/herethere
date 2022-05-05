@@ -69,8 +69,10 @@ router.route('/')
         chat: req.body.chat,
         vapidKey: req.body.vapidKey,
         systemMsg: req.body.systemMsg,
-        color: req.session.color
+        color: req.session.color,
+        locate: req.body.locate
       };
+      console.log(`-------------------${req.body.locate}-------------------`)
       req.app.get('io').of('/room').to(req.params.password).emit('chat', chat);
       res.send('ok');
     } catch (e) {

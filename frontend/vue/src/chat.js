@@ -1,4 +1,3 @@
-// import axios from "axios";
 // import mixin from "@/mixin.js";
 export default {
   watch: {
@@ -83,6 +82,10 @@ export default {
         this.value = 1;
         
       }
+    },
+
+    showOthersLocate(item) {
+      this.$emit('sendCoordToMap', item);
     }
 
   }

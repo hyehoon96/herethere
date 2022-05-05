@@ -40,10 +40,12 @@
           <div :class="item.isMine ? 'd-flex justify-end mx-2 w-100' : ''">
             <p :class="item.isMine ? 'my-chat': 'other-chat'" v-if="item.chat">
               {{item.chat}} 
-              <span >님의 현재 위치
+              <span v-if="item.locate">님의 현재 위치
                 <v-avatar
                   color="white"
                   size="36"
+                  @click="showOthersLocate(item.locate)"
+                  style="cursor: pointer;"
                 >
                   <span>
                     <v-icon color="primary">mdi-map-marker</v-icon>
@@ -67,6 +69,7 @@
         <v-chip
           label
           class="ma-2"
+          @click="sendMyLocate"
         >
           내 위치 공유
         </v-chip>
@@ -230,6 +233,31 @@ export default {
       // Chrome에서는 returnValue 설정이 필요함
       event.returnValue = '';
       
+    },
+    sendMyLocate() {
+      if('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition( async (position) => {
+          //y: position.coords.latitude, x: position.coords.longitude
+          let msg = {
+            user: this.userNameInChat,
+            chat: '공유 : ',
+            vapidKey: this.vapidKey,
+            systemMsg: null,
+            locate: {
+              y: position.coords.latitude,
+              x: position.coords.longitude
+            }
+          };
+          console.log(msg.locate);
+          await this.$axiosAPI('/api/room/'+ this.roomId, 'post', msg);
+          
+        },
+        error => alert(error, '에러가 발생하였습니다.'),
+        {enableHighAccuracy: true});
+        
+      } else {
+        alert('지원하지 않는 브라우저입니다.');
+      }
     },
     
     
