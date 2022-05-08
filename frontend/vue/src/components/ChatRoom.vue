@@ -40,7 +40,7 @@
           <div :class="item.isMine ? 'd-flex justify-end mx-2 w-100' : ''">
             <p :class="item.isMine ? 'my-chat': 'other-chat'" v-if="item.chat">
               {{item.chat}} 
-              <span v-if="item.locate">님의 현재 위치
+              <span v-if="item.locate">
                 <v-avatar
                   color="white"
                   size="36"
@@ -61,11 +61,6 @@
       </div>
       
       <div v-if="showMenu" class="text-center">
-        <v-chip
-          label
-        >
-          지도 공유
-        </v-chip>
         <v-chip
           label
           class="ma-2"
@@ -240,7 +235,7 @@ export default {
           //y: position.coords.latitude, x: position.coords.longitude
           let msg = {
             user: this.userNameInChat,
-            chat: '공유 : ',
+            chat: '님의 위치입니다.',
             vapidKey: this.vapidKey,
             systemMsg: null,
             locate: {
@@ -259,7 +254,7 @@ export default {
         alert('지원하지 않는 브라우저입니다.');
       }
     },
-    
+   
     
   }
 }

@@ -56,6 +56,7 @@
                 outlined
                 label="아이디"
                 type="string"
+                v-model="userID"
                 append-icon="mdi-account"
               >
               </v-text-field>
@@ -63,6 +64,7 @@
                 outlined
                 label="비밀번호"
                 type="password"
+                v-model="password"
                 append-icon="mdi-lock"
               >
               </v-text-field>
@@ -74,7 +76,7 @@
               <v-btn depressed style="color: #258fff;">비밀번호를 잊어버렸어요!</v-btn>
             </v-col>
             <v-col cols="12" class="justify-center d-flex">
-              <v-btn color="primary">로그인</v-btn>
+              <v-btn color="primary" @click="login">로그인</v-btn>
               <v-btn color="green" dark @click="displayDialog = true;">회원가입</v-btn>
               <v-btn color="amber" dark @click="getUserInfo">API연동테스트</v-btn>
             </v-col>
@@ -91,16 +93,18 @@ export default {
   data: () => ({
     displayDialog: false,
     loginForm: [
-      {label : '아이디 *', icon: 'mdi-identifier', model: null},
-      {label : '비밀번호 *', icon: 'mdi-lock', model: null},
+      {label : '아이디 *', prop: 'id', icon: 'mdi-identifier', model: null},
+      {label : '비밀번호 *', prop: 'password',icon: 'mdi-lock', model: null},
       {label : '비밀번호 확인 *', icon: 'mdi-lock-check', model: null},
-      {label : '이름 *', icon: 'mdi-card-account-details', model: null},
-      {label : '닉네임 *', icon: 'mdi-account', model: null},
-      {label : '연령대', icon: 'mdi-tag-faces', model: null, list: ['10대', '20대', '30대', '40대', '50대', '60대 이상']},
-      {label : '성별', icon: 'mdi-human-male-female', model: null, list: ['여성', '남성']},
-      {label : '질문 *', icon: 'mdi-account-question', model: null, list: ['애완동물의 이름은?', '좋아하는 음식은?']},
-      {label : '답변 *', icon: 'mdi-forum', model: null},
-    ]
+      {label : '이름 *', prop: 'name',icon: 'mdi-card-account-details', model: null},
+      {label : '닉네임 *', prop: 'nickname', icon: 'mdi-account', model: null},
+      {label : '연령대', prop: 'age', icon: 'mdi-tag-faces', model: null, list: ['10대', '20대', '30대', '40대', '50대', '60대 이상']},
+      {label : '성별', prop: 'gender', icon: 'mdi-human-male-female', model: null, list: ['여성', '남성']},
+      {label : '질문 *', prop: 'question', icon: 'mdi-account-question', model: null, list: ['애완동물의 이름은?', '좋아하는 음식은?']},
+      {label : '답변 *', prop: 'answer', icon: 'mdi-forum', model: null},
+    ],
+    userID: null,
+    password: null
   }),
   methods: {
 
@@ -109,18 +113,27 @@ export default {
         alert('비밀번호가 일치하지 않습니다.');
         return;
       }
-      let userInfo = {
-        id: this.loginForm[0].model,
-        password: this.loginForm[1].model,
-        name: this.loginForm[3].model,
-        nickname: this.loginForm[4].model
+
+      let loginFormArr = [];
+      for (let property of this.loginForm) {
+        loginFormArr.push(property.prop);
       }
-      console.log(userInfo);
+      let userInfo = {};
+      for (let value of loginFormArr) {
+        console.log(value);
+        this.loginForm.forEach((item) => {
+          if (item.prop === value) {
+            userInfo[value] = item.model
+          }
+        })
+      }
+      let res = await this.$axiosAPI('/api/user/', 'post', userInfo);
+      if( res.userid ) {
+        alert('회원가입이 완료되었습니다.');
+        this.displayDialog = false;
+      }
+      
 
-      let temp = await this.$axiosAPI('/api/user/', 'post', userInfo);
-      console.log(temp);
-
-      this.displayDialog = false;
     },
 
     async getUserInfo() {
@@ -129,6 +142,10 @@ export default {
       let temp = await this.$axiosAPI('/api/user/'+'min', 'get');
       console.log(temp);
       
+    },
+    async login() {
+      await this.$axiosAPI('/api/login' ,'post', {id: this.userID, password: this.password});
+
     }
   }
 }

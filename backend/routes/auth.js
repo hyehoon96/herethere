@@ -28,7 +28,9 @@ router.post('/login', (req, res) => {
                                 nickname: user.nickname,
                                 authorized: true
                             };
-                            return res.status(200).json({message: '사용자의 세션을 생성했습니다.'});
+                            return res.status(200).json({
+                                message: '사용자의 세션을 생성했습니다.'
+                            });
                         } else {
                             return res.status(200).json({message: '잘못된 비밀번호입니다.'});
                         }
@@ -40,6 +42,7 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
+
     if (req.session.user) {
         req.session.destroy(err => {
             if (err) { console.log(err); }

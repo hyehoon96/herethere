@@ -87,6 +87,6 @@ export default {
     showOthersLocate(item) {
       this.$emit('sendCoordToMap', item);
     }
-
+    
   }
 }

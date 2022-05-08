@@ -84,8 +84,16 @@ export default {
   }, 
   // watch: {
   //   markers() {
-  //     console.log(this.markers);
-      
+  //     this.$store.commit('saveMapData', {mapData:this.markers, type:'marker'});
+  //   },
+  //   bounds() {
+  //     this.$store.commit('saveMapData', {mapData:this.bounds, type:'bounds'});
+  //   },
+  //   currentCenterLatlng() {
+  //     this.$store.commit('saveMapData', {mapData:this.currentCenterLatlng, type:'center'});
+  //   },
+  //   polygonBundle() {
+  //     this.$store.commit('saveMapData', {mapData:this.polygonBundle, type:'polygon'});
   //   }
   // },
   methods: {
