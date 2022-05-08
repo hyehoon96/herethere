@@ -23,6 +23,15 @@ router.post('/', (req, res) => {
 
 
   conn = database.init();
+  // 중복 아이디 확인
+  conn.query(selectDuplicateUseridSql, params[0], (err, row) => {
+    if (err) { console.log(err); }
+    if (row[0]) {
+      return res.status(409).json({
+        message: '이미 존재하는 아이디입니다.'
+      });
+    }
+  });
   bcrypt.hash(params[1], 10, (err, hash) => {
     params[0] = params[0].toLowerCase(); // 소문자로 변환
     params[1] = hash;
@@ -87,16 +96,5 @@ router.route('/:userid')
     });
     database.end(req.conn);
   })
-
-// todo: 회원정보 생성 API 에 포함시키기
-router.get('/checkId/:id', (req, res) => {
-  const id = req.params.id;
-  conn.query('SELECT `id` FROM user WHERE `id` = LOWER(?)', id, (err, row) => {
-    if (err) { console.log(err); }
-    let result = row[0] ? false : true;
-    return res.status(200).json({result: result});
-  })
-  //database.end(conn);
-})
 
 module.exports = router;
