@@ -65,4 +65,23 @@ router.route('/')
             database.end(req.conn);
         });
     })
+    /**
+     * 히스토리 목록 조회 API
+     */
+    .get((req, res) => {
+        var userId  = req.session.user.id;
+
+        const selectHistoryListSql = 'SELECT p.id, p.name, p.category_name, p.category_group_code, p.category_group_name, p.phone, p.address_name, p.road_address_name, p.x, p.y, p.url FROM history h JOIN place p ON h.place_id = p.id WHERE h.user_id = ? AND h.locked = \'N\' AND p.locked = \'N\' ORDER BY h.created_date DESC';
+
+        req.conn.query(selectHistoryListSql, userId, (err, rows) => {
+            if (err) { console.log(err); }
+            console.log(rows);
+            // todo: 응답에 히스토리 리스트 크기 추가하기
+            return res.status(200).json(
+                JSON.parse(JSON.stringify(rows))
+            );
+        });
+        database.end(req.conn);
+    })
+
 module.exports = router;
