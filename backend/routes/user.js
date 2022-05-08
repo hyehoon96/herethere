@@ -78,7 +78,9 @@ router.route('/:userid')
           gender: user.gender
         });
       } else {
-        return res.status(404).json({err: 'Unknown user'});
+        return res.status(404).json({
+          message: '해당 유저를 찾을 수 없습니다.'
+        });
       }
       database.end(req.conn);
     });
