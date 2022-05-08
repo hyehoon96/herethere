@@ -84,4 +84,32 @@ router.route('/')
         database.end(req.conn);
     })
 
+router.route('/:placeId')
+    .all((req, res, next) => {
+        console.log(router.route);
+        if (!req.session.user) {
+            return res.status(401).json({
+                message: '로그인 되지 않은 사용자입니다.'
+            });
+        } else {
+            req.conn = database.init();
+            next();
+        }
+    })
+    /**
+     * 히스토리 삭제 API
+     */
+    .delete((req, res) => {
+        var userId  = req.session.user.id;
+        var placeId = req.params.placeId;
+
+        const deleteHistorySql = 'UPDATE history SET `locked` = \'Y\', `deleted_date` = CURRENT_TIMESTAMP WHERE `user_id`=? AND `place_id`=?';
+
+        req.conn.query(deleteHistorySql, [userId, placeId], (err, row) => {
+            if (err) { console.log(err); }
+            return res.status(204).send();
+        });
+        database.end(req.conn);
+    })
+
 module.exports = router;
