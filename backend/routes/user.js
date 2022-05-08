@@ -21,40 +21,10 @@ router.post('/', (req, res) => {
     req.body.answer
   ];
 
-  // 컬럼값 저장형식 변환
-  // 예. '20대' -> '20-29'
-  let ageGroup = req.body.ageGroup;
-  switch (ageGroup) {
-    case '10대':
-      ageGroup = '10-19';
-      break;
-    case '20대':
-      ageGroup = '20-29';
-      break;
-    case '30대':
-      ageGroup = '30-39';
-      break;
-    case '40대':
-      ageGroup = '40-49';
-      break;
-    case '50대':
-      ageGroup = '50-59';
-      break;
-    case '60대':
-      ageGroup = '60+';
-      break;
-  }
-  // 예. '남성' -> 'M'
-  let gender = req.body.gender;
-  if (gender) {
-    gender = (gender === "남성") ? 'M' : 'W';
-  }
 
   conn = database.init();
   bcrypt.hash(params[1], 10, (err, hash) => {
     params[1] = hash;
-    params[4] = ageGroup;
-    params[5] = gender;
     conn.query('INSERT INTO user(`userid`,`password`,`name`,`nickname`,`age_group`,`gender`,`question`,`answer`) VALUES (?,?,?,?,?,?,?,?)'
         , params, (err, row) => {
       if (err) { console.log(err); }
