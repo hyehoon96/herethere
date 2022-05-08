@@ -11,7 +11,7 @@ const database = require('../database');
 router.post('/', (req, res) => {
   console.log(req.body);
   const params = [
-    req.body.id.toLowerCase(), // 소문자로 변환
+    req.body.userid,
     req.body.password,
     req.body.name,
     req.body.nickname,
@@ -24,12 +24,13 @@ router.post('/', (req, res) => {
 
   conn = database.init();
   bcrypt.hash(params[1], 10, (err, hash) => {
+    params[0] = params[0].toLowerCase(); // 소문자로 변환
     params[1] = hash;
     conn.query('INSERT INTO user(`userid`,`password`,`name`,`nickname`,`age_group`,`gender`,`question`,`answer`) VALUES (?,?,?,?,?,?,?,?)'
         , params, (err, row) => {
       if (err) { console.log(err); }
       return res.status(201).json({
-        // no: row['insertId'],
+        id: row.insertId,
         userid: params[0],
         // password: params[1],
         name: params[2],
@@ -42,7 +43,7 @@ router.post('/', (req, res) => {
   });
 })
 
-router.route('/:id')
+router.route('/:userid')
   .all((req, res, next) => {
     console.log(router.route);
     req.conn = database.init();
@@ -53,10 +54,10 @@ router.route('/:id')
      */
   .get((req, res) => {
     console.log('get user from user router');
-    const id = req.params.id;
+    const userid = req.params.userid;
 
     req.conn.query('SELECT `userid`, `password`, `name`, `nickname`, `age_group`, `gender` FROM user WHERE `userid` = ? AND `is_deleted` = "N"'
-        , id, (err, row) => {
+    req.conn.query(selectUserSql, userid, (err, row) => {
       if (err) { console.log(err); }
       if (user = row[0]) {
         return res.status(200).json({
@@ -78,9 +79,9 @@ router.route('/:id')
      */
   .delete((req, res) => {
     //console.log('delete user from user router');
-    const id = req.params.id;
     req.conn.query('UPDATE user SET `is_deleted` = "Y", `deleted_date` = CURRENT_TIMESTAMP WHERE `userid` = ?'
-        , id, (err, row) => {
+    const userid = req.params.userid;
+    req.conn.query(deleteUserSql, userid, (err, row) => {
       if (err) { console.log(err); }
       return res.status(204).send();
     });
