@@ -21,6 +21,7 @@ router.post('/', (req, res) => {
 
   // 데이터베이스 연결 및 쿼리 정의
   const conn = database.init();
+
   const selectDuplicateUseridSql = 'SELECT `userid` FROM user WHERE `userid`=LOWER(?)';
   const insertUserSql = 'INSERT INTO user(`userid`,`password`,`name`,`nickname`,`age_group`,`gender`,`question`,`answer`) VALUES (?,?,?,?,?,?,?,?)';
 
@@ -66,6 +67,7 @@ router.route('/:userid')
      */
   .get((req, res) => {
     const userid = req.params.userid;
+
     const selectUserSql = 'SELECT `userid`,`password`,`name`,`nickname`,`age_group`,`gender` FROM user WHERE `userid`=? AND `locked`=\'N\'';
 
     req.conn.query(selectUserSql, userid, (err, row) => {
@@ -93,7 +95,8 @@ router.route('/:userid')
      */
   .delete((req, res) => {
     const userid = req.params.userid;
-    const deleteUserSql = 'UPDATE user SET `locked`=\'Y\', `deleted_date`=CURRENT_TIMESTAMP WHERE `userid`=?'
+
+    const deleteUserSql = 'UPDATE user SET `locked`=\'Y\', `deleted_date`=CURRENT_TIMESTAMP WHERE `userid`=?';
 
     req.conn.query(deleteUserSql, userid, (err, row) => {
       if (err) { console.log(err); }
