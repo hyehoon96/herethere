@@ -70,24 +70,34 @@ router.route('/')
         vapidKey: req.body.vapidKey,
         systemMsg: req.body.systemMsg,
         color: req.session.color,
-        locate: req.body.locate
+        locate: req.body.locate,
+        voteList: req.body.voteList
+
       };
-      console.log(`-------------------${req.body.locate}-------------------`)
       req.app.get('io').of('/room').to(req.params.password).emit('chat', chat);
-      res.send('ok');
+      res.status(200).send();
     } catch (e) {
       console.log(e);
     }
     
   })
-
+  router.post('/vote/:password', (req, res) => {
+    const voteChat = {
+      user: req.body.user,
+      vapidKey: req.body.vapidKey,
+      index: req.body.index
+    }
+    console.log(voteChat);
+    req.app.get('io').of('/room').to(req.params.password).emit('voteChat', voteChat);
+    res.status(200).send();
+  })
   router.put('/:password', (req, res) => {
     req.conn = database.init();
     const roomNumber = req.params.password;
     console.log(req.body);
     req.conn.query(`UPDATE room SET currentClient=${req.body.currentClient}  WHERE password = ? `, roomNumber, (err, row) => {
       if (err) { console.log(err); }
-      res.send('ok');
+      res.status(200).send();
     })
   })
 module.exports = router;

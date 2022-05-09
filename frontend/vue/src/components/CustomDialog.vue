@@ -1,9 +1,9 @@
 <template>
-  <v-card>
+  <v-card style="padding: 0; overflow: hidden;">
     <v-card-title style="background-color: #1976D2; color: white;">
       <h4>{{ headerTitle }}</h4>
     </v-card-title>
-    <v-card-text>
+    <v-card-text :style="$vuetify.breakpoint.xs ? 'padding: 0px;' : 'padding: 16px;'">
       <slot name="body">
         
       </slot>
@@ -56,6 +56,6 @@
   }
 </script>
 
-<style>
+<style >
 
 </style>

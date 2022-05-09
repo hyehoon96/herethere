@@ -5,22 +5,35 @@
       max-width="500"
     >
       <custom-dialog
-        :header-title="'투표 목록'"
+        :header-title="'최대 5개 선택'"
         @hide="displayDialog = false;"
-        @submit="createVote"
         :footerSubmit="true"
         :footerSubmitTitle="'생성'"
         :footerCloseBtn="true"
+        @submit="createVote"
       >
+      <!-- @submit="createVote" -->
         <template v-slot:body>
+          <div v-if="cookedVoteList.length === 0" class="text-center">지역을 먼저 검색해주세요.</div>
           <v-data-table
+            v-model="selected"
             :headers="headers"
             :items="cookedVoteList"
+            item-key="name"
+            show-select
+            class="elevation-1"
             mobile-breakpoint="0"
+            
           >
             <!-- eslint-disable-next-line -->
-            <template v-slot:item.title="{ item }">
-              
+            <template v-slot:item.category="{ item }">
+              <v-chip pill outlined color="accent" :style="$vuetify.breakpoint.xs ? 'font-size: 12px;' : null">
+                {{item.category}}
+              </v-chip>
+            </template>
+            <!-- eslint-disable-next-line -->
+            <template v-slot:item.addr="{ item }" class="d-none">
+              {{item.addr}}
             </template>
           </v-data-table>
         </template>
@@ -54,7 +67,7 @@
         </v-btn>
       </v-toolbar>
       <div 
-        :style="$vuetify.breakpoint.xs ? 'height: 70vh; overflow-y: auto;' : 'height: 30vh; overflow-y: scroll;'"
+        :style="$vuetify.breakpoint.xs ? 'height: 70vh; overflow-y: auto;' : 'height: 40vh; overflow-y: scroll;'"
         id="chat-area"
       >
         <div class="d-flex my-1" v-for="(item, i) in chatArr" :key="i">
@@ -67,7 +80,7 @@
             {{item.user}}
           </v-chip>
           <div :class="item.isMine ? 'd-flex justify-end mx-2 w-100' : ''">
-            <p :class="item.isMine ? 'my-chat': 'other-chat'" v-if="item.chat">
+            <p :class="item.isMine ? 'my-chat': 'other-chat'" v-if="item.chat && !item.voteList">
               {{item.chat}} 
               <span v-if="item.locate">
                 <v-avatar
@@ -82,6 +95,73 @@
                 </v-avatar>
               </span>
             </p>
+            <v-card v-if="item.voteList">
+              <v-toolbar
+                color="pink"
+                dark
+                height="32px"
+              >
+              <v-toolbar-title style="font-size: 16px;">
+                투표 목록
+              </v-toolbar-title>
+              </v-toolbar>
+              <v-list two-line>
+                <v-list-item-group
+                  v-model="voteSelected"
+                  active-class="pink--text"
+                  multiple
+                >
+                  <template v-for="(item) in item.voteList">
+                    <v-list-item :key="item.title">
+                      <template v-slot:default="{ active }">
+                        <v-list-item-content>
+                          <v-list-item-title>
+                            <v-chip outlined color="indigo darken-3">
+                              {{item.name}}
+                            </v-chip>
+
+                          </v-list-item-title>
+
+                          <v-list-item-subtitle
+                            class="ml-2"
+                            v-text="item.category"
+                          ></v-list-item-subtitle>
+
+                          <!-- <v-list-item-subtitle v-text="item.subtitle"></v-list-item-subtitle> -->
+                        </v-list-item-content>
+
+                        <v-list-item-action>
+                          <v-list-item-action-text v-if="isSubmit">
+                            <v-chip label color="pink" text-color="white">
+                              {{item.vote}}
+                            </v-chip>
+                          </v-list-item-action-text>
+                          <v-list-item-action-text v-else>
+                            선택
+                          </v-list-item-action-text>
+                          <v-icon
+                            v-if="!active"
+                            color="grey lighten-1"
+                          >
+                            mdi-star-outline
+                          </v-icon>
+
+                          <v-icon
+                            v-else
+                            color="yellow darken-3"
+                          >
+                            mdi-star
+                          </v-icon>
+                        </v-list-item-action>
+                      </template>
+                    </v-list-item>
+                  </template>
+                  <div class="text-center">
+                    <v-btn color="pink" dark @click="sendSelected">SUBMIT</v-btn>
+                  </div>
+                </v-list-item-group>
+              </v-list>
+            </v-card>
           </div>
           <div v-if="item.systemMsg">
             <p class="pa-2" style="color: #6c757d; white-space: break-spaces">{{item.systemMsg}}</p>
@@ -111,7 +191,6 @@
           solo
           hide-details
           no-resize
-          :height="$vuetify.breakpoint.xs ? 'height: 30vh;' : 'height: 15vh;'"
           v-model="chatInput"
           @keyup.enter="sendMessage"
         >
@@ -154,8 +233,16 @@ export default {
           systemMsg: '환영합니다. 방문해주셔서 감사합니다.\n - 채팅방에 접속한 사람이 없으면 방이 삭제됩니다.\n - 대화 내용은 저장되지 않습니다. ' }
       ],
       chatInput: [],
-      headers:[],
-      cookedVoteList:[],
+      headers: [
+        { text: '이름', value: 'name', align: 'center' },
+        { text: '분류', value: 'category', sortable: false, align: 'center' },
+
+      ],
+      cookedVoteList:[], // name, category만 들어간 list
+      selected: [], // 투표창에 들어갈 place
+      voteSelected: [], // 투표창 안에서 선택된 place의 index
+      isSubmit: false, // 투표여부
+      currentVoteList: [] // 채팅창 안에 렌더링 된 최근 투표창
     }
   },
   props: {
@@ -213,6 +300,10 @@ export default {
       if( data.vapidKey === this.vapidKey ) {
         data.isMine = true;
       }
+      if( data.voteList) {
+        this.isSubmit = false;
+        this.currentVoteList = data.voteList;
+      }
       this.chatArr.push(data);
       this.$nextTick(() => {
         let chat = document.getElementById("chat-area");
@@ -229,7 +320,21 @@ export default {
     this.socket.on('system', (data) => {
       this.chatArr.push(data);
     })
-    
+    this.socket.on('voteChat', (data) => {
+      let tempData = {
+        user: data.user,
+        chat: '투표 완료!',
+        vapidKey: data.vapidKey
+      };
+      if( data.vapidKey === this.vapidKey ) {
+        tempData.isMine = true;
+      }
+      console.log(data);
+      for(let i = 0; i < data.index.length; i++) {
+        this.currentVoteList[data.index[i]].vote +=1;
+      }
+      this.chatArr.push(tempData);
+    })
     
   },
   
@@ -242,6 +347,27 @@ export default {
       }
       
     },
+    'voteList': {
+      handler() {
+        this.cookedVoteList = [];
+        for (let i = 0; i < this.voteList.length; i++) {
+          this.cookedVoteList.push({
+            name: this.voteList[i].place_name,
+            category: this.voteList[i].category_name.split('>')[this.voteList[i].category_name.split('>').length-1],
+            vote: 0
+          })
+        }
+        
+      }
+    },
+    selected (val, oldVal) {
+      if (val.length > 5) {
+        this.$nextTick(() => {
+          this.selected = oldVal  
+        })
+      }
+    },
+
   },
   unmounted() {
     console.log('unmount!!');
@@ -259,7 +385,17 @@ export default {
       await this.$axiosAPI('/api/room/'+ this.roomId, 'post', msg)
       this.chatInput = '';
     },
-    
+    async createVote() {
+      let msg = {
+        user: this.userNameInChat,
+        chat: this.chatInput,
+        vapidKey: this.vapidKey,
+        voteList: this.selected,
+      };
+      await this.$axiosAPI('/api/room/' + this.roomId, 'post', msg);
+      this.displayDialog = false;
+      this.showMenu = false;
+    },
     confirmLeave(event) {
       event.preventDefault();
       // Chrome에서는 returnValue 설정이 필요함
@@ -282,7 +418,7 @@ export default {
           };
           console.log(msg.locate);
           await this.$axiosAPI('/api/room/'+ this.roomId, 'post', msg);
-          
+          this.showMenu = false;
         },
         error => alert(error, '에러가 발생하였습니다.'),
         {enableHighAccuracy: true});
@@ -291,7 +427,25 @@ export default {
         alert('지원하지 않는 브라우저입니다.');
       }
     },
-    
+    async sendSelected() {
+      if( this.voteSelected.length === 0) {
+        alert('목록을 선택해주세요.');
+        return;
+      }
+      if ( this.isSubmit === true ) {
+        alert('이미 투표하셨습니다.');
+        return;
+      }
+      console.log(this.voteSelected);
+      let cookedVoteSelected = {
+        user: this.userNameInChat,
+        vapidKey: this.vapidKey,
+        index: this.voteSelected
+      };
+      
+      await this.$axiosAPI('/api/room/vote/' + this.roomId, 'post', cookedVoteSelected);
+      this.isSubmit = true;
+    }
     
   }
 }

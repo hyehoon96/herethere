@@ -26,7 +26,7 @@
                 <v-btn
                   color="primary"
                   dark
-                  class="my-5 px-3"
+                  class="my-5 pa-3 mr-3"
                   @click="beforeConnect = true; dialogType = 'create';"
                 >
                   채팅방 생성
