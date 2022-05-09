@@ -83,24 +83,9 @@ export default {
       this.loadMap();
     }
   }, 
-  // watch: {
-  //   markers() {
-  //     this.$store.commit('saveMapData', {mapData:this.markers, type:'marker'});
-  //   },
-  //   bounds() {
-  //     this.$store.commit('saveMapData', {mapData:this.bounds, type:'bounds'});
-  //   },
-  //   currentCenterLatlng() {
-  //     this.$store.commit('saveMapData', {mapData:this.currentCenterLatlng, type:'center'});
-  //   },
-  //   polygonBundle() {
-  //     this.$store.commit('saveMapData', {mapData:this.polygonBundle, type:'polygon'});
-  //   }
-  // },
+  
   methods: {
-    abcde() {
-      console.log('abced');
-    },
+    
     loadMap() {
       const container = document.getElementById('map');
       const options = {
@@ -153,8 +138,6 @@ export default {
     },
 
     searchLocation(text) {
-      // alert(text);
-      // const kakaoMapObj
       if(!this.$refs.sideNav.searchText) {
         this.$refs.sideNav.setSearchText(text);
       }
