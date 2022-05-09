@@ -239,7 +239,7 @@
       v-show="showSideNav"
       style="overflow-y: hidden;"
     >
-      <v-card color="#258fff" dark tile>
+      <v-card color="primary" dark tile>
         <div class="d-flex justify-center py-3">
           <div style="width: 80%; text-align: center;">
             <h1>HereThere</h1>
@@ -255,7 +255,7 @@
             
             <v-btn 
               icon
-              background-color="#258fff"
+              background-color="#0097A7"
               color="white"
               class="flex-grow-1 d-flex flex-column" 
               v-for="item in menuGroup" :key="item.text"

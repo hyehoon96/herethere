@@ -6,7 +6,7 @@ const database = require('../database');
 router.post('/login', (req, res) => {
     const id = req.body.id;
     const password = req.body.password;
-
+    console.log(req.session.user);
     if (req.session.user) {
         return res.status(200).json({message: '이미 로그인된 사용자입니다.'});
     } else {
@@ -32,7 +32,7 @@ router.post('/login', (req, res) => {
                                 message: '사용자의 세션을 생성했습니다.'
                             });
                         } else {
-                            return res.status(200).json({message: '잘못된 비밀번호입니다.'});
+                            return res.status(401).json({message: '잘못된 비밀번호입니다.'});
                         }
                     });
                 }
