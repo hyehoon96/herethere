@@ -577,41 +577,42 @@ export default {
     },
     
     displayPagination(pagination) {
+      
       this.$nextTick(() => {
+        console.log(pagination);
         this.paginationObj = pagination;
-      let paginationEl = document.getElementById('pagination');
-      let fragment = document.createDocumentFragment();
+        let paginationEl = document.getElementById('pagination');
+        let fragment = document.createDocumentFragment();
 
-      // 기존에 추가된 페이지번호를 삭제합니다
-      this.removePagination();
-      for (let i=1; i<=pagination.last; i++) {
-        let el = document.createElement('a');
-        el.href = "#";
-        el.innerHTML = i;
-        
-        if (i===pagination.current) {
-          el.className = 'on';
-        } else {
-          el.onclick = ((i) => {
-            return () => {
-              this.$emit('removeMarker');
-              pagination.gotoPage(i);
-            }
-          })(i);
+        // 기존에 추가된 페이지번호를 삭제합니다
+        this.removePagination();
+        for (let i=1; i<=pagination.last; i++) {
+          let el = document.createElement('a');
+          el.href = "#";
+          el.innerHTML = i;
+          
+          if (i===pagination.current) {
+            el.className = 'on';
+          } else {
+            el.onclick = ((i) => {
+              return () => {
+                this.$emit('removeMarker');
+                pagination.gotoPage(i);
+              }
+            })(i);
+          }
+
+          fragment.appendChild(el);
         }
-
-        fragment.appendChild(el);
-      }
         paginationEl.appendChild(fragment);
       })
     },
     removePagination() {
-      this.$nextTick(() => {
-        let paginationEl = document.getElementById('pagination');
-        while (paginationEl.hasChildNodes()) {
-          paginationEl.removeChild (paginationEl.lastChild);
-        }
-      })
+      let paginationEl = document.getElementById('pagination');
+      while (paginationEl.hasChildNodes()) {
+        paginationEl.removeChild (paginationEl.lastChild);
+      }
+     
     },
     closeInfowindow() {
       clearTimeout(this.debounce2);

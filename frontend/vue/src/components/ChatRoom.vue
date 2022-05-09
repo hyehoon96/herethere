@@ -67,7 +67,7 @@
         </v-btn>
       </v-toolbar>
       <div 
-        :style="$vuetify.breakpoint.xs ? 'height: 70vh; overflow-y: auto;' : 'height: 40vh; overflow-y: scroll;'"
+        :style="$vuetify.breakpoint.xs ? 'height: 70vh; overflow-y: auto;' : 'height: 30vh; overflow-y: scroll;'"
         id="chat-area"
       >
         <div class="d-flex my-1" v-for="(item, i) in chatArr" :key="i">

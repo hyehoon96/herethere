@@ -12,6 +12,7 @@
       @moveMap="moveMap"
       @markCenterLatlng="markCenterLatlng"
       @serachAddrFromCoords="serachAddrFromCoords"
+      @removeMarker="removeMarker"
     />
     
     <div class="map_wrap">
@@ -301,6 +302,7 @@ export default {
     },
 
     removeMarker() {
+      console.log(this.markers);
       for ( let i = 0; i < this.markers.length; i++ ) {
         this.markers[i].setMap(null);
       }   
