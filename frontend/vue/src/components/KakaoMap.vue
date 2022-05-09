@@ -422,6 +422,11 @@ export default {
           this.$refs.sideNav.pushCurrentLocate(coordsObj); 
         }
       })
+    },
+
+    returnSearchResult() {
+      console.log(this.$refs.sideNav.searchResult);
+      return this.$refs.sideNav.searchResult;
     }
   } 
 }

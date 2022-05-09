@@ -1,5 +1,34 @@
 <template>
   <div v-show="$store.state.userView === 'chat'">
+     <v-dialog
+      v-model="displayDialog"
+      max-width="500"
+    >
+      <custom-dialog
+        :header-title="'투표 목록'"
+        @hide="displayDialog = false;"
+        @submit="createVote"
+        :footerSubmit="true"
+        :footerSubmitTitle="'생성'"
+        :footerCloseBtn="true"
+      >
+        <template v-slot:body>
+          <v-data-table
+            :headers="headers"
+            :items="cookedVoteList"
+            mobile-breakpoint="0"
+          >
+            <!-- eslint-disable-next-line -->
+            <template v-slot:item.title="{ item }">
+              
+            </template>
+          </v-data-table>
+        </template>
+      </custom-dialog>
+    </v-dialog>
+    
+    
+    
     <v-btn fab class="float-btn" 
       @click="displayChatRoom = true;" 
       v-if="displayChatRoom === false && !$vuetify.breakpoint.xs"
@@ -70,6 +99,7 @@
         </v-chip>
         <v-chip
           label
+          @click="getVoteItem"
         >
           약속장소 투표
         </v-chip>
@@ -106,6 +136,7 @@ export default {
   name: 'roomId',
   data() {
     return {
+      displayDialog: null,
       displayChatRoom: true,
       textarea: '',
       myMessage: '',
@@ -123,6 +154,8 @@ export default {
           systemMsg: '환영합니다. 방문해주셔서 감사합니다.\n - 채팅방에 접속한 사람이 없으면 방이 삭제됩니다.\n - 대화 내용은 저장되지 않습니다. ' }
       ],
       chatInput: [],
+      headers:[],
+      cookedVoteList:[],
     }
   },
   props: {
@@ -136,6 +169,10 @@ export default {
     },
     role: {
       type: String,
+    },
+    voteList:{
+      type: Array,
+
     }
   },
 
@@ -204,7 +241,7 @@ export default {
         this.$store.commit('setUsingChat', false);
       }
       
-    }
+    },
   },
   unmounted() {
     console.log('unmount!!');
@@ -254,7 +291,7 @@ export default {
         alert('지원하지 않는 브라우저입니다.');
       }
     },
-   
+    
     
   }
 }

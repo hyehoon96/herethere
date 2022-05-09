@@ -86,7 +86,11 @@ export default {
 
     showOthersLocate(item) {
       this.$emit('sendCoordToMap', item);
-    }
+    },
     
+    async getVoteItem() {
+      this.$emit('getVoteItem');
+      this.displayDialog = true;
+    }
   }
 }

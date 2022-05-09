@@ -6,6 +6,8 @@
     <keep-alive>
       <router-view 
         @sendCoordToMap="sendCoordToMap"
+        @getVoteItem="getVoteItem"
+        :voteList="voteList"
       >
       </router-view>
     </keep-alive>
@@ -21,6 +23,11 @@ import BottomNav from '@/components/BottomNav.vue'
 // import ChatRoom from '@/components/ChatRoom.vue'
 export default {
   name: 'Home',
+  data() {
+    return {
+      voteList: []
+    }
+  },
   components: {
     Map,
     BottomNav
@@ -41,6 +48,9 @@ export default {
   methods:{
     sendCoordToMap(item) {
       this.$refs.map.serachAddrFromCoords(item);
+    },
+    async getVoteItem() {
+      this.voteList = await this.$refs.map.returnSearchResult();
     }
   }
 }
