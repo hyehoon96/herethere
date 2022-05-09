@@ -8,16 +8,13 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
       storage: window.sessionStorage,      
-      paths: ['usingChat', 'userView']
+      paths: ['usingChat', 'userView', 'isLogin']
     }),
   ],
   state: {
     usingChat: false,
     userView: null,
-    // globalMarkers: null,
-    // globalBounds: null,
-    // globalCenterLatlng: null,
-    // globalPolygonBundle: null
+    isLogin: null,
   },
   mutations: {
     setUsingChat(state, data) {
@@ -28,22 +25,9 @@ export default new Vuex.Store({
       state.userView = data;
     },
 
-    // saveMapData(state, data) {
-    //   switch (data.type) {
-    //     case 'marker':
-    //       state.globalMarkers = data.mapData;
-    //       break;
-    //     case 'bounds':
-    //       state.globalBounds = data.mapData;
-    //       break;
-    //     case 'center':
-    //       state.globalCenterLatlng = data.mapData;
-    //       break;
-    //     case 'polygon':
-    //       state.globalPolygonBundle = data.mapData;
-    //       break;
-    //   }
-    // }
+    setIsLogin(state, data) {
+      state.isLogin = data;
+    }
   },
   actions: {
   },

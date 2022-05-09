@@ -27,7 +27,7 @@ export default {
     // ChatRoom
   },
   mounted() {
-    
+    // console.log(document.cookie); httpOnly cookie는 스크립트로 읽을 수 없음
     
   },
   methods:{

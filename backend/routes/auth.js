@@ -6,8 +6,8 @@ const database = require('../database');
 router.post('/login', (req, res) => {
     const userid = req.body.userid;
     const password = req.body.password;
-    console.log(req.session.user);
     if (req.session.user) {
+        console.log(req.session.user);
         return res.status(400).json({
             message: '이미 로그인된 사용자입니다.'
         });

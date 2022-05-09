@@ -262,10 +262,13 @@
               :to="item.route"
               :rounded="false"
               tile
-              @click="item.text === '문의/버그' ? (displayDialog = true, dialogType = 'inquiry') : null"
+              @click="item.text === '문의/버그' 
+                      ? (displayDialog = true, dialogType = 'inquiry') 
+                      : item.text ==='로그아웃' 
+                      ? logout()
+                      : null"
               min-height="40"
             >
-              
               <v-icon size="20">{{item.icon}}</v-icon>
               <div class="font-weight-black" style="font-size: 13px;">{{item.text}}</div>
             </v-btn>
@@ -438,6 +441,7 @@ export default {
       },
       menuGroup: [
         { text:'로그인', icon: 'mdi-login', route: 'login' },
+        { text:'로그아웃', icon: 'mdi-logout'},
         { text:'정보', icon: 'mdi-information-outline', route: 'info' },
         { text:'북마크', icon: 'mdi-history', route: 'history' },
         { text:'문의/버그', icon: 'mdi-bug-outline', route: '' },
@@ -495,6 +499,15 @@ export default {
   },
   mounted() {
     this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
+    
+    window.removeEventListener('beforeunload', this.logout);
+    window.addEventListener('beforeunload', this.logout);
+    
+    if (this.$store.state.isLogin) {
+      return this.menuGroup.splice(0, 1);
+    } else {
+      return this.menuGroup.splice(1, 1);
+    }
   },
   computed: {
     resultBundle() {
@@ -503,8 +516,13 @@ export default {
     inquiryLength() {
       return this.inquiry.text.length;
     },
+    
   },
   methods: {
+    async logout() {
+      await this.$axiosAPI('/api/auth/logout', 'get');
+      this.$store.commit('setIsLogin', false);
+    },
     test() {
       // let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       if( this.$vuetify.breakpoint.xs ) {

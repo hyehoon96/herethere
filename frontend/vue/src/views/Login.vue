@@ -56,7 +56,7 @@
                 outlined
                 label="아이디"
                 type="string"
-                v-model="userID"
+                v-model="userid"
                 append-icon="mdi-account"
               >
               </v-text-field>
@@ -92,17 +92,18 @@ export default {
   data: () => ({
     displayDialog: false,
     loginForm: [
-      {label : '아이디 *', prop: 'id', icon: 'mdi-identifier', model: null},
+      {label : '아이디 *', prop: 'userid', icon: 'mdi-identifier', model: null},
       {label : '비밀번호 *', prop: 'password',icon: 'mdi-lock', model: null},
       {label : '비밀번호 확인 *', icon: 'mdi-lock-check', model: null},
-      {label : '이름 *', prop: 'name',icon: 'mdi-card-account-details', model: null},
       {label : '닉네임 *', prop: 'nickname', icon: 'mdi-account', model: null},
-      {label : '연령대', prop: 'age', icon: 'mdi-tag-faces', model: null, list: ['10대', '20대', '30대', '40대', '50대', '60대 이상']},
-      {label : '성별', prop: 'gender', icon: 'mdi-human-male-female', model: null, list: ['여성', '남성']},
+      {label : '이름 *', prop: 'name',icon: 'mdi-card-account-details', model: null},
       {label : '질문 *', prop: 'question', icon: 'mdi-account-question', model: null, list: ['애완동물의 이름은?', '좋아하는 음식은?']},
       {label : '답변 *', prop: 'answer', icon: 'mdi-forum', model: null},
+      {label : '연령대', prop: 'age', icon: 'mdi-tag-faces', model: null, list: ['10대', '20대', '30대', '40대', '50대', '60대 이상']},
+      {label : '성별', prop: 'gender', icon: 'mdi-human-male-female', model: null, list: ['여성', '남성']},
+      
     ],
-    userID: null,
+    userid: null,
     password: null
   }),
   methods: {
@@ -115,29 +116,33 @@ export default {
 
       let loginFormArr = [];
       for (let property of this.loginForm) {
-        loginFormArr.push(property.prop);
+        if (property.prop) {
+          loginFormArr.push(property.prop);
+        }
       }
       let userInfo = {};
       for (let value of loginFormArr) {
-        console.log(value);
         this.loginForm.forEach((item) => {
           if (item.prop === value) {
             userInfo[value] = item.model
           }
         })
-      }
+      }     
       let res = await this.$axiosAPI('/api/user/', 'post', userInfo);
       if( res.userid ) {
         alert('회원가입이 완료되었습니다.');
         this.displayDialog = false;
       }
-      
-
     },
 
     async login() {
-      await this.$axiosAPI('/api/auth/login' ,'post', {id: this.userID, password: this.password});
-
+      if( !this.userid || !this.password ) {
+        alert('아이디와 비밀번호를 입력해주세요.');
+        return;
+      }
+      await this.$axiosAPI('/api/auth/login' ,'post', {userid: this.userid, password: this.password});
+      this.$store.commit('setIsLogin', true);
+      this.$router.push('/');
     }
   }
 }

@@ -298,7 +298,6 @@ export default {
     },
 
     removeMarker() {
-      console.log('hi');
       for ( let i = 0; i < this.markers.length; i++ ) {
         this.markers[i].setMap(null);
       }   
@@ -413,6 +412,7 @@ export default {
             y: coords.y,
             x: coords.x
           }
+          this.removeMarker();
           this.displayMarker(coordsObj);
           this.$refs.sideNav.setSearchText(detailAddr);
         }
