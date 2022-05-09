@@ -374,7 +374,7 @@
               - pagination 렌더링할 곳 2군데임 <br>
               - 반응형 디자인 아이콘 수정해야 함 <br>
               - 브라우저가 닫혔을 때 브라우저에서 로그인을 기억하는 법 <br>
-              
+              - refresh 토큰 필요
             </div>
           </v-card>
           <v-divider class="my-3"></v-divider> 
@@ -512,7 +512,7 @@ export default {
   mounted() {
     this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
     
-    if (this.$store.state.isLogin) {
+    if (localStorage.getItem('isLogin')) {
       return this.menuGroup.splice(0, 1);
     } else {
       return this.menuGroup.splice(1, 1);
@@ -530,7 +530,8 @@ export default {
   methods: {
     async logout() {
       await this.$axiosAPI('/api/auth/logout', 'get');
-      this.$store.commit('setIsLogin', false);
+      //this.$store.commit('setIsLogin', false);
+      localStorage.removeItem('isLogin');
     },
     showMiniBar() {
       // let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);

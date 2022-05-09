@@ -142,7 +142,8 @@ export default {
         return;
       }
       await this.$axiosAPI('/api/auth/login' ,'post', {userid: this.userid, password: this.password});
-      this.$store.commit('setIsLogin', true);
+      //this.$store.commit('setIsLogin', true);
+      localStorage.setItem('isLogin', true);
       this.$router.push('/');
     }
   }
