@@ -154,6 +154,9 @@ export default {
     searchLocation(text) {
       // alert(text);
       // const kakaoMapObj
+      if(!this.$refs.sideNav.searchText) {
+        this.$refs.sideNav.setSearchText(text);
+      }
       this.searchText = text;
       this.removeMarker();
       this.bounds = new kakao.maps.LatLngBounds(); // 초기화

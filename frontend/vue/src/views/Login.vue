@@ -66,6 +66,7 @@
                 type="password"
                 v-model="password"
                 append-icon="mdi-lock"
+                @keyup.enter="login"
               >
               </v-text-field>
 

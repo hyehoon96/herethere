@@ -26,9 +26,17 @@ export default {
     BottomNav
     // ChatRoom
   },
+  props: {
+    place: {
+      type: String
+    }
+  },
   mounted() {
     // console.log(document.cookie); httpOnly cookie는 스크립트로 읽을 수 없음
-    
+    console.log(this.place);
+    if (this.place) {
+      this.$refs.map.searchLocation(this.place);
+    }
   },
   methods:{
     sendCoordToMap(item) {
