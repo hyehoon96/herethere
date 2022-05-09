@@ -136,7 +136,6 @@ export default {
   data: () => (
     { 
       value: 1,
-      roomList: [],
       displayDialog: false,
       beforeConnect: false,
       userName: null,

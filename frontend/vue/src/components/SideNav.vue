@@ -179,7 +179,10 @@
                 style="border-bottom: 1px solid #eaeaea;"
               >
                 <v-list-item-icon>
-                  <v-icon color="primary">mdi-bookmark-check</v-icon>
+                  <v-btn icon tile @click="addBookmark(item)">
+                    <v-icon color="primary">mdi-bookmark-plus-outline</v-icon>
+                    <div class="font-weight-black" style="font-size: 13px;">북마크</div>
+                  </v-btn>
                 </v-list-item-icon>
                 <v-list-item-content 
                   @mouseover="moveMaptoTarget(item, i)"
@@ -245,7 +248,7 @@
             <h1>HereThere</h1>
           </div>
           <div class="text-end" style="width: 20%;">
-            <v-btn v-if="$vuetify.breakpoint.mdAndDown" icon @click="test">
+            <v-btn v-if="$vuetify.breakpoint.mdAndDown" icon @click="showMiniBar">
               <v-icon size="36px">mdi-menu</v-icon>
             </v-btn>
           </div>
@@ -330,7 +333,10 @@
                   style="border-bottom: 1px solid #eaeaea;"
                 >
                   <v-list-item-icon>
-                    <v-icon color="primary">mdi-bookmark-check</v-icon>
+                    <v-btn tile icon @click="addBookmark(item)">
+                      <v-icon  color="primary">mdi-bookmark-plus-outline</v-icon>
+                      <div class="font-weight-black" style="font-size: 13px;">북마크</div>
+                    </v-btn>
                   </v-list-item-icon>
                   <v-list-item-content 
                     @mouseover="moveMaptoTarget(item, i)"
@@ -420,7 +426,6 @@ export default {
       displayDialog: false,
       showSearchResult: true,
       showSideNav: true,
-      roomList: [],
       beforeConnect: false,
       userName: null,
       roomMax: 4,
@@ -440,11 +445,11 @@ export default {
         counter: value => value.length <= 6 || 'Max 20 characters',
       },
       menuGroup: [
-        { text:'로그인', icon: 'mdi-login', route: 'login' },
+        { text:'로그인', icon: 'mdi-login', route: '/login' },
         { text:'로그아웃', icon: 'mdi-logout'},
-        { text:'정보', icon: 'mdi-information-outline', route: 'info' },
-        { text:'북마크', icon: 'mdi-history', route: 'history' },
-        { text:'문의/버그', icon: 'mdi-bug-outline', route: '' },
+        { text:'안내', icon: 'mdi-information-outline', route: '/info' },
+        { text:'북마크', icon: 'mdi-history', route: '/history' },
+        { text:'문의/버그', icon: 'mdi-bug-outline', },
       ],
       roomBtnGroup: [
         { text: '내 위치', 
@@ -495,13 +500,11 @@ export default {
       handler() {
         this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
       }
-    }
+    },
+
   },
   mounted() {
     this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
-    
-    window.removeEventListener('beforeunload', this.logout);
-    window.addEventListener('beforeunload', this.logout);
     
     if (this.$store.state.isLogin) {
       return this.menuGroup.splice(0, 1);
@@ -523,7 +526,7 @@ export default {
       await this.$axiosAPI('/api/auth/logout', 'get');
       this.$store.commit('setIsLogin', false);
     },
-    test() {
+    showMiniBar() {
       // let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       if( this.$vuetify.breakpoint.xs ) {
         this.$router.push('/login')
@@ -531,13 +534,7 @@ export default {
         this.showSideNav = !this.showSideNav
       }
     },
-    // lowerBtnClick(item) {
-    //   switch { 
-    //     case:
-    //     case:
-    //     case:
-    //   }
-    // },
+    
     getCurrentLocate() {
       if('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition((position) => {
@@ -549,6 +546,10 @@ export default {
       } else {
         alert('지원하지 않는 브라우저입니다.');
       }
+    },
+    pushCurrentLocate(obj) {
+      this.searchResult = [];
+      this.searchResult.push(obj);
     },
     getListItem(item) {
       this.searchResult = item;
@@ -626,6 +627,9 @@ export default {
         this.latlngBundle.push(item);
       }
       this.$emit('displayMarker', item);
+
+      console.log(this.searchResult);
+      console.log(this.latlngBundle);
     },
 
     moveMaptoTarget(item, i) {
@@ -672,7 +676,17 @@ export default {
     setSearchText(text) {
       this.searchText = text;
     },
-
+    async addBookmark(item) {
+      if (this.$store.state.isLogin !== true ) {
+        alert('로그인 후 이용할 수 있습니다.');
+        return;
+      }
+      let cookedItem = JSON.parse(JSON.stringify(item));
+      delete cookedItem.distance;
+      console.log(cookedItem);
+      await this.$axiosAPI('/api/history', 'post', cookedItem);
+      alert('북마크가 추가되었습니다!');
+    }
   }
 }
 </script>

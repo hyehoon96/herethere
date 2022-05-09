@@ -16,7 +16,7 @@ router.post('/', (req, res) => {
     }
     return res.status(201).json(row)
   })
-  
+  database.end();
   
 })
 module.exports = router;

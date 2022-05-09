@@ -410,11 +410,13 @@ export default {
           let coordsObj = {
             place_name: detailAddr,
             y: coords.y,
-            x: coords.x
+            x: coords.x,
+            
           }
           this.removeMarker();
           this.displayMarker(coordsObj);
           this.$refs.sideNav.setSearchText(detailAddr);
+          this.$refs.sideNav.pushCurrentLocate(coordsObj); 
         }
       })
     }
