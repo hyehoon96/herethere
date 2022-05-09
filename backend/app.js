@@ -12,6 +12,7 @@ var userRouter = require('./routes/user');
 var roomRouter = require('./routes/room');
 var authRouter = require('./routes/auth');
 var inquiryRouter = require('./routes/inquiry');
+var historyRouter = require('./routes/history');
 
 require('dotenv').config();
 app.set('views', path.join(__dirname, 'views'));
@@ -39,6 +40,7 @@ app.use('/api/user', userRouter);
 app.use('/api/room', roomRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/inquiry', inquiryRouter);
+app.use('/api/history', historyRouter);
 
 app.use((req, res, next) => {
     const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);

@@ -4,14 +4,12 @@ const router = express.Router();
 const database = require('../database');
 
 /**
- * 회원정보 생성 API
- * - 조건1. 중복이 아닌 아이디
- * - 조건2. 작성규칙을 준수하는 비밀번호
+ * 유저 생성 API
  */
 router.post('/', (req, res) => {
   console.log(req.body);
   const params = [
-    req.body.id.toLowerCase(), // 소문자로 변환
+    req.body.userid,
     req.body.password,
     req.body.name,
     req.body.nickname,
@@ -21,45 +19,31 @@ router.post('/', (req, res) => {
     req.body.answer
   ];
 
-  // 컬럼값 저장형식 변환
-  // 예. '20대' -> '20-29'
-  let ageGroup = req.body.ageGroup;
-  switch (ageGroup) {
-    case '10대':
-      ageGroup = '10-19';
-      break;
-    case '20대':
-      ageGroup = '20-29';
-      break;
-    case '30대':
-      ageGroup = '30-39';
-      break;
-    case '40대':
-      ageGroup = '40-49';
-      break;
-    case '50대':
-      ageGroup = '50-59';
-      break;
-    case '60대':
-      ageGroup = '60+';
-      break;
-  }
-  // 예. '남성' -> 'M'
-  let gender = req.body.gender;
-  if (gender) {
-    gender = (gender === "남성") ? 'M' : 'W';
-  }
+  // 데이터베이스 연결 및 쿼리 정의
+  const conn = database.init();
 
-  conn = database.init();
+  const selectDuplicateUseridSql = 'SELECT `userid` FROM user WHERE `userid`=LOWER(?)';
+  const insertUserSql = 'INSERT INTO user(`userid`,`password`,`name`,`nickname`,`age_group`,`gender`,`question`,`answer`) VALUES (?,?,?,?,?,?,?,?)';
+
+  // 중복 아이디 확인
+  conn.query(selectDuplicateUseridSql, params[0], (err, row) => {
+    if (err) { console.log(err); }
+    if (row[0]) {
+      return res.status(409).json({
+        message: '이미 존재하는 아이디입니다.'
+      });
+    }
+  });
+
+  // 비밀번호 암호화 및 유저 생성
   bcrypt.hash(params[1], 10, (err, hash) => {
+    params[0] = params[0].toLowerCase(); // 소문자로 변환
     params[1] = hash;
-    params[4] = ageGroup;
-    params[5] = gender;
-    conn.query('INSERT INTO user(`userid`,`password`,`name`,`nickname`,`age_group`,`gender`,`question`,`answer`) VALUES (?,?,?,?,?,?,?,?)'
-        , params, (err, row) => {
+
+    conn.query(insertUserSql, params, (err, row) => {
       if (err) { console.log(err); }
       return res.status(201).json({
-        // no: row['insertId'],
+        id: row.insertId,
         userid: params[0],
         // password: params[1],
         name: params[2],
@@ -72,60 +56,53 @@ router.post('/', (req, res) => {
   });
 })
 
-router.route('/:id')
+router.route('/:userid')
   .all((req, res, next) => {
     console.log(router.route);
     req.conn = database.init();
     next();
   })
     /**
-     * 회원정보 단건조회 API
+     * 유저 조회 API
      */
   .get((req, res) => {
-    console.log('get user from user router');
-    const id = req.params.id;
+    const userid = req.params.userid;
 
-    req.conn.query('SELECT `userid`, `password`, `name`, `nickname`, `age_group`, `gender` FROM user WHERE `userid` = ? AND `is_deleted` = "N"'
-        , id, (err, row) => {
+    const selectUserSql = 'SELECT `userid`,`password`,`name`,`nickname`,`age_group`,`gender` FROM user WHERE `userid`=? AND `locked`=\'N\'';
+
+    req.conn.query(selectUserSql, userid, (err, row) => {
       if (err) { console.log(err); }
-      if (user = row[0]) {
+
+      if (row[0]) {
         return res.status(200).json({
-          userid: user.userid,
-          password: user.password,
-          name: user.name,
-          nickname: user.nickname,
-          ageGroup: user.age_group,
-          gender: user.gender
+          userid: row[0].userid,
+          //password: row[0].password,
+          name: row[0].name,
+          nickname: row[0].nickname,
+          ageGroup: row[0].age_group,
+          gender: row[0].gender
         });
       } else {
-        return res.status(404).json({err: 'Unknown user'});
+        return res.status(404).json({
+          message: '해당 유저를 찾을 수 없습니다.'
+        });
       }
-      database.end(req.conn);
     });
+    database.end(req.conn);
   })
     /**
-     * 회원정보 삭제 API
+     * 유저 삭제 API
      */
   .delete((req, res) => {
-    //console.log('delete user from user router');
-    const id = req.params.id;
-    req.conn.query('UPDATE user SET `is_deleted` = "Y", `deleted_date` = CURRENT_TIMESTAMP WHERE `userid` = ?'
-        , id, (err, row) => {
+    const userid = req.params.userid;
+
+    const deleteUserSql = 'UPDATE user SET `locked`=\'Y\', `deleted_date`=CURRENT_TIMESTAMP WHERE `userid`=?';
+
+    req.conn.query(deleteUserSql, userid, (err, row) => {
       if (err) { console.log(err); }
       return res.status(204).send();
     });
     database.end(req.conn);
   })
-
-// todo: 회원정보 생성 API 에 포함시키기
-router.get('/checkId/:id', (req, res) => {
-  const id = req.params.id;
-  conn.query('SELECT `id` FROM user WHERE `id` = LOWER(?)', id, (err, row) => {
-    if (err) { console.log(err); }
-    let result = row[0] ? false : true;
-    return res.status(200).json({result: result});
-  })
-  //database.end(conn);
-})
 
 module.exports = router;
