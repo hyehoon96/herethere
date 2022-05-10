@@ -23,8 +23,9 @@ export default {
             alert('입력이 유효하지 않습니다. 잘못된 입력이 있거나, 비어있는지 확인해주세요. (400)');
             break;
           case 401 :
-            alert('권한이 없거나, 인증이 만료되었습니다. 다시 로그인해주세요. (401)');
+            alert('로그인이 만료되었습니다. 다시 로그인해주세요.');
             localStorage.removeItem('isLogin');
+            this.$router.go();
             break;
           case 403 :
             alert('권한이 없습니다. (403)');

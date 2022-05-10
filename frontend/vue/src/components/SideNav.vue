@@ -474,7 +474,7 @@ export default {
               self.chatList = await self.$axiosAPI('api/room', 'get');  
               self.displayDialog = true;
             }
-            self.roomTitle = 'user' +  Math.floor(Math.random() * 100) + '님의 채팅방' // user Id
+            self.roomTitle = self.$store.state.nickname + '님의 채팅방' // user Id
             self.dialogType = null;
           }
         },

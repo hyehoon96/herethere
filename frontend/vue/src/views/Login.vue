@@ -69,8 +69,14 @@
                 @keyup.enter="login"
               >
               </v-text-field>
-
+              <v-checkbox
+                label="로그인 기억"
+                v-model="remember"
+              >
+              <!-- v-if android -->
+              </v-checkbox>
             </v-col>
+            
           </v-row>
           <v-row justify="center">
             <v-col cols="12" class="text-center">
@@ -105,7 +111,8 @@ export default {
       
     ],
     userid: null,
-    password: null
+    password: null,
+    remember: false
   }),
   methods: {
 
@@ -141,9 +148,10 @@ export default {
         alert('아이디와 비밀번호를 입력해주세요.');
         return;
       }
-      await this.$axiosAPI('/api/auth/login' ,'post', {userid: this.userid, password: this.password});
+      let res = await this.$axiosAPI('/api/auth/login' ,'post', {userid: this.userid, password: this.password});
       //this.$store.commit('setIsLogin', true);
       localStorage.setItem('isLogin', true);
+      this.$store.commit('setUserNickname', res.nickname);
       this.$router.push('/');
     }
   }

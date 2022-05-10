@@ -8,13 +8,14 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
       storage: window.sessionStorage,      
-      paths: ['usingChat', 'userView', 'isLogin']
+      paths: ['usingChat', 'userView', 'isLogin', 'nickname']
     }),
   ],
   state: {
     usingChat: false,
     userView: null,
     isLogin: null,
+    nickname: null
   },
   mutations: {
     setUsingChat(state, data) {
@@ -27,6 +28,9 @@ export default new Vuex.Store({
 
     setIsLogin(state, data) {
       state.isLogin = data;
+    },
+    setUserNickname(state, data) {
+      state.nickname = data;
     }
   },
   actions: {

@@ -32,10 +32,12 @@ router.post('/login', (req, res) => {
                             userid: user.userid,
                             name: user.name,
                             nickname: user.nickname,
-                            authorized: true
+                            authorized: true,
                         };
+                        // req.session.cookie.maxAge = 365 * 24 * 60 * 60 * 1000;
                         return res.status(200).json({
-                            message: '사용자의 세션을 생성했습니다.'
+                            message: '사용자의 세션을 생성했습니다.',
+                            nickname: user.nickname
                         });
                     } else {
                         return res.status(400).json({

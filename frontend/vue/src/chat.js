@@ -25,7 +25,7 @@ export default {
       } else {
         let roomObj = {
           owner: '',
-          title: 'user' +  Math.floor(Math.random() * 100) + '님의 채팅방',
+          title: this.$store.state.nickname + '님의 채팅방',
           max: this.roomMax,
           password: this.roomNumber
         }
