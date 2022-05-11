@@ -34,7 +34,24 @@
           </v-row>
         </template>
         <template v-slot:body v-else>
-          <div v-if="cookedVoteList.length === 0" class="text-center">지역을 먼저 검색해주세요.</div>
+          <div v-if="cookedVoteList.length === 0 && listType" class="text-center">지역을 먼저 검색해주세요.</div>
+          <div v-if="listType === false && bookmarkList.length === 0" class="text-center">북마크를 추가해주세요.</div>
+          <div class="d-flex">
+            <v-btn 
+              style="width: 50%; font-weight: bold;" 
+              tile 
+              :color="listType ? 'primary' : ''"
+              @click="listType = true;"
+            >
+              검색결과에서 찾기</v-btn>
+            <v-btn 
+              style="width: 50%; font-weight: bold;" 
+              :color="listType ? '' : 'primary'"
+              tile
+              @click="listType = false; setVoteList('bookmark');"
+            >
+              북마크에서 찾기</v-btn>
+          </div>
           <v-data-table
             v-model="selected"
             :headers="headers"
@@ -267,6 +284,7 @@ export default {
       verification: false,
       dialogType: null,
       currentClient: null,
+      listType: true
     }
   },
   props: {
@@ -494,6 +512,23 @@ export default {
         this.sendInitValue();
       } else {
         alert('채팅방 비밀번호가 틀렸습니다.');
+      }
+    },
+
+    async setVoteList(type) {
+      if (type === 'bookmark') {
+        this.cookedVoteList = [];
+        this.bookmarkList = [];
+        this.bookmarkList =  await this.$axiosAPI('/api/history', 'get'); 
+        for (let i = 0; i < this.bookmarkList.length; i++) {
+          this.cookedVoteList.push({
+            name: this.bookmarkList[i].name,
+            category: this.bookmarkList[i].category_name.split('>')[this.bookmarkList[i].category_name.split('>').length-1],
+            vote: 0
+          })
+        }
+      } else {
+        console.log('h');
       }
     }
     
