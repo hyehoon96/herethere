@@ -518,6 +518,7 @@ export default {
     },
 
     async setVoteList(type) {
+      this.selected = [];
       if (type === 'bookmark') {
         this.cookedVoteList = [];
         this.bookmarkList = [];
@@ -531,7 +532,6 @@ export default {
           })
         }
       } else {
-        console.log(this.tempVoteList);
         this.cookedVoteList = this.tempVoteList;
       }
     }
