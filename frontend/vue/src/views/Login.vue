@@ -148,7 +148,7 @@ export default {
         alert('아이디와 비밀번호를 입력해주세요.');
         return;
       }
-      let res = await this.$axiosAPI('/api/auth/login' ,'post', {userid: this.userid, password: this.password});
+      let res = await this.$axiosAPI('/api/auth/login' ,'post', {userid: this.userid, password: this.password, remember: this.remember});
       //this.$store.commit('setIsLogin', true);
       localStorage.setItem('isLogin', true);
       this.$store.commit('setUserNickname', res.nickname);

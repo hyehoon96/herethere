@@ -6,6 +6,7 @@ const database = require('../database');
 router.post('/login', (req, res) => {
     const userid = req.body.userid;
     const password = req.body.password;
+    const remember = req.body.remember;
     if (req.session.user) {
         console.log(req.session.user);
         return res.status(400).json({
@@ -34,7 +35,9 @@ router.post('/login', (req, res) => {
                             nickname: user.nickname,
                             authorized: true,
                         };
-                        // req.session.cookie.maxAge = 365 * 24 * 60 * 60 * 1000;
+                        if (remember) {
+                            req.session.cookie.maxAge = 60 * 24 * 60 * 60 * 1000; 
+                        }
                         return res.status(200).json({
                             message: '사용자의 세션을 생성했습니다.',
                             nickname: user.nickname
