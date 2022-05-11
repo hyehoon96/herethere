@@ -21,6 +21,11 @@ export default {
   },
   methods: {
     async createRoom() {
+      if(this.roomNumber.length < 6) {
+        alert('비밀번호는 6자리 이상이어야 합니다.');
+        return;
+      }
+      
       let room = await this.$axiosAPI('/api/room/' + this.roomNumber ,'get');
       if (!room.empty) {
         alert('다른 비밀번호를 사용해주세요.');
