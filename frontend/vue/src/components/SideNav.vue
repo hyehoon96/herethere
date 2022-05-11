@@ -202,11 +202,15 @@
                 </div>
                 
               </v-list-item>
-              <div class="text-center">
-                <ul id="placesList"></ul>
+              <div class="text-center" v-if="searchResult.length > 0">
+                <!-- <ul id="placesList"></ul>
                 <div id="pagination">
-                  <!-- a tag -->
-                </div>
+                </div> -->
+                <v-pagination
+                  v-model="page"
+                  :length="pageLength"
+                  circle
+                ></v-pagination>
               </div>
             </v-list-item-group>
           </v-list>
@@ -356,11 +360,12 @@
                   </div>
                   
                 </v-list-item>
-                <div class="text-center">
-                  <ul id="placesList"></ul>
-                  <div id="pagination">
-                    <!-- a tag -->
-                  </div>
+                <div class="text-center" v-if="searchResult.length > 0">
+                  <v-pagination
+                    v-model="page"
+                    :length="pageLength"
+                    circle
+                  ></v-pagination>
                 </div>
               </v-list-item-group>
             </v-list>
@@ -429,6 +434,9 @@ export default {
   data() {
     var self = this;
     return {
+      page: 1,
+      pageLength: null,
+      pageOnclick: null,
       displayDialog: false,
       showSearchResult: true,
       showSideNav: true,
@@ -507,7 +515,12 @@ export default {
         this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
       }
     },
-
+    'page': {
+      handler() {
+        this.$emit('removeMarker'); 
+        this.paginationObj.gotoPage(this.page);
+      }
+    }
   },
   mounted() {
     this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
@@ -587,43 +600,45 @@ export default {
     },
     
     displayPagination(pagination) {
+      this.paginationObj = pagination;
+      this.pageLength = pagination.last;
       
-      this.$nextTick(() => {
-        console.log(pagination);
-        this.paginationObj = pagination;
-        let paginationEl = document.getElementById('pagination');
-        let fragment = document.createDocumentFragment();
+      // this.$nextTick(() => {
+      //   console.log(pagination);
+      //   this.paginationObj = pagination;
+      //   let paginationEl = document.getElementById('pagination');
+      //   let fragment = document.createDocumentFragment();
 
-        // 기존에 추가된 페이지번호를 삭제합니다
-        this.removePagination();
-        for (let i=1; i<=pagination.last; i++) {
-          let el = document.createElement('a');
-          el.href = "#";
-          el.innerHTML = i;
+      //   // 기존에 추가된 페이지번호를 삭제합니다
+      //   this.removePagination();
+      //   for (let i=1; i<=pagination.last; i++) {
+      //     let el = document.createElement('a');
+      //     el.href = "#";
+      //     el.innerHTML = i;
           
-          if (i===pagination.current) {
-            el.className = 'on';
-          } else {
-            el.onclick = ((i) => {
-              return () => {
-                this.$emit('removeMarker');
-                pagination.gotoPage(i);
-              }
-            })(i);
-          }
+      //     if (i===pagination.current) {
+      //       el.className = 'on';
+      //     } else {
+      //       el.onclick = ((i) => {
+      //         return () => {
+      //           this.$emit('removeMarker');
+      //           pagination.gotoPage(i);
+      //         }
+      //       })(i);
+      //     }
 
-          fragment.appendChild(el);
-        }
-        paginationEl.appendChild(fragment);
-      })
+      //     fragment.appendChild(el);
+      //   }
+      //   paginationEl.appendChild(fragment);
+      // })
     },
-    removePagination() {
-      let paginationEl = document.getElementById('pagination');
-      while (paginationEl.hasChildNodes()) {
-        paginationEl.removeChild (paginationEl.lastChild);
-      }
+    // removePagination() {
+    //   let paginationEl = document.getElementById('pagination');
+    //   while (paginationEl.hasChildNodes()) {
+    //     paginationEl.removeChild (paginationEl.lastChild);
+    //   }
      
-    },
+    // },
     closeInfowindow() {
       clearTimeout(this.debounce2);
       this.debounce2 = setTimeout(() => {
