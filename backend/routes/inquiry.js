@@ -4,7 +4,14 @@ const database = require('../database');
 
 
 router.post('/', (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({
+        message: '로그인 되지 않은 사용자입니다.'
+    });
+  }
+   
   conn = database.init();
+  
   const params = [
     req.body.title,
     req.body.text
