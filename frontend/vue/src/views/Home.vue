@@ -40,7 +40,8 @@ export default {
   },
   mounted() {
     // console.log(document.cookie); httpOnly cookie는 스크립트로 읽을 수 없음
-    console.log(this.place);
+    this.$store.commit('setUsingChat', false);
+    this.$store.commit('setChatRole', null);
     if (this.place) {
       this.$refs.map.searchLocation(this.place);
     }

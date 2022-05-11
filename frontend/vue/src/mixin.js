@@ -25,7 +25,11 @@ export default {
           case 401 :
             alert('로그인이 만료되었습니다. 다시 로그인해주세요.');
             localStorage.removeItem('isLogin');
-            this.$router.go();
+            if (this.$route.name === "Home") {
+              this.$router.go();
+            } else {
+              this.$router.push('/');
+            }
             break;
           case 403 :
             alert('권한이 없습니다. (403)');

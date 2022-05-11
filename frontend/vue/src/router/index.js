@@ -19,7 +19,8 @@ const routes = [
         path: '/room/:roomNumber',
         name: 'ChatRoom',
         component: ChatRoom,
-        props: true
+        props: true,
+
       }
     ]
   },
@@ -27,6 +28,7 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login,
+    
   },
   {
     path: '/history',

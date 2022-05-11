@@ -532,6 +532,9 @@ export default {
       await this.$axiosAPI('/api/auth/logout', 'get');
       //this.$store.commit('setIsLogin', false);
       localStorage.removeItem('isLogin');
+      this.menuGroup.shift();
+      this.menuGroup.unshift({ text:'로그인', icon: 'mdi-login', route: '/login' });
+      alert('로그아웃이 완료되었습니다.');
     },
     showMiniBar() {
       // let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);

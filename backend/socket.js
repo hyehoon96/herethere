@@ -34,7 +34,6 @@ module.exports = (server, app, sessionMiddleware) => {
       }
       socket.join(roomId);
       socket.to(roomId).emit('join',systemMsg);
-      console.log('socket.js 입니다.', currentClient);
       axios.put(`http://localhost:8080/api/room/${roomId}`, {currentClient})
         .then(() => {
           console.log(`현재 인원 ${data.currentClient}`);
@@ -49,18 +48,20 @@ module.exports = (server, app, sessionMiddleware) => {
     });
     
     socket.on('disconnect', () => {
-      console.log('room 네임스페이스 접속 해제', roomId);
-      socket.leave(roomId);
-      axios.put(`http://localhost:8080/api/room/${roomId}`, {currentClient: currentClient - 1})
+      // console.log('room 네임스페이스 접속 해제', roomId);
+      const currentRoom = socket.adapter.rooms.get(roomId);      
+      const userCount = currentRoom ? currentRoom.size : 0;
+
+      axios.put(`http://localhost:8080/api/room/${roomId}`, {currentClient: userCount})
         .then(() => {
-          console.log(`현재 인원 ${currentClient -1}`);
+          console.log(`현재 인원 ${userCount}`);
         })
         .catch( (error)=> {
           console.log(error);
         })
       // console.log(socket.adapter.rooms.get(roomId).size);
-      const currentRoom = socket.adapter.rooms.get(roomId);      
-      const userCount = currentRoom ? currentRoom.size : 0;
+      socket.leave(roomId);
+      
       if (userCount <= 0) {
         axios.delete(`http://localhost:8080/api/room/`, {data: {password: roomId} })
           .then(() => {

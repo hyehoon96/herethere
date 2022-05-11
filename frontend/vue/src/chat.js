@@ -54,6 +54,7 @@ export default {
         }
         this.$router.push({ name: 'ChatRoom', params: roomParams });
         this.$store.commit('setUserView', 'chat');
+        this.$store.commit('setUserNickname', this.userName);
       } catch(e) {
         alert(e);
       }

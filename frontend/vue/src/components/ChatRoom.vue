@@ -3,17 +3,37 @@
      <v-dialog
       v-model="displayDialog"
       max-width="500"
+      :persistent="!verification"
     >
       <custom-dialog
-        :header-title="'최대 5개 선택'"
+        :header-title="dialogType === 'verification' ? '재인증' : '최대 5개 선택'"
         @hide="displayDialog = false;"
         :footerSubmit="true"
-        :footerSubmitTitle="'생성'"
-        :footerCloseBtn="true"
-        @submit="createVote"
+        :footerSubmitTitle="dialogType === 'verification' ? '전송' : '생성'"
+        :footerCloseBtn="dialogType === 'verification' ? false : true"
+        @submit="dialogType === 'verification' ? verificationEnter() : createVote()"
       >
       <!-- @submit="createVote" -->
-        <template v-slot:body>
+        <template v-slot:body v-if="dialogType ==='verification'">
+          <v-row justify="center">
+            <v-col cols="11">
+              <v-text-field
+                v-model="reNickname"
+                outlined
+                hide-details
+                label="채팅방에서 사용할 이름"
+                class="mb-5"
+              />
+              <v-text-field
+                v-model="rePassword"
+                outlined
+                hide-details
+                label="채팅방 비밀번호"
+              />
+            </v-col>
+          </v-row>
+        </template>
+        <template v-slot:body v-else>
           <div v-if="cookedVoteList.length === 0" class="text-center">지역을 먼저 검색해주세요.</div>
           <v-data-table
             v-model="selected"
@@ -242,7 +262,11 @@ export default {
       selected: [], // 투표창에 들어갈 place
       voteSelected: [], // 투표창 안에서 선택된 place의 index
       isSubmit: false, // 투표여부
-      currentVoteList: [] // 채팅창 안에 렌더링 된 최근 투표창
+      currentVoteList: [], // 채팅창 안에 렌더링 된 최근 투표창
+      rePassword: null,
+      verification: false,
+      dialogType: null,
+      currentClient: null,
     }
   },
   props: {
@@ -264,36 +288,13 @@ export default {
   },
 
   async mounted() {
-    this.roomId = atob(this.roomNumber);
-    let findRoom = await this.$axiosAPI('/api/room/'+ this.roomId, 'get');
-    console.log(findRoom);
-    if (findRoom.empty) {
-      alert('잘못된 링크입니다.');
-      this.$router.push('/');
-    } 
     
-    this.vapidKey = Math.random().toString(36).substr(2,11); // 메시지 식별 랜덤 키
+    this.$store.commit('setChatRole', this.role);
+    
+    this.beforeEnter();
     this.socket = io('http://localhost:8080/room', { // 네임스페이스
       path: '/socket.io',
     });
-
-    if (this.role === 'guest') {
-      this.userNameInChat = this.user;
-    } else {
-      this.userNameInChat = 'user' + Math.floor(Math.random() * 100);
-    }
-    if (this.$store.state.usingChat === false) {
-      console.log('usingChat change');
-      await this.socket.emit('roomId', {
-        roomId: this.roomId, 
-        user: this.userNameInChat, 
-        currentClient: findRoom.currentClient + 1
-      });
-      this.$store.commit('setUsingChat', true);
-    } else {
-      // show dialog
-      console.log('show dialog');
-    }
     
     this.socket.on('chat', (data) => {
       console.log('chat received', data);
@@ -369,11 +370,55 @@ export default {
     },
 
   },
-  unmounted() {
-    console.log('unmount!!');
-  },
   
   methods: {
+    async sendInitValue() {
+      await this.socket.emit('roomId', {
+        roomId: this.roomId, 
+        user: this.userNameInChat, 
+        currentClient: this.currentClient + 1
+      });
+      this.$store.commit('setUsingChat', true);
+    },
+    async beforeEnter() {
+      this.roomId = atob(this.$route.params.roomNumber);
+      let findRoom = await this.$axiosAPI('/api/room/'+ this.roomId, 'get');
+      console.log(findRoom);
+      // 채팅방이 없는 경우
+      if (findRoom.empty) {
+        alert('잘못된 링크입니다.');
+        this.$router.push('/');
+      } 
+      this.currentClient = findRoom.currentClient;
+      // 방장, 로그인한 게스트, 로그인 안한 게스트 - 비번 치고 접속, 로그인 안한 게스트 - 링크 타고 접속
+      // if( this.$store.state.chatRole === 'owner' || (this.$store.state.nickname && localStorage.getItem('isLogin') && this.$store.state.chatRole === 'guest')) {
+      //   // 방장 + 로그인 한 게스트
+      //   this.userNameInChat = this.$store.state.nickname;
+      //   this.sendInitValue();
+      // } else if ((this.isEmpty(this.$store.state.nickname) || this.isEmpty(localStorage.getItem('isLogin'))) && this.isEmpty(this.user)) {
+      //   // 로그인 안한 게스트 - 링크타고 접속 
+      //   // 검증 로직
+      //   this.displayDialog = true;
+      //   this.dialogType = 'verification';
+      // } else {
+      //   // 로그인 안한 게스트 - 비번 입력 후 접속
+      //   this.userNameInChat = this.user;
+      //   this.sendInitValue();
+      // }
+      
+      if ((this.isEmpty(this.$store.state.nickname) || this.isEmpty(localStorage.getItem('isLogin'))) && this.isEmpty(this.user)) {
+        this.displayDialog = true;
+        this.dialogType = 'verification';
+      } else {
+        this.userNameInChat = this.$store.state.nickname;
+        this.sendInitValue();
+      }
+
+      this.vapidKey = Math.random().toString(36).substr(2,11); // 메시지 식별 랜덤 키
+
+      
+       
+    },
     async sendMessage() {
       let msg = {
         user: this.userNameInChat,
@@ -396,12 +441,7 @@ export default {
       this.displayDialog = false;
       this.showMenu = false;
     },
-    confirmLeave(event) {
-      event.preventDefault();
-      // Chrome에서는 returnValue 설정이 필요함
-      event.returnValue = '';
-      
-    },
+    
     sendMyLocate() {
       if('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition( async (position) => {
@@ -445,8 +485,32 @@ export default {
       
       await this.$axiosAPI('/api/room/vote/' + this.roomId, 'post', cookedVoteSelected);
       this.isSubmit = true;
+    },
+    verificationEnter() {
+      if (this.roomId === this.rePassword) {
+        this.verification = true;
+        this.displayDialog = false;
+        this.$store.commit('setUserNickname', this.reNickname);
+        this.sendInitValue();
+      } else {
+        alert('채팅방 비밀번호가 틀렸습니다.');
+      }
     }
     
+  },
+  // beforeRouteEnter: function (to, from, next) {
+  //   console.log('before enter', from, next);
+  // },
+  // beforeRouteUpdate: function (to, from, next) {
+  //   console.log('before update', from, next);
+  // },
+  beforeRouteLeave: function (to, from, next) { 
+    const answer = window.confirm('페이지를 벗어나면 대화 내용이 사라집니다. 페이지를 벗어날까요?') 
+    if (answer) { 
+      next() 
+    } else { 
+      next(false) 
+    } 
   }
 }
 </script>
