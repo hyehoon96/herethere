@@ -761,7 +761,7 @@ a {
 }
 .mini-bar {
   position: absolute; 
-  z-index:11;
+  z-index:12;
 }
 
 @media screen and (max-width: 600px ) {

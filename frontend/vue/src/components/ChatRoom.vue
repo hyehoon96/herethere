@@ -88,10 +88,10 @@
     </v-btn>
     <v-card class="chat-card" 
       :style="$vuetify.breakpoint.lgAndUp 
-      ? 'width: 25vw;' 
+      ? 'width: 25vw; min-width: 300px;' 
       : $vuetify.breakpoint.xs 
-        ? 'width: 100vw; height: calc(100vh - 56px);'
-        : 'width: 30vw;'" 
+        ? 'width: 100vw; height: calc(100vh - 56px); min-width: 300px;'
+        : 'width: 30vw; min-width: 300px;'" 
       v-if="displayChatRoom"
     >
       <v-toolbar color="primary" height="35">
