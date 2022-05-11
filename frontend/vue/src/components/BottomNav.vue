@@ -75,11 +75,11 @@
                 />
               </v-col>
               <v-col cols="4">
-                <v-text-field
+                <v-select
                   v-model="roomMax"
                   outlined
                   hide-details
-                  type="number"
+                  :items="[1, 2, 3, 4]"
                   label="인원"
                 />
               </v-col>
@@ -90,8 +90,9 @@
               <v-text-field
                 v-model="roomNumber"
                 outlined
+                type="number"
                 hide-details
-                label="비밀번호"
+                label="비밀번호 (6자 이상)"
               />
             </v-col>
           </v-row>

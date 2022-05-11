@@ -28,7 +28,7 @@
                 :append-icon="item.icon"
                 v-model="loginForm[i].model"
                 :label="item.label"
-                :type="item.label === '비밀번호 *' || item.label === '비밀번호 확인 *' ? 'password' : 'text'"
+                :type="item.label === '비밀번호 (4자리 이상) *' || item.label === '비밀번호 확인 *' ? 'password' : 'text'"
               />
             </v-col>
           </v-row>
@@ -100,7 +100,7 @@ export default {
     displayDialog: false,
     loginForm: [
       {label : '아이디 *', prop: 'userid', icon: 'mdi-identifier', model: null},
-      {label : '비밀번호 *', prop: 'password',icon: 'mdi-lock', model: null},
+      {label : '비밀번호 (4자리 이상) *', prop: 'password',icon: 'mdi-lock', model: null},
       {label : '비밀번호 확인 *', icon: 'mdi-lock-check', model: null},
       {label : '닉네임 *', prop: 'nickname', icon: 'mdi-account', model: null},
       {label : '이름 *', prop: 'name',icon: 'mdi-card-account-details', model: null},
@@ -117,11 +117,20 @@ export default {
   methods: {
 
     async submitDialog() {
+      for ( let j = 0; j < 7; j++) {
+        if( this.isEmpty(this.loginForm[j].model)) {
+          alert('필수 항목을 모두 입력해주세요.');
+          return;
+        }
+      }
       if( this.loginForm[1].model !== this.loginForm[2].model) {
         alert('비밀번호가 일치하지 않습니다.');
         return;
       }
-
+      if ( this.loginForm[1].model.length < 4 ) {
+        alert('비밀번호는 4자리 이상 입력해주세요.');
+        return;
+      }
       let loginFormArr = [];
       for (let property of this.loginForm) {
         if (property.prop) {

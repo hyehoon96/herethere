@@ -28,7 +28,7 @@
                 v-model="rePassword"
                 outlined
                 hide-details
-                label="채팅방 비밀번호"
+                label="채팅방 비밀번호 (6자 이상)"
               />
             </v-col>
           </v-row>
