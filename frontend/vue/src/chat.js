@@ -13,7 +13,9 @@ export default {
       handler() {
         if ( this.$store.state.usingChat ) {
           this.value = 0;
-        } 
+        } else {
+          this.$store.commit('initSearchResult');
+        }
       }
     }
   },

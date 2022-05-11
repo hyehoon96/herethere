@@ -65,6 +65,7 @@ export default {
       currentCenterLatlng: null,
       polygonBundle: {},
       firstSearch: true,
+      searchChanged: null
     }
   },
   
@@ -148,6 +149,13 @@ export default {
       } else {
         this.firstSearch = false;
       }
+      
+      if(this.searchText !== text) {
+        this.searchChanged = true;
+        this.$store.commit('initSearchResult');
+      } else {
+        this.searchChanged = false;
+      }
       this.searchText = text;
       this.$refs.sideNav.page = 1;
       this.removeMarker();
@@ -159,6 +167,12 @@ export default {
       if (status === kakao.maps.services.Status.OK) {
           // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
           // LatLngBounds 객체에 좌표를 추가합니다
+        
+        if (this.$store.state.nickname && localStorage.getItem('isLogin') && this.$store.state.usingChat) {
+          //로그인한 유저가 채팅을 사용하고 있으면~
+          this.$store.commit('setSearchResult', data);
+        }
+        
         for ( let i = 0; i < data.length; i++) {
           this.displayMarker(data[i]);
           this.bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
@@ -166,7 +180,7 @@ export default {
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
         this.map.setBounds(this.bounds);
         this.$refs.sideNav.getListItem(data);  // sideNav에 목록 나타내기
-        this.$refs.sideNav.displayPagination(pagination, this.firstSearch); // sideNav에 pagination 나타내기
+        this.$refs.sideNav.displayPagination(pagination); // sideNav에 pagination 나타내기
         
       } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
 
@@ -419,8 +433,15 @@ export default {
     },
 
     returnSearchResult() {
-      console.log(this.$refs.sideNav.searchResult);
-      return this.$refs.sideNav.searchResult;
+      if(this.isEmpty(this.$refs.sideNav.pageLength)) {
+        alert('지역 또는 키워드를 검색하면 투표 목록이 채워집니다. 먼저 지역 또는 키워드를 검색해주세요.');
+        return;
+      } 
+
+      for ( let i = 0; i < this.$refs.sideNav.pageLength + 1; i++) {
+        this.$refs.sideNav.paginationObj.gotoPage(i);
+      }
+      return this.$store.state.searchResult;
     }
   } 
 }

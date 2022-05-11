@@ -8,7 +8,7 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
       storage: window.sessionStorage,      
-      paths: ['usingChat', 'userView', 'isLogin', 'nickname', 'chatRole']
+      paths: ['usingChat', 'userView', 'isLogin', 'nickname', 'chatRole', 'searchResult']
     }),
   ],
   state: {
@@ -16,7 +16,8 @@ export default new Vuex.Store({
     userView: null,
     isLogin: null,
     nickname: null,
-    chatRole: null
+    chatRole: null,
+    searchResult: []
   },
   mutations: {
     setUsingChat(state, data) {
@@ -35,6 +36,16 @@ export default new Vuex.Store({
     },
     setChatRole(state, data) {
       state.chatRole = data;
+    },
+    initSearchResult(state) {
+      // 검색 값이 바뀌거나
+      // 채팅 종료시 초기화됨
+      state.searchResult = [];
+    },
+    setSearchResult(state, data) {
+      for ( let i = 0; i < data.length; i++) {
+        state.searchResult.push(data[i]);
+      }
     }
   },
   actions: {

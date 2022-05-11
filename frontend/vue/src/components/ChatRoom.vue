@@ -41,7 +41,7 @@
               style="width: 50%; font-weight: bold;" 
               tile 
               :color="listType ? 'primary' : ''"
-              @click="listType = true;"
+              @click="listType = true; setVoteList('search')"
             >
               검색결과에서 찾기</v-btn>
             <v-btn 
@@ -56,7 +56,7 @@
             v-model="selected"
             :headers="headers"
             :items="cookedVoteList"
-            item-key="name"
+            item-key="index"
             show-select
             class="elevation-1"
             mobile-breakpoint="0"
@@ -149,7 +149,7 @@
                   multiple
                 >
                   <template v-for="(item) in item.voteList">
-                    <v-list-item :key="item.title">
+                    <v-list-item :key="item.index">
                       <template v-slot:default="{ active }">
                         <v-list-item-content>
                           <v-list-item-title>
@@ -284,7 +284,8 @@ export default {
       verification: false,
       dialogType: null,
       currentClient: null,
-      listType: true
+      listType: true,
+      tempVoteList: [],
     }
   },
   props: {
@@ -371,12 +372,13 @@ export default {
         this.cookedVoteList = [];
         for (let i = 0; i < this.voteList.length; i++) {
           this.cookedVoteList.push({
+            index: i,
             name: this.voteList[i].place_name,
             category: this.voteList[i].category_name.split('>')[this.voteList[i].category_name.split('>').length-1],
             vote: 0
           })
         }
-        
+        this.tempVoteList = this.cookedVoteList;
       }
     },
     selected (val, oldVal) {
@@ -522,13 +524,15 @@ export default {
         this.bookmarkList =  await this.$axiosAPI('/api/history', 'get'); 
         for (let i = 0; i < this.bookmarkList.length; i++) {
           this.cookedVoteList.push({
+            index: i,
             name: this.bookmarkList[i].name,
             category: this.bookmarkList[i].category_name.split('>')[this.bookmarkList[i].category_name.split('>').length-1],
             vote: 0
           })
         }
       } else {
-        console.log('h');
+        console.log(this.tempVoteList);
+        this.cookedVoteList = this.tempVoteList;
       }
     }
     

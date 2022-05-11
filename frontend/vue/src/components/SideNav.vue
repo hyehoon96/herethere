@@ -604,11 +604,10 @@ export default {
       this.$emit('searchLocation', this.searchText);
     },
     
-    displayPagination(pagination, isFirstSearch) {
-      if ( isFirstSearch) {
-        this.paginationObj = pagination;
-        this.pageLength = pagination.last;
-      }
+    displayPagination(pagination) {
+      this.paginationObj = pagination;
+      this.pageLength = pagination.last;
+      
       
       // this.$nextTick(() => {
       //   console.log(pagination);
