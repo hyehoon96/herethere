@@ -8,7 +8,7 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
       storage: window.sessionStorage,      
-      paths: ['usingChat', 'userView', 'isLogin', 'nickname', 'chatRole', 'searchResult']
+      paths: ['usingChat', 'userView', 'isLogin', 'nickname', 'chatRole',]
     }),
   ],
   state: {
