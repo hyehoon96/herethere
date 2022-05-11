@@ -349,7 +349,6 @@ export default {
       if( data.vapidKey === this.vapidKey ) {
         tempData.isMine = true;
       }
-      console.log(data);
       for(let i = 0; i < data.index.length; i++) {
         this.currentVoteList[data.index[i]].vote +=1;
       }
@@ -403,7 +402,6 @@ export default {
     async beforeEnter() {
       this.roomId = atob(this.$route.params.roomNumber);
       let findRoom = await this.$axiosAPI('/api/room/'+ this.roomId, 'get');
-      console.log(findRoom);
       // 채팅방이 없는 경우
       if (findRoom.empty) {
         alert('잘못된 링크입니다.');
@@ -476,7 +474,6 @@ export default {
               x: position.coords.longitude
             }
           };
-          console.log(msg.locate);
           await this.$axiosAPI('/api/room/'+ this.roomId, 'post', msg);
           this.showMenu = false;
         },
@@ -496,7 +493,6 @@ export default {
         alert('이미 투표하셨습니다.');
         return;
       }
-      console.log(this.voteSelected);
       let cookedVoteSelected = {
         user: this.userNameInChat,
         vapidKey: this.vapidKey,

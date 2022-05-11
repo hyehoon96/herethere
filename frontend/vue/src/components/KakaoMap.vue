@@ -217,7 +217,6 @@ export default {
       });    
     },
     displayInfowindow(place, tempMarker, i) {
-      console.log(place);
       // if you have a global variable named "open" like "open = true;"
       // or "var open = true" or something like that, 
       // then the function "open()" would not work anymore.

@@ -131,10 +131,9 @@
           @click="showSideNav = !showSideNav"
           icon
         >
-          <v-icon v-text="$vuetify.breakpoint.xs ? 'mdi-login' : 'mdi-menu'"></v-icon>
+          <v-icon v-text="'mdi-menu'"></v-icon>
         </v-btn>
-        <v-spacer></v-spacer>
-        <v-toolbar-title class="d-flex justify-center align-center">
+        <v-toolbar-title class="d-flex justify-center align-center" style="width: 100%;">
           <v-text-field
             solo
             label="장소를 검색해주세요!"
@@ -241,7 +240,7 @@
     <!-- pc ui -->
     <v-navigation-drawer
       app
-      :width="$vuetify.breakpoint.xs ? '90vw' : '360px'"
+      :width="'360px'"
       id="sideNav"
       :permanent="showSideNav"
       v-show="showSideNav"
@@ -252,8 +251,8 @@
           <div style="width: 80%; text-align: center;">
             <h1>HereThere</h1>
           </div>
-          <div class="text-end" style="width: 20%;">
-            <v-btn v-if="$vuetify.breakpoint.mdAndDown" icon @click="showMiniBar">
+          <div class="text-end" style="width: 10%;">
+            <v-btn icon @click="showSideNav = !showSideNav;">
               <v-icon size="36px">mdi-menu</v-icon>
             </v-btn>
           </div>
@@ -377,11 +376,11 @@
               3. 하단의 "어디서 만날까요?" 버튼을 눌러주세요. <br>
               4. 화면 우측 하단의 카테고리를 설정해주세요. <br>
               5. 현재 발견된 오류 <br>
-              - 투표 목록 (최대 15개 / 검색 결과 45개) <br>
-              - pagination 렌더링할 곳 2군데임 <br>
+              - 투표 목록 (최대 15개 / 검색 결과 45개) : 해결<br>
+              - pagination 렌더링할 곳 2군데임 : 해결<br>
+              - 브라우저가 닫혔을 때 브라우저에서 로그인을 기억하는 법 : 해결<br>
+              - refresh 토큰 필요 : 불필요 <br>
               - 반응형 디자인 아이콘 수정해야 함 <br>
-              - 브라우저가 닫혔을 때 브라우저에서 로그인을 기억하는 법 <br>
-              - refresh 토큰 필요
             </div>
           </v-card>
           <v-divider class="my-3"></v-divider> 
@@ -518,6 +517,11 @@ export default {
         this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
       }
     },
+    '$vuetify.breakpoint.xs': {
+      handler() {
+        console.log(this.$vuetify.breakpoint);
+      }
+    },
     // 'page': {
     //   handler() {
     //     this.$emit('removeMarker'); 
@@ -553,14 +557,14 @@ export default {
       this.menuGroup.unshift({ text:'로그인', icon: 'mdi-login', route: '/login' });
       alert('로그아웃이 완료되었습니다.');
     },
-    showMiniBar() {
-      // let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      if( this.$vuetify.breakpoint.xs ) {
-        this.$router.push('/login')
-      } else {
-        this.showSideNav = !this.showSideNav
-      }
-    },
+    // showMiniBar() {
+    //   // let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    //   if( this.$vuetify.breakpoint.xs ) {
+    //     this.$router.push('/login')
+    //   } else {
+    //     this.showSideNav = !this.showSideNav
+    //   }
+    // },
     
     getCurrentLocate() {
       if('geolocation' in navigator) {

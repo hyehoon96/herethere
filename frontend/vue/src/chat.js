@@ -92,6 +92,10 @@ export default {
     },
     
     async getVoteItem() {
+      if ( this.$store.state.chatRole !== 'owner' || localStorage.getItem('isLogin') === false) {
+        alert('투표 목록 생성은 로그인 후 이용하실 수 있습니다. 투표는 진행하실 수 있습니다.');
+        return;
+      }
       this.$emit('getVoteItem');
       this.displayDialog = true;
     }
