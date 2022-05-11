@@ -64,6 +64,7 @@ export default {
       searchText: null,
       currentCenterLatlng: null,
       polygonBundle: {},
+      firstSearch: true,
     }
   },
   
@@ -141,7 +142,14 @@ export default {
       if(!this.$refs.sideNav.searchText) {
         this.$refs.sideNav.setSearchText(text);
       }
+      if (this.searchText === null ) {
+        // 처음 검색했을 때
+        this.firstSearch = true;
+      } else {
+        this.firstSearch = false;
+      }
       this.searchText = text;
+      this.$refs.sideNav.page = 1;
       this.removeMarker();
       this.bounds = new kakao.maps.LatLngBounds(); // 초기화
       this.placeObj.keywordSearch(text, this.placesSearchCB);
@@ -158,7 +166,8 @@ export default {
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
         this.map.setBounds(this.bounds);
         this.$refs.sideNav.getListItem(data);  // sideNav에 목록 나타내기
-        this.$refs.sideNav.displayPagination(pagination); // sideNav에 pagination 나타내기
+        this.$refs.sideNav.displayPagination(pagination, this.firstSearch); // sideNav에 pagination 나타내기
+        
       } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
 
         //alert('검색 결과가 존재하지 않습니다.');

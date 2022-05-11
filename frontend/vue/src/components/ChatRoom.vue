@@ -201,7 +201,7 @@
           label
           @click="getVoteItem"
         >
-          약속장소 투표
+          투표 생성
         </v-chip>
         
       </div>

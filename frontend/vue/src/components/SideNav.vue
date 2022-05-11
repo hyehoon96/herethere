@@ -209,6 +209,7 @@
                 <v-pagination
                   v-model="page"
                   :length="pageLength"
+                  @input="paginationObj.gotoPage(page)"
                   circle
                 ></v-pagination>
               </div>
@@ -365,6 +366,7 @@
                     v-model="page"
                     :length="pageLength"
                     circle
+                    @input="paginationObj.gotoPage(page)"
                   ></v-pagination>
                 </div>
               </v-list-item-group>
@@ -506,6 +508,7 @@ export default {
       },
       debounce1: null,
       debounce2: null,
+      searchChanged: false,
     }
   },
   
@@ -515,12 +518,13 @@ export default {
         this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
       }
     },
-    'page': {
-      handler() {
-        this.$emit('removeMarker'); 
-        this.paginationObj.gotoPage(this.page);
-      }
-    }
+    // 'page': {
+    //   handler() {
+    //     this.$emit('removeMarker'); 
+    //     this.paginationObj.gotoPage(this.page);
+        
+    //   }
+    // },
   },
   mounted() {
     this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
@@ -576,6 +580,7 @@ export default {
     },
     getListItem(item) {
       this.searchResult = item;
+
     },
     getGeoListItem(item) {
       let temp = {
@@ -599,9 +604,11 @@ export default {
       this.$emit('searchLocation', this.searchText);
     },
     
-    displayPagination(pagination) {
-      this.paginationObj = pagination;
-      this.pageLength = pagination.last;
+    displayPagination(pagination, isFirstSearch) {
+      if ( isFirstSearch) {
+        this.paginationObj = pagination;
+        this.pageLength = pagination.last;
+      }
       
       // this.$nextTick(() => {
       //   console.log(pagination);
