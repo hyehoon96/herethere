@@ -120,6 +120,7 @@ export default {
         if( this.$vuetify.breakpoint.xs && this.$refs.sideNav.showSearchResult) {
           this.$refs.sideNav.showList = false; 
         }
+        this.closeInfowindow();
       });
       
     },
@@ -220,6 +221,7 @@ export default {
       // if you have a global variable named "open" like "open = true;"
       // or "var open = true" or something like that, 
       // then the function "open()" would not work anymore.
+      
       this.infowindow.setContent(
         `
         <div class="info_title">
@@ -242,14 +244,12 @@ export default {
             <a href="${place.place_url}" target="_blank">링크</a>
           </span>
         </div>
-        
         `
-
 
       );
       //console.log(this.markers, i);
       this.isEmpty(i) ? this.infowindow.open(this.map, tempMarker) : this.infowindow.open(this.map, this.markers[i])
-      this.setInfoStyle();
+      this.setInfoStyle(place);
 
     },
     displayMarker(place, image) {
@@ -280,9 +280,9 @@ export default {
         }
 
       });
-      kakao.maps.event.addListener(tempMarker, 'mouseout', () => {
-        this.closeInfowindow();
-      });
+      // kakao.maps.event.addListener(tempMarker, 'mouseout', () => {
+      //   this.closeInfowindow();
+      // });
 
     },
     displayCircle(place) {
@@ -313,58 +313,71 @@ export default {
       }   
       this.markers = [];
     },
-    setInfoStyle() {
-      let infoTitle = document.querySelectorAll('.info_title');
-      let infoAddress = document.querySelectorAll('.info_address');
-      let infoDetail = document.querySelectorAll('.info_detail');
-      let infoPhone = document.querySelectorAll('.info_phone');
-      let infoCategory = document.querySelectorAll('.info_category');
-      let infoLink = document.querySelectorAll('.info_link');
-      infoTitle.forEach( (e) => {
-        let w = e.offsetWidth;
-        let ml = w/2;
-        // e.parentElement.style.top = "-10px";
-        e.parentElement.style.left = "57%";
-        e.parentElement.style.marginLeft = -ml+"px";
-        e.parentElement.style.width = "fit-content";
-        e.parentElement.style.background = "white";
-        e.parentElement.style.boxShadow = "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)";
-        e.parentElement.style.padding = "0.75em";
-        e.parentElement.previousSibling.style.display = "none";
-        e.parentElement.parentElement.style.border = "none";
-        e.parentElement.parentElement.style.background = "unset";
-      });
-      infoDetail.forEach((e) => {
-        e.style.display = 'flex';
-        e.style.fontSize = '13px';
-        e.style.margin = '5px 0px';
-      });
-      infoPhone.forEach( (e) => {
-        e.style.color = '#288756';
-      });
-
-      infoAddress.forEach((e) => {
-        e.style.overflow = 'hidden';
-        e.style.fontSize = '12px';
-        e.style.textOverflow = 'ellipsis';
-        e.style.wordWrap = 'break-word';
-        e.style.maxHeight = '34px';
-        e.style.display = 'block';
-        e.style.margin = '5px 0px';
-      });
-      infoLink.forEach( (e) => {
-        e.style.color = '#3d75cc';
-        e.style.height = '17px';
-        e.style.marginLeft = '1em';
-        e.style.float = 'left';
+    setInfoStyle(place) {
+      this.$nextTick(()=> {
+        let infoTitle = document.querySelectorAll('.info_title');
+        let infoAddress = document.querySelectorAll('.info_address');
+        let infoDetail = document.querySelectorAll('.info_detail');
+        let infoPhone = document.querySelectorAll('.info_phone');
+        let infoCategory = document.querySelectorAll('.info_category');
+        let infoLink = document.querySelectorAll('.info_link');
+        let isMyLocate = this.isEmpty(place.category_name);
+        infoTitle.forEach( (e) => {
+          let w = e.offsetWidth;
+          let ml = w/2;
+          e.parentElement.style.top = isMyLocate ? "60px" : "-10px";
+          e.parentElement.style.left = isMyLocate ? "50%" : "57%";
+          e.parentElement.style.marginLeft = -ml+"px";
+          e.parentElement.style.width = "fit-content";
+          e.parentElement.style.background = "white";
+          e.parentElement.style.boxShadow = "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)";
+          e.parentElement.style.padding = "0.75em";
+          e.parentElement.previousSibling.style.display = "none";
+          e.parentElement.parentElement.style.border = "none";
+          e.parentElement.parentElement.style.background = "unset";
+        });
         
-      });
-      infoCategory.forEach( (e) => {
-        e.style.color = '#919191';
-        e.style.height = '18px';
-        e.style.paddingTop = '2px';
-        e.style.fontSize = '12px';
-        e.style.lineHeight = '16px';
+        if(isMyLocate) {
+          infoAddress[0].style.display = 'none';
+          infoDetail[0].style.display = 'none';
+          infoPhone[0].style.display = 'none';
+          infoCategory[0].style.display = 'none';
+          infoLink[0].style.display = 'none';
+          return;
+        }
+        
+        infoDetail.forEach((e) => {
+          e.style.display = 'flex';
+          e.style.fontSize = '13px';
+          e.style.margin = '5px 0px';
+        });
+        infoPhone.forEach( (e) => {
+          e.style.color = '#288756';
+        });
+
+        infoAddress.forEach((e) => {
+          e.style.overflow = 'hidden';
+          e.style.fontSize = '12px';
+          e.style.textOverflow = 'ellipsis';
+          e.style.wordWrap = 'break-word';
+          e.style.maxHeight = '34px';
+          e.style.display = 'block';
+          e.style.margin = '5px 0px';
+        });
+        infoLink.forEach( (e) => {
+          e.style.color = '#3d75cc';
+          e.style.height = '17px';
+          e.style.marginLeft = '1em';
+          e.style.float = 'left';
+          
+        });
+        infoCategory.forEach( (e) => {
+          e.style.color = '#919191';
+          e.style.height = '18px';
+          e.style.paddingTop = '2px';
+          e.style.fontSize = '12px';
+          e.style.lineHeight = '16px';
+        })
       })
     },
     moveMap(item) {
