@@ -70,6 +70,7 @@ export default {
   },
   
   mounted() {
+    this.$store.commit('setUserView', 'map');
     if( !window.kakao || !window.kakao.maps) {
       const script = document.createElement('script');
       const lib = document.createElement('script');

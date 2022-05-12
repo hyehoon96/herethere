@@ -8,7 +8,7 @@
         @hide="displayDialog = false;"
         @submit="dialogType === 'create' ? createRoom() : findRoom()"
         :footerSubmit="beforeConnect"
-        :footerSubmitTitle="'접속'"
+        :footerSubmitTitle="dialogType === 'create' ? '생성' : '접속'"
         :footerCloseBtn="beforeConnect"
       >
         <template v-slot:body>
@@ -102,8 +102,9 @@
       </custom-dialog>
     </v-dialog>
       <v-bottom-navigation
-        v-model="value"
-        color="primary"
+        v-model="selectedBtn"
+        :value="value"
+        color="blue darken-2"
         grow
         app
         fixed
@@ -122,9 +123,10 @@
           :value="item.value"
           :key="item.label"
           :to="item.route ? item.route : null"
-          class="font-weight-black"
+          class="font-weight-black btn-bottom"
           style="font-size: 13px;"
-          @click="setPage(item)">
+          @click="setPage(item)"
+        >
           <span >{{item.text}}</span>
           <v-icon>{{item.icon}}</v-icon>
         </v-btn>
@@ -138,8 +140,14 @@ import chat from '@/chat.js';
 
 export default {
   mixins: [chat],
+  props: {
+    isMoved: {
+      type: Boolean
+    }
+  },
   data: () => (
     { 
+      selectedBtn: 1,
       value: 1,
       displayDialog: false,
       beforeConnect: false,
@@ -155,6 +163,7 @@ export default {
         { text: '현재인원', align: 'center', sortable: false, value: 'currentClient' },
       ],
       chatList: [],
+      
     }
     
   ),
@@ -163,6 +172,11 @@ export default {
     
   },
   watch: {
+    '$route.name': {
+      handler () {
+        console.log('라우터가 변경되었습니다.');
+      }
+    },
     '$store.state.userView': {
       handler() {
         console.log(this.$store.state.userView);
@@ -179,8 +193,11 @@ export default {
         }
       }
     },
-    
-    
+    'value': {
+      handler() {
+        console.log(this.value);
+      }
+    }
   },
   methods: {
     async setPage(item) {
@@ -194,7 +211,15 @@ export default {
         } 
         this.roomTitle = `${this.$store.state.nickname} 님의 채팅방`;
       }
-      this.$store.commit('setUserView', item.label); 
+      if ((this.$store.state.userView === 'map' && item.label === 'chat') || 
+          (this.$store.state.userView === 'chat' && item.label === 'map')) {
+        this.$store.commit('setUserView', item.label);
+      } else {
+        if (this.isMoved) {
+          this.$store.commit('setUserView', item.label);
+        }
+      }
+      
     },
     
   }

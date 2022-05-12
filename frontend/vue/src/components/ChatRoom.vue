@@ -16,7 +16,7 @@
       <!-- @submit="createVote" -->
         <template v-slot:body v-if="dialogType ==='verification'">
           <v-row justify="center">
-            <v-col cols="11">
+            <v-col cols="11" class="mt-5">
               <v-text-field
                 v-model="reNickname"
                 outlined
@@ -252,6 +252,7 @@ export default {
   name: 'roomId',
   data() {
     return {
+      reNickname: null,
       displayDialog: null,
       displayChatRoom: true,
       textarea: '',
@@ -542,8 +543,12 @@ export default {
   beforeRouteLeave: function (to, from, next) { 
     const answer = window.confirm('페이지를 벗어나면 채팅방에서 퇴장하고, 대화 내용이 사라집니다. 페이지를 벗어날까요?') 
     if (answer) { 
-      next() 
-    } 
+      next();
+      this.$emit('validMoved', true);
+    } else {
+      this.$emit('validMoved', false);
+      this.$router.go();
+    }
   }
 }
 </script>

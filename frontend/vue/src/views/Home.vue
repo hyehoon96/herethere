@@ -7,11 +7,14 @@
       <router-view 
         @sendCoordToMap="sendCoordToMap"
         @getVoteItem="getVoteItem"
+        @validMoved="validMoved"
         :voteList="voteList"
       >
       </router-view>
     </keep-alive>
-    <BottomNav/>
+    <BottomNav
+      :isMoved="isMoved"
+    />
   </v-container>
   
 </template>
@@ -25,7 +28,8 @@ export default {
   name: 'Home',
   data() {
     return {
-      voteList: []
+      voteList: [],
+      isMoved: false,
     }
   },
   components: {
@@ -53,7 +57,11 @@ export default {
     async getVoteItem() {
       this.voteList = await this.$refs.map.returnSearchResult();
       console.log(this.voteList);
+    },
+    validMoved(isMoved) {
+      this.isMoved = isMoved;
     }
-  }
+  },
+  
 }
 </script>
