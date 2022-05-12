@@ -90,11 +90,11 @@
       :style="$vuetify.breakpoint.lgAndUp 
       ? 'width: 25vw; min-width: 300px;' 
       : $vuetify.breakpoint.xs 
-        ? 'width: 100vw; height: calc(100vh - 56px); min-width: 300px;'
+        ? 'width: 100vw; min-width: 300px;'
         : 'width: 30vw; min-width: 300px;'" 
       v-if="displayChatRoom"
     >
-      <v-toolbar color="primary" height="35">
+      <v-toolbar color="primary" height="35" class="mt-xs-5" id="chat-header">
         <v-toolbar-title style="color: white;">
           <span>채팅방</span>
         </v-toolbar-title>
@@ -201,12 +201,12 @@
             </v-card>
           </div>
           <div v-if="item.systemMsg">
-            <p class="pa-2" style="color: #6c757d; white-space: break-spaces">{{item.systemMsg}}</p>
+            <p class="pt-5 pa-2" style="color: #6c757d; white-space: break-spaces">{{item.systemMsg}}</p>
           </div>
         </div>
       </div>
       
-      <div v-if="showMenu" class="text-center">
+      <div v-if="showMenu" class="text-center" id=chat-menu>
         <v-chip
           label
           class="ma-2"
@@ -540,11 +540,9 @@ export default {
   //   console.log('before update', from, next);
   // },
   beforeRouteLeave: function (to, from, next) { 
-    const answer = window.confirm('페이지를 벗어나면 대화 내용이 사라집니다. 페이지를 벗어날까요?') 
+    const answer = window.confirm('페이지를 벗어나면 채팅방에서 퇴장하고, 대화 내용이 사라집니다. 페이지를 벗어날까요?') 
     if (answer) { 
       next() 
-    } else { 
-      next(false) 
     } 
   }
 }
@@ -583,5 +581,19 @@ export default {
   text-align: center;
   box-shadow: 2px 2px 3px #999;
   z-index: 12;
+}
+
+@media screen and (max-width: 600px) {
+  .chat-card {
+    z-index: 13;
+  }
+  #chat-menu {
+    position: absolute; 
+    z-index: 99;
+     bottom: 20%;
+  }
+  #chat-header {
+    top : 18px;
+  }
 }
 </style>

@@ -211,6 +211,7 @@
                   :length="pageLength"
                   @input="paginationObj.gotoPage(page)"
                   circle
+                  style="box-shadow: none;"
                 ></v-pagination>
               </div>
             </v-list-item-group>
@@ -367,6 +368,7 @@
                     :length="pageLength"
                     circle
                     @input="paginationObj.gotoPage(page)"
+                    style="box-shadow: none;"
                   ></v-pagination>
                 </div>
               </v-list-item-group>

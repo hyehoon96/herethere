@@ -94,6 +94,8 @@ export default {
 
     showOthersLocate(item) {
       this.$emit('sendCoordToMap', item);
+      this.$store.commit('setUserView', 'map');
+      
     },
     
     async getVoteItem() {

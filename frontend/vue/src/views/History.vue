@@ -1,66 +1,90 @@
 <template>
-<v-row justify="center"  align="center" class="my-auto" style="height: 100%;">
-  <v-col cols="12" sm="10">
-    <div>
-      <v-row justify="center">
-        <v-col cols="5" class="text-h4 font-weight-bold mb-2">
-          북마크
-        </v-col>
+<div id="wrapper" style="background-color: #eeeeee; height: 100%;">
+  <v-row justify="center"  align="center" class="my-auto" style="">
+    
+    <v-col cols="10" sm="6">
+      <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+      ></v-text-field>
+    </v-col>
+    <v-col cols="12" class="d-sm-none">
+      <v-data-table
+        :headers="headersM"
+        :items="cookedList"
+        :page.sync="page"
+        :items-per-page="10"
+        class="elevation-1"
+        mobile-breakpoint="0"
+        @page-count="pageCount = $event"
+        :search="search"
+      >
+        <!-- eslint-disable-next-line -->
+        <template v-slot:item.title="{ item }">
+          <v-chip outlined pill color="indigo" @click="showTargetPlace(item)" style="font-weight: bold;">
+            {{item.title}}
+          </v-chip>
+        </template>
+        <!-- eslint-disable-next-line -->
+        <template v-slot:item.category="{ item }">
+          {{item.category.split('>')[item.category.split('>').length-1]}}
+        </template>
+        <!-- eslint-disable-next-line -->
+        <template v-slot:item.action="{ item }">
+          <v-btn icon @click="delList(item)" color="pink">
+            <v-icon>mdi-delete-forever</v-icon>
+          </v-btn>
+        </template>
+      </v-data-table>
+    </v-col>
+    <v-col cols="10" class="d-none d-sm-flex" style="flex-direction: column;">
+      <v-data-table
+        :headers="headers"
+        :items="cookedList"
+        :page.sync="page"
+        :items-per-page="10"
+        class="elevation-1"
+        @page-count="pageCount = $event"
+        :search="search"
+      >
+        <!-- eslint-disable-next-line -->
+        <template v-slot:item.title="{ item }">
+          <v-chip outlined pill color="indigo" @click="showTargetPlace(item)" style="font-weight: bold;">
+            {{item.title}}
+          </v-chip>
+        </template>
+        <!-- eslint-disable-next-line -->
+        <template v-slot:item.url="{ item }">
+          <v-chip>
+            <a :href="item.url" target="_blank">링크</a>
+          </v-chip>
+        </template>
+        <!-- eslint-disable-next-line -->
+        <template v-slot:item.action="{ item }">
+          <v-btn icon @click="delList(item)" color="pink">
+            <v-icon>mdi-delete-forever</v-icon>
+          </v-btn>
+        </template>
+      </v-data-table>
+      <div class="text-center pt-sm-2">
+        <v-pagination
+          v-model="page"
+          :length="pageCount"
+        ></v-pagination>
+      </div>
+    </v-col>
+  </v-row>
+<BottomNav/>
+</div>
 
-        <v-col cols="5">
-          <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="Search"
-            single-line
-            hide-details
-          ></v-text-field>
-        </v-col>
-
-        <v-col cols="10">
-          <v-data-table
-            :headers="headers"
-            :items="cookedList"
-            :page.sync="page"
-            :items-per-page="10"
-            hide-default-footer
-            class="elevation-1"
-            @page-count="pageCount = $event"
-            :search="search"
-          >
-            <!-- eslint-disable-next-line -->
-            <template v-slot:item.title="{ item }">
-              <v-chip outlined pill color="primary" @click="showTargetPlace(item)">
-                {{item.title}}
-              </v-chip>
-            </template>
-            <!-- eslint-disable-next-line -->
-            <template v-slot:item.url="{ item }">
-              <v-chip>
-                <a :href="item.url" target="_blank">링크</a>
-              </v-chip>
-            </template>
-            <!-- eslint-disable-next-line -->
-            <template v-slot:item.action="{ item }">
-              <v-btn icon @click="delList(item)" color="pink">
-                <v-icon>mdi-delete-forever</v-icon>
-              </v-btn>
-            </template>
-          </v-data-table>
-          <div class="text-center pt-2">
-            <v-pagination
-              v-model="page"
-              :length="pageCount"
-            ></v-pagination>
-          </div>
-        </v-col>
-      </v-row>
-    </div>
-  </v-col>
-</v-row>
 </template>
 
 <script>
+import BottomNav from '@/components/BottomNav.vue'
+
 export default {
   data() {
     return {
@@ -76,13 +100,22 @@ export default {
         { text: '링크', value: 'url', sortable: false, align: 'center' },
         { text: '삭제', value: 'action', sortable: false, align: 'center'},
       ],
+      headersM: [
+        { text: '이름', value: 'title', align: 'center' },
+        { text: '분류', value: 'category', sortable: false, align: 'center' },
+        { text: '삭제', value: 'action', sortable: false, align: 'center'},
+      ],
       cookedList: [],
     }
   },
   mounted() {
+    this.$store.commit('setUserView', 'bookmark');
     this.getList();
   },
-
+  components: {
+    BottomNav
+    
+  },
   methods: {
     async getList() {
       let rawList = await this.$axiosAPI('/api/history', 'get');

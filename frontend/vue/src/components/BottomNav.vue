@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container>
     <v-dialog
       v-model="displayDialog"
     >
@@ -68,6 +68,7 @@
               <v-col cols="7">
                 <v-text-field
                   v-model="roomTitle"
+                  disabled
                   outlined
                   hide-details
                   type="string"
@@ -100,33 +101,36 @@
         </template>
       </custom-dialog>
     </v-dialog>
-  
-    <v-bottom-navigation
-      v-model="value"
-      color="primary"
-      grow
-      app
-      v-if="$vuetify.breakpoint.xs"
-    >
+      <v-bottom-navigation
+        v-model="value"
+        color="primary"
+        grow
+        app
+        fixed
+        v-if="$vuetify.breakpoint.xs"
+        min-height="50px;"
+        style="z-index:100; top: calc(100vh - 56px)"
+      >
 
 
-      <v-btn
-        v-for="(item) in [
-          {text : '채팅창', label: 'chat', icon: 'mdi-chat-processing', value : 0},
-          {text : '지도', label: 'map', icon: 'mdi-map', value :  1},
-          {text : '북마크', label: 'bookmark', icon: 'mdi-bookmark-check' , value : 2}
-        ]"
-        :value="item.value"
-        :key="item.label"
-        class="font-weight-black"
-        style="font-size: 15px;"
-        @click="setPage(item)">
-        <span >{{item.text}}</span>
-        <v-icon>{{item.icon}}</v-icon>
-      </v-btn>
+        <v-btn
+          v-for="(item) in [
+            {text : '채팅창', label: 'chat', icon: 'mdi-chat-processing', value : 0},
+            {text : '지도', label: 'map', icon: 'mdi-map', value :  1},
+            {text : '북마크', label: 'bookmark', icon: 'mdi-bookmark-check' , value : 2, route: '/history'}
+          ]"
+          :value="item.value"
+          :key="item.label"
+          :to="item.route ? item.route : null"
+          class="font-weight-black"
+          style="font-size: 13px;"
+          @click="setPage(item)">
+          <span >{{item.text}}</span>
+          <v-icon>{{item.icon}}</v-icon>
+        </v-btn>
 
-    </v-bottom-navigation>
-  </div>
+      </v-bottom-navigation>
+  </v-container>
 </template>
 
 <script>
@@ -162,6 +166,17 @@ export default {
     '$store.state.userView': {
       handler() {
         console.log(this.$store.state.userView);
+        switch(this.$store.state.userView) {
+          case 'chat':
+            this.value = 0;
+            break;
+          case 'map':
+            this.value = 1;
+            break;
+          case 'bookmark':
+            this.value = 2;
+            break;
+        }
       }
     },
     
@@ -169,11 +184,15 @@ export default {
   },
   methods: {
     async setPage(item) {
+      if (this.$store.state.userView === 'bookmark' && item.label !== 'bookmark') {
+        this.$router.push('/');
+      }
       if(item.label === 'chat') {
         if (this.$store.state.usingChat === false ) {
           this.chatList = await this.$axiosAPI('api/room', 'get');  
           this.displayDialog = true;
         } 
+        this.roomTitle = `${this.$store.state.nickname} 님의 채팅방`;
       }
       this.$store.commit('setUserView', item.label); 
     },
