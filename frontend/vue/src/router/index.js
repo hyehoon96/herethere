@@ -3,7 +3,6 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import History from '../views/History.vue'
-
 import ChatRoom from '../components/ChatRoom.vue'
 
 Vue.use(VueRouter)
@@ -35,6 +34,7 @@ const routes = [
     name: 'History',
     component: History,
   },
+  
   // {
   //   path: '/about',
   //   name: 'About',

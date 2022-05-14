@@ -8,7 +8,7 @@
         
       </slot>
     </v-card-text>
-    <v-card-actions class="justify-end mr-2 pb-4">
+    <v-card-actions class="d-flex justify-center mr-2 pb-4">
         <template v-if="footerSubmit">
             <v-btn
                 color="success"

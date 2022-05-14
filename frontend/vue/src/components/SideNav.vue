@@ -5,7 +5,7 @@
       max-width="500"
     >
       <custom-dialog
-        :header-title="dialogType === 'inquiry' ? '문의/버그' : '채팅방'"
+        :header-title="dialogType === 'inquiry' ? '문의/버그' : 'ranking' ? '핫플레이스' : '채팅방'"
         @hide="displayDialog = false;"
         @submit="dialogType === 'create' ? createRoom() : dialogType === 'find' ? findRoom() : sendInquiry()"
         :footerSubmit="beforeConnect"
@@ -34,7 +34,7 @@
             </v-col>
           </v-row>
 
-          <v-card v-if="!beforeConnect && dialogType !== 'inquiry'">
+          <v-card v-if="!beforeConnect && dialogType !== 'inquiry' && dialogType !== 'ranking'">
             <div class="d-flex" >
               <v-text-field
                 v-model="search"
@@ -119,7 +119,41 @@
               />
             </v-col>
           </v-row>
-          
+          <v-row v-if="dialogType === 'ranking'" justify="center">
+            <v-col cols="11">
+              <v-card class="mt-5" v-for="(place, index) in ranking" :key="index" elevation="10">
+                <v-card-title class="mb-3">
+                  <v-chip outlined color="primary">
+                    {{place.name}}
+                  </v-chip>
+                  <v-spacer></v-spacer>
+                  <v-row justify="space-between">
+                    <v-btn icon color="primary" class="my-auto" @click="searchText = place.name; callSearchFunc();">
+                      <v-icon>mdi-map-marker</v-icon>
+                    </v-btn>
+                    <v-avatar :color="index === 0 ? 'indigo' : index === 1 ? 'accent' : index === 2 ? 'success' : 'pink'" style="color: white;"
+                    :size="$vuetify.breakpoint.xs ? '28' : '48'">
+                      {{index+1}}
+                    </v-avatar>
+                  </v-row>
+                  
+                </v-card-title>
+                <v-card-subtitle>
+                  {{place.category_name}}
+                </v-card-subtitle>
+                <v-card-text>
+                  <div>
+                    <div class="mb-3">
+                      <h4>북마크 수 :<v-chip class="ml-3">{{place.views}}</v-chip></h4>
+                    </div>
+                    <div>
+                      <h4>최근 추가일 :<v-chip class="ml-3">{{place.updated_date.substr(0, 10)}}</v-chip></h4>
+                    </div>
+                  </div>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
         </template>
       </custom-dialog>
     </v-dialog>
@@ -491,10 +525,13 @@ export default {
           }
         },
         { 
-          text: '검색기록', 
+          text: '핫플레이스', 
           icon: 'mdi-card-search',
-          onClick: function() {
-            console.log('sample');
+          onClick: async function() {
+            self.dialogType = 'ranking';
+            self.displayDialog = true;
+            self.ranking = await self.$axiosAPI('/api/history/ranking');
+            console.log(self.ranking);
           }  
         },
       ],
@@ -511,6 +548,7 @@ export default {
       debounce1: null,
       debounce2: null,
       searchChanged: false,
+      ranking: null
     }
   },
   
@@ -547,7 +585,11 @@ export default {
       return this.latlngBundle.length;
     },
     inquiryLength() {
-      return this.inquiry.text.length;
+      if(this.inquiry.text) {
+        return this.inquiry.text.length;
+      } else {
+        return '0'; 
+      }
     },
     
   },
@@ -725,6 +767,15 @@ export default {
       console.log(cookedItem);
       await this.$axiosAPI('/api/history', 'post', cookedItem);
       alert('북마크가 추가되었습니다!');
+    },
+    async sendInquiry() {
+      if(this.inquiry.title.length > 100 ) {
+        alert(' 100자 이내로 작성해주세요. 감사합니다. ');
+        return;
+      }
+      await this.$axiosAPI('/api/inquiry/', 'post', this.inquiry);
+      this.displayDialog = false;
+      this.inquiry = {};
     }
   }
 }

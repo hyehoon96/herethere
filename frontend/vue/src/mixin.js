@@ -18,6 +18,10 @@ export default {
         //   Authorization: `Bearer ${this.$store.state.accessToken}`
         // },
       }).catch ( e => {
+        if ( e.response.data.message) {
+          alert( e.response.data.message );
+          return;
+        }
         switch(e.response.status) {
           case 400 :
             alert('입력이 유효하지 않습니다. 잘못된 입력이 있거나, 비어있는지 확인해주세요. (400)');
@@ -58,14 +62,6 @@ export default {
     //   return (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10);
     // },
     
-    async sendInquiry() {
-      if(this.inquiry.title.length > 100 ) {
-        alert(' 100자 이내로 작성해주세요. 감사합니다. ');
-        return;
-      }
-      await this.$axiosAPI('/api/inquiry/', 'post', this.inquiry);
-      this.displayDialog = false;
-      this.inquiry = {};
-    }
+    
   }
 }

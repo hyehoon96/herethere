@@ -5,9 +5,9 @@ const database = require('../database');
 router.route('/')
   .all((req, res, next) => {
     if (!req.session.user) {
-        return res.status(401).json({
-            message: '로그인 되지 않은 사용자입니다.'
-        });
+      return res.status(401).json({
+        message: '로그인 되지 않은 사용자입니다.'
+      });
     } else {
         req.conn = database.init();
         next();
@@ -22,8 +22,9 @@ router.route('/')
       if(err) {
         console.log(err);
         return res.status(404).send('error');
+      } else {
+        return res.status(201).json('ok');
       }
-      return res.status(201).json(row)
     })
     database.end();
   })
@@ -32,8 +33,9 @@ router.route('/')
       if(err) {
         console.log(err);
         return res.status(404).send('Not found');
+      } else {
+        return res.status(200).json(row)
       }
-      return res.status(201).json(row)
     }) 
   })
 
