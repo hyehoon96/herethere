@@ -27,6 +27,7 @@ export default {
       }
       
       let room = await this.$axiosAPI('/api/room/' + this.roomNumber ,'get');
+      // eslint-disable-next-line
       if (!room.empty) {
         alert('다른 비밀번호를 사용해주세요.');
       } else {
@@ -99,7 +100,7 @@ export default {
     },
     
     async getVoteItem() {
-      if ( this.$store.state.chatRole !== 'owner' || localStorage.getItem('isLogin') === false) {
+      if ( localStorage.getItem('isLogin') === false) {
         alert('투표 목록 생성은 로그인 후 이용하실 수 있습니다. 투표는 진행하실 수 있습니다.');
         return;
       }

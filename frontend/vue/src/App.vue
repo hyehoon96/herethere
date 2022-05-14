@@ -1,5 +1,5 @@
 <template>
-  <v-app style="width: 100%; hegiht: 100%; padding: 0; margin: 0;">
+  <v-app style="width: 100vw; hegiht: 100vh; padding: 0; margin: 0;">
     <v-main >
       <v-scroll-x-transition mode="out-in">
         <router-view/>

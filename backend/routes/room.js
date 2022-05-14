@@ -58,13 +58,12 @@ router.route('/')
     req.conn.query('SELECT *  FROM room WHERE password = ?', roomNumber, (err, row) => {
       
       if (err) { console.log(err); }
-      let room = row[0];
-      if (!room) {
+      if (!row[0]) {
         return res.status(201).send({empty: 'empty'});
       }
-      res.json(room);
-      database.end(req.conn);
-    })
+      return res.json(row[0]);
+    });
+    database.end(req.conn);
   })
 
   router.post('/:password', (req, res) => {

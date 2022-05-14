@@ -145,4 +145,9 @@ export default {
 
 <style>
 
+@media screen and (max-width: 600px) {
+  body {
+    overflow-y: hidden;
+  }
+}
 </style>

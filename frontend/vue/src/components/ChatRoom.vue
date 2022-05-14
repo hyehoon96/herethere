@@ -1,5 +1,5 @@
 <template>
-  <div v-show="$store.state.userView === 'chat'">
+  <div v-show="$store.state.userView === 'chat' || (isMobile === false && $store.state.userView ==='map')">
      <v-dialog
       v-model="displayDialog"
       max-width="500"
@@ -94,7 +94,7 @@
         : 'width: 30vw; min-width: 300px;'" 
       v-if="displayChatRoom"
     >
-      <v-toolbar color="primary" height="35" class="mt-xs-5" id="chat-header">
+      <v-toolbar color="primary" height="35" class="mt-xs-5" id="chat-header" style="z-index: 99">
         <v-toolbar-title style="color: white;">
           <span>채팅방</span>
         </v-toolbar-title>
@@ -287,6 +287,7 @@ export default {
       currentClient: null,
       listType: true,
       tempVoteList: [],
+      isMobile: null
     }
   },
   props: {
@@ -308,7 +309,7 @@ export default {
   },
 
   async mounted() {
-    
+    this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     this.$store.commit('setChatRole', this.role);
     
     this.beforeEnter();

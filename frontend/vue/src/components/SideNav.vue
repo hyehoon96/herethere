@@ -114,7 +114,7 @@
                 v-model="roomNumber"
                 outlined
                 hide-details
-                type="number"
+                type="password"
                 label="비밀번호 (숫자 6자 이상)"
               />
             </v-col>
@@ -128,7 +128,7 @@
                   </v-chip>
                   <v-spacer></v-spacer>
                   <v-row justify="space-between">
-                    <v-btn icon color="primary" class="my-auto" @click="searchText = place.name; callSearchFunc();">
+                    <v-btn icon color="primary" class="my-auto" @click="searchText = place.name; callSearchFunc(); hideShowSideNav();">
                       <v-icon>mdi-map-marker</v-icon>
                     </v-btn>
                     <v-avatar :color="index === 0 ? 'indigo' : index === 1 ? 'accent' : index === 2 ? 'success' : 'pink'" style="color: white;"
@@ -419,7 +419,8 @@
       <v-row>
         <v-col cols="12" class="my-5 ">
           <v-card 
-            style="max-height: 25vh; overflow-y: scroll;"
+            style="overflow-y: scroll;"
+            :max-height="$vuetify.breakpoint.xs ? 'max-height: 15vh;' : 'max-height: 25vh;'"
             :elevation="latlngBundle.length > 0 ? 4 : 0"  
           >
             <transition-group name="list" tag="p" style="padding: 0; margin: 0;">
@@ -505,7 +506,7 @@ export default {
           icon: 'mdi-folder-plus',
           onClick: async () => {
             if(self.$store.state.usingChat) {
-              alert('채팅방을 사용중입니다. 기존 채팅방을 종료해주세요.');
+              this.$store.commit('setUserView', 'chat');
               return;
             } else {
               self.chatList = await self.$axiosAPI('api/room', 'get');  
@@ -701,7 +702,7 @@ export default {
       this.searchText = text;
     },
     async addBookmark(item) {
-      if (this.$store.state.isLogin !== true ) {
+      if (this.isEmpty(localStorage.getItem('isLogin')) || this.isEmpty(this.$store.state.nickname) ) {
         alert('로그인 후 이용할 수 있습니다.');
         return;
       }
@@ -719,6 +720,11 @@ export default {
       await this.$axiosAPI('/api/inquiry/', 'post', this.inquiry);
       this.displayDialog = false;
       this.inquiry = {};
+    },
+    hideShowSideNav(){
+      if(this.$vuetify.breakpoint.xs) {
+        this.showSideNav = false;
+      }
     }
   }
 }

@@ -124,11 +124,12 @@ export default {
           this.marker.fa.src = 'http://t1.daumcdn.net/mapjsapi/images/marker.png';
         }
 
-        if( this.$vuetify.breakpoint.xs && this.$refs.sideNav.showSearchResult) {
+        if( this.$vuetify.breakpoint.xs) {
+          this.$refs.sideNav.showSearchResult = true; 
           this.$refs.sideNav.showList = false; 
         }
         this.closeInfowindow();
-        this.$refs.showList = false;
+        
       });
       
     },
@@ -475,7 +476,7 @@ export default {
 .map_wrap {
   position: absolute;
   overflow:hidden;
-  width:100%;
+  width:100vw;
   height:100vh;
 }
 #map {

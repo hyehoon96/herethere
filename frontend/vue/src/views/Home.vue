@@ -1,5 +1,5 @@
 <template>
-  <v-container style="width: 100%; hegiht: 100%; padding: 0; margin: 0;">
+  <v-container style="width: 100vw; hegiht: 100vh; padding: 0; margin: 0;">
     <Map
       ref="map"
     />

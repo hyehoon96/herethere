@@ -91,7 +91,7 @@
               <v-text-field
                 v-model="roomNumber"
                 outlined
-                type="number"
+                type="password"
                 hide-details
                 label="비밀번호 (6자 이상)"
               />
