@@ -1,5 +1,25 @@
 <template>
   <v-row justify="center"  align="center" class="my-auto" style="height: 100%;">
+    <v-dialog
+      v-model="displayDialog"
+      max-width="500px"
+    >
+      <custom-dialog
+        header-title="license"
+        @hide="displayDialog = false;"
+        :footerSubmit="false"
+        :footerCloseBtn="false"
+      >
+        <template v-slot:body>
+          <div class="license-list" v-for="item in license" :key="item.module">
+            {{item.module}} 
+            <div>
+              <a :href="item.link"> license</a>
+            </div>
+          </div>
+        </template>
+      </custom-dialog>
+    </v-dialog>
     <v-col cols="12" sm="10">
       <v-card elevation="10">
         <v-toolbar color="primary">
@@ -27,8 +47,10 @@
             <v-col cols="9">
               <v-card-title>aaaaaaaaaaaaaaaaaaa</v-card-title>
               
-              <v-card-text>문의 버튼 클릭 또는 hungry0developer@gmail.com으로 연락주시면 빠르게 답변드리겠습니다. <br>
-                ※ 카카오 맵 API, 여러 오픈소스를 사용하고 있습니다. (라이센스 보기)
+              <v-card-text>
+                문의 버튼 클릭 또는 hungry0developer@gmail.com으로 연락주시면 빠르게 답변드리겠습니다. <br>
+                ※ 카카오 맵 API, 여러 오픈소스를 사용하고 있습니다. 
+                <div @click="displayDialog = true;" style="color:#039be5"> (라이센스 보기) </div>
               </v-card-text>
               
             </v-col>
@@ -48,7 +70,7 @@
             </v-col>
 
             <v-col cols="12" sm="9">
-              <v-card-title :style="$vuetify.breakpoint.xs ? 'font-size: 18px' : ''">
+              <v-card-title style="font-size: 18px;">
                 - 지역, 키워드를 검색하고, 클릭해주세요. <br>
                 - "어디서 만날까요?" 버튼을 눌러주세요. <br>
                 - 카테고리를 설정해주세요.
@@ -66,7 +88,7 @@
             </v-col>
 
             <v-col cols="12" sm="9">
-              <v-card-title :style="$vuetify.breakpoint.xs ? 'font-size: 18px' : ''">
+              <v-card-title style="font-size: 18px;">
                 - 채팅 버튼을 눌러 채팅방을 확인하세요. <br>
                 - 채팅방을 새로 생성하거나 기존 채팅방에 접속할 수 있습니다. <br>
                 - 내 위치를 공유하거나, 친구의 위치를 공유받을 수 있습니다. <br>
@@ -86,7 +108,7 @@
             </v-col>
 
             <v-col cols="12" sm="9">
-              <v-card-title :style="$vuetify.breakpoint.xs ? 'font-size: 18px' : ''">
+              <v-card-title style="font-size: 18px;">
                 - 마음에 드는 장소를 북마크에 추가하세요. <br>
                 - 북마크 버튼을 눌러 북마크를 조회하고, 지도에 나타낼 수 있습니다. <br>
                 - 핫플레이스 버튼을 눌러 최근 인기가 많은 지역 (핫플레이스)을 조회해보세요. <br>
@@ -106,7 +128,7 @@
             </v-col>
 
             <v-col cols="12" sm="9">
-              <v-card-title :style="$vuetify.breakpoint.xs ? 'font-size: 18px' : ''">
+              <v-card-title style="font-size: 18px;">
                 - 지역, 키워드를 검색하고, 클릭해주세요. <br>
                 - 아이콘을 클릭하여 목록과 검색 결과를 조회하실 수 있습니다. <br>
                 - "어디서 만날까요?" 버튼을 눌러주세요. <br>
@@ -127,7 +149,7 @@
               GIF
             </v-col>
             <v-col cols="12" sm="9">
-              <v-card-title :style="$vuetify.breakpoint.xs ? 'font-size: 18px' : ''">
+              <v-card-title style="font-size: 18px;">
                 - 지역, 키워드를 검색하고, 클릭해주세요. <br>
                 - "어디서 만날까요?" 버튼을 눌러주세요. <br>
                 - 카테고리를 설정해주세요.
@@ -145,7 +167,7 @@
               GIF
             </v-col>
             <v-col cols="12" sm="9">
-              <v-card-title :style="$vuetify.breakpoint.xs ? 'font-size: 18px' : ''">
+              <v-card-title style="font-size: 18px;">
                 - 하단의 채팅 버튼을 눌러 채팅방을 확인하세요. <br>
                 - 채팅방을 새로 생성하거나 기존 채팅방에 접속할 수 있습니다. <br>
                 - 내 위치를 공유하거나, 친구의 위치를 공유받을 수 있습니다. <br>
@@ -165,7 +187,7 @@
             </v-col>
 
             <v-col cols="12" sm="9">
-              <v-card-title :style="$vuetify.breakpoint.xs ? 'font-size: 18px' : ''">
+              <v-card-title style="font-size: 18px;">
                 - 마음에 드는 장소를 북마크에 추가하세요. <br>
                 - 북마크를 조회하고, 지도에 나타낼 수 있습니다. <br>
                 - 북마크 수에 따른 최근 인기가 많은 지역 (핫플레이스)을 조회해보세요. <br>
@@ -184,7 +206,17 @@ export default {
   data() {
     return {
       infoType: null,
-      model: null
+      model: null,
+      displayDialog: false,
+      license: [
+        { module:'axios', link:'https://github.com/axios/axios/blob/master/LICENSE'},
+        { module:'express', link:'https://github.com/expressjs/express/blob/master/LICENSE'},
+        { module:'vue', link:'https://v3.ko.vuejs.org/'},
+        { module:'vue-router', link:'https://github.com/vuejs/router/blob/main/LICENSE'},
+        { module:'vuex', link:'https://github.com/vuejs/vuex/blob/main/LICENSE'},
+        { module:'vuex-persistedstate', link:'https://github.com/robinvdvleuten/vuex-persistedstate/blob/master/LICENSE'},
+        // vuetify , socket.io-client + backend
+      ]
     }
   },
   mounted() {
@@ -202,6 +234,15 @@ export default {
 </script>
 
 <style>
-
+.license-list {
+  border-radius: 5px;
+  margin-top: 16px;
+  overflow: auto;
+  padding: 2px;
+  background-color: rgb(232, 240, 254);
+  color: rgb(23, 78, 166);
+  justify-content: space-between;
+  display: flex;
+}
 
 </style>
