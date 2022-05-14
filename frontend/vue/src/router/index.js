@@ -3,8 +3,9 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import History from '../views/History.vue'
-import ChatRoom from '../components/ChatRoom.vue'
+import Information from '../views/Information.vue'
 
+import ChatRoom from '../components/ChatRoom.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -34,7 +35,11 @@ const routes = [
     name: 'History',
     component: History,
   },
-  
+  {
+    path: '/info',
+    name: 'Information',
+    component: Information,
+  },
   // {
   //   path: '/about',
   //   name: 'About',

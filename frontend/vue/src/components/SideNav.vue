@@ -5,7 +5,7 @@
       max-width="500"
     >
       <custom-dialog
-        :header-title="dialogType === 'inquiry' ? '문의/버그' : 'ranking' ? '핫플레이스' : '채팅방'"
+        :header-title="dialogType === 'inquiry' ? '문의/버그' : dialogType === 'ranking' ? '핫플레이스' : '채팅방'"
         @hide="displayDialog = false;"
         @submit="dialogType === 'create' ? createRoom() : dialogType === 'find' ? findRoom() : sendInquiry()"
         :footerSubmit="beforeConnect"
@@ -407,17 +407,8 @@
                 </div>
               </v-list-item-group>
             </v-list>
-            <div class="text-start" v-if="isEmpty(searchResult)"> 
-              1. 주소를 입력하세요. <br>
-              2. 주소 목록을 클릭해주세요. <br>
-              3. 하단의 "어디서 만날까요?" 버튼을 눌러주세요. <br>
-              4. 화면 우측 하단의 카테고리를 설정해주세요. <br>
-              5. 현재 발견된 오류 <br>
-              - 투표 목록 (최대 15개 / 검색 결과 45개) : 해결<br>
-              - pagination 렌더링할 곳 2군데임 : 해결<br>
-              - 브라우저가 닫혔을 때 브라우저에서 로그인을 기억하는 법 : 해결<br>
-              - refresh 토큰 필요 : 불필요 <br>
-              - 반응형 디자인 아이콘 수정해야 함 <br>
+            <div class="text-center" v-if="isEmpty(searchResult)"> 
+              클릭: 사용법을 <span @click="$router.push('/info');" style="color: #1876D0; font-weight: bold; cursor: pointer;">안내</span>해드릴게요!
             </div>
           </v-card>
           <v-divider class="my-3"></v-divider> 
@@ -521,7 +512,7 @@ export default {
               self.displayDialog = true;
             }
             self.roomTitle = self.$store.state.nickname + '님의 채팅방' // user Id
-            self.dialogType = null;
+            self.dialogType = 'find';
           }
         },
         { 
@@ -531,7 +522,6 @@ export default {
             self.dialogType = 'ranking';
             self.displayDialog = true;
             self.ranking = await self.$axiosAPI('/api/history/ranking');
-            console.log(self.ranking);
           }  
         },
       ],
@@ -558,18 +548,8 @@ export default {
         this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
       }
     },
-    '$vuetify.breakpoint.xs': {
-      handler() {
-        console.log(this.$vuetify.breakpoint);
-      }
-    },
-    // 'page': {
-    //   handler() {
-    //     this.$emit('removeMarker'); 
-    //     this.paginationObj.gotoPage(this.page);
-        
-    //   }
-    // },
+    
+    
   },
   mounted() {
     this.showSideNav = this.$vuetify.breakpoint.lgAndUp;
@@ -656,44 +636,8 @@ export default {
     displayPagination(pagination) {
       this.paginationObj = pagination;
       this.pageLength = pagination.last;
-      
-      
-      // this.$nextTick(() => {
-      //   console.log(pagination);
-      //   this.paginationObj = pagination;
-      //   let paginationEl = document.getElementById('pagination');
-      //   let fragment = document.createDocumentFragment();
-
-      //   // 기존에 추가된 페이지번호를 삭제합니다
-      //   this.removePagination();
-      //   for (let i=1; i<=pagination.last; i++) {
-      //     let el = document.createElement('a');
-      //     el.href = "#";
-      //     el.innerHTML = i;
-          
-      //     if (i===pagination.current) {
-      //       el.className = 'on';
-      //     } else {
-      //       el.onclick = ((i) => {
-      //         return () => {
-      //           this.$emit('removeMarker');
-      //           pagination.gotoPage(i);
-      //         }
-      //       })(i);
-      //     }
-
-      //     fragment.appendChild(el);
-      //   }
-      //   paginationEl.appendChild(fragment);
-      // })
     },
-    // removePagination() {
-    //   let paginationEl = document.getElementById('pagination');
-    //   while (paginationEl.hasChildNodes()) {
-    //     paginationEl.removeChild (paginationEl.lastChild);
-    //   }
-     
-    // },
+    
     closeInfowindow() {
       clearTimeout(this.debounce2);
       this.debounce2 = setTimeout(() => {
@@ -735,7 +679,6 @@ export default {
         };
         latlngArr.push(temp);
       })
-      console.log(latlngArr);
       let xSort = latlngArr.sort(function(a, b) {
         return a.x - b.x;
       })

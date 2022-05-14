@@ -3,7 +3,9 @@
   <CategoryBar
     @searchCategory="searchCategory"
   />
+  
   <v-container style="padding: 0; margin: 0;">
+    
     <SideNav
       ref="sideNav"
       @searchLocation="searchLocation"
@@ -17,6 +19,18 @@
     
     <div class="map_wrap">
       <div id="map" style="position:relative; overflow:hidden;">
+        <v-snackbar
+          v-if="snackbar"
+          :timeout="3000"
+          :value="true"
+          tile
+          centered
+          app
+          top
+          color="blue lighten-2"
+        >
+        화면 우측 하단의 <strong>카테고리</strong>를 선택하세요.
+      </v-snackbar>
         <div class="map_type_controller">
           <span id="btnRoadmap" class="selected_btn" @click="setMapType('roadmap')">지도</span>
           <span id="btnSkyview" class="btn" @click="setMapType('skyview')">스카이뷰</span>
@@ -26,16 +40,7 @@
         <span @click="map.setLevel(map.getLevel() - 1);"><v-icon>mdi-plus</v-icon></span>  
         <span @click="map.setLevel(map.getLevel() + 1);"><v-icon>mdi-minus</v-icon></span>
       </div>
-      <div :class="$vuetify.breakpoint.smAndUp ? 'map_camera_xs' : 'map_camera' ">
-        <v-btn 
-          fab 
-          color="accent"
-          :large="!$vuetify.breakpoint.xs"
-        >
-          <v-icon size="36">mdi-camera</v-icon>
-          <div>기록하기</div>
-        </v-btn>  
-      </div>
+      
     </div>
   </v-container>
   
@@ -65,7 +70,8 @@ export default {
       currentCenterLatlng: null,
       polygonBundle: {},
       firstSearch: true,
-      searchChanged: null
+      searchChanged: null,
+      snackbar: false,
     }
   },
   
@@ -122,6 +128,7 @@ export default {
           this.$refs.sideNav.showList = false; 
         }
         this.closeInfowindow();
+        this.$refs.showList = false;
       });
       
     },
@@ -399,6 +406,10 @@ export default {
       this.map.panTo(moveLatLon);
       let img = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png'
       this.displayMarker(latlng, img);
+      this.snackbar = true;
+      setTimeout(() => {
+        this.snackbar = false;
+      }, 3000);
     },
 
     searchCategory(item) {
@@ -447,7 +458,7 @@ export default {
 
     returnSearchResult() {
       if(this.isEmpty(this.$refs.sideNav.pageLength)) {
-        alert('지역 또는 키워드를 검색하면 투표 목록이 채워집니다. 먼저 지역 또는 키워드를 검색해주세요.');
+        alert('먼저 지역 또는 키워드를 검색해주세요.');
         return;
       } 
 
@@ -555,24 +566,7 @@ export default {
   width: 80px;
   padding: 0 10px;
 }
-.map_camera{
-  position: absolute;
-  z-index: 11;
-  bottom: 70px;
-  left: 50%;
-  transform: translate(-50%, 0);
-}
 
-.map_camera_xs {
-  position: absolute;
-  z-index: 11;
-  bottom: 16px;
-  transform: translate(0, -100%);
-  padding: 0 16px;
-  bottom: calc(50% - 64px);
-  left: unset !important;
-  right: 0;
-}
 @media screen and (max-width: 600px) {
   .map_type_controller {
     top: 11vh;
