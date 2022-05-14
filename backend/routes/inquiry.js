@@ -26,7 +26,7 @@ router.route('/')
         return res.status(201).json('ok');
       }
     })
-    database.end();
+    database.end(req.conn);
   })
   .get((req, res) => {
     req.conn.query('SELECT * FROM inquiry', (err, row) => {
@@ -36,7 +36,8 @@ router.route('/')
       } else {
         return res.status(200).json(row)
       }
-    }) 
+    })
+    database.end(req.conn);
   })
 
 module.exports = router;

@@ -91,17 +91,16 @@ router.route('/')
       vapidKey: req.body.vapidKey,
       index: req.body.index
     }
-    console.log(voteChat);
     req.app.get('io').of('/room').to(req.params.password).emit('voteChat', voteChat);
     res.status(200).send();
   })
   router.put('/:password', (req, res) => {
     req.conn = database.init();
     const roomNumber = req.params.password;
-    console.log(req.body);
     req.conn.query(`UPDATE room SET currentClient=${req.body.currentClient}  WHERE password = ? `, roomNumber, (err, row) => {
       if (err) { console.log(err); }
       res.status(200).send();
     })
+    database.end(req.conn);
   })
 module.exports = router;
