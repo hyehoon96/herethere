@@ -2,8 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
-import History from '../views/History.vue'
-import Information from '../views/Information.vue'
+
 
 import ChatRoom from '../components/ChatRoom.vue'
 Vue.use(VueRouter)
@@ -33,12 +32,12 @@ const routes = [
   {
     path: '/history',
     name: 'History',
-    component: History,
+    component: () => import(/* webpackChunkName: "LoginUser" */ '../views/History.vue'),
   },
   {
     path: '/info',
     name: 'Information',
-    component: Information,
+    component: () => import(/* webpackChunkName: "Info" */ '../views/Information.vue'),
   },
   // {
   //   path: '/about',

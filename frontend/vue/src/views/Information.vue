@@ -241,7 +241,6 @@ export default {
         { module:'debug', link:'https://github.com/debug-js/debug/blob/master/LICENSE'},
         { module:'cookie-parser', link:'https://github.com/expressjs/cookie-parser/blob/master/LICENSE'},
         { module:'bcrypt', link:'https://github.com/kelektiv/node.bcrypt.js/blob/master/LICENSE'},
-        { module:'nodemon', link:'https://github.com/remy/nodemon/blob/main/LICENSE'},
         { module:'pug', link:'https://github.com/pugjs/pug/blob/master/packages/pug/LICENSE'},
       ]
     }
