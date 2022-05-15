@@ -30,8 +30,3 @@ body {
 .v-application {
   font-family: 'Noto Sans KR' !important;
 }
-@media screen and (max-width: 600px) {
-  body {
-    overflow-y: hidden !important;
-  }
-}

@@ -20,7 +20,7 @@
         </template>
       </custom-dialog>
     </v-dialog>
-    <v-col cols="12" sm="8">
+    <v-col cols="12" sm="8" :style="$vuetify.breakpoint.xs ? 'padding : 0 12px;' : ''">
       <v-card elevation="10">
         <v-toolbar color="primary">
           <v-toolbar-title style="color: white; font-weight: bold;">이용안내</v-toolbar-title>
@@ -38,16 +38,37 @@
         <div v-if="infoType === 'inquiry'">
           <v-row>
             <v-col cols="12">
-              <h3 class="ml-5">약속 장소를 찾아드립니다!</h3>
-            </v-col>
-            <v-col cols="3">
-              GIF
+              <h3 class="ml-sm-5">약속 장소를 찾아드립니다!</h3>
+              <v-row class="mt-3" justify="center">
+                <v-col cols="6" class="d-felx justify-center">
+                  <v-img
+                    src="../../public/logo/logo(basic).png"
+                    max-width="400"
+                  >
+                  </v-img>
+                </v-col>
+                <v-col cols="6">
+                  <v-img
+                    src="../../public/logo/logo(none).png"
+                    max-width="400"
+                  >
+                  </v-img>
+                </v-col>
+              </v-row>
             </v-col>
 
-            <v-col cols="9">
-              <v-card-title>aaaaaaaaaaaaaaaaaaa</v-card-title>
+            <v-col cols="12">
+              <v-card-title style="font-size: 17px;">
+                - 서로의 위치를 검색하고, 만나기에 적합한 범위를 찾아보세요. <br>
+                - 카테고리를 설정하여 손쉽게 검색할 수 있습니다. <br>
+                - 지도를 함께 보며 채팅할 수 있어요. <br>
+                - 마음에 드는 장소가 있다면 북마크에 추가해보세요. <br>
+                - 투표를 통해 약속 장소를 결정할 수 있어요. <br>
+                - 핫플레이스를 조회해보세요.
+              </v-card-title>
               
               <v-card-text>
+                <v-divider class="my-3"></v-divider>
                 문의 버튼 클릭 또는 hungry0developer@gmail.com으로 연락주시면 빠르게 답변드리겠습니다. <br>
                 ※ 카카오 맵 API, 여러 오픈소스를 사용하고 있습니다. 
                 <div @click="displayDialog = true;" style="color:#039be5"> (라이센스 보기) </div>
@@ -60,7 +81,7 @@
         <div v-else-if="infoType === 'pc/tablet'">
           <v-row justify="center" class="my-5">
             <v-col cols="12">
-              <v-chip  class="ml-5">
+              <v-chip  class="ml-sm-5">
                 <h3>1. 검색 및 약속 장소 찾기</h3>
               </v-chip>
               
@@ -68,7 +89,7 @@
             <v-col cols="12" sm="5">
               <v-img
                 src="../../public/gif/web-search-hq.gif"
-                class="ml-5"
+                class="ml-sm-5  "
               ></v-img>
             </v-col>
 
@@ -82,14 +103,14 @@
           </v-row>
           <v-row justify="center" class="my-5">
             <v-col cols="12">
-              <v-chip  class="ml-5">
+              <v-chip  class="ml-sm-5">
                 <h3>2. 채팅 및 위치 공유, 장소 투표</h3>
               </v-chip>
             </v-col>
             <v-col cols="12" sm="5">
               <v-img
                 src="../../public/gif/web-chat-hq.gif"
-                class="ml-5"
+                class="ml-sm-5"
               ></v-img>
             </v-col>
 
@@ -105,14 +126,14 @@
           </v-row>
           <v-row justify="center" class="my-5">
             <v-col cols="12">
-              <v-chip  class="ml-5">
+              <v-chip  class="ml-sm-5">
                 <h3>3. 북마크 및 핫플레이스</h3>
               </v-chip>
             </v-col>
             <v-col cols="12" sm="5">
               <v-img
                 src="../../public/gif/web-bookmark-hq.gif"
-                class="ml-5"
+                class="ml-sm-5"
               ></v-img>
             </v-col>
 
@@ -126,7 +147,7 @@
           </v-row>
           <v-row justify="center" class="my-5">
             <v-col cols="12">
-              <v-chip  class="ml-5">
+              <v-chip  class="ml-sm-5">
                 <h3 v-if="$vuetify.breakpoint.xs">※ 메뉴 축소화 버전</h3>
                 <h3 v-else>※ 메뉴 버튼을 눌러 지도를 더욱 크게 보실 수 있습니다.</h3>
                 
@@ -135,7 +156,7 @@
             <v-col cols="12" sm="5">
               <v-img
                 src="../../public/gif/tablet-search-hq.gif"
-                class="ml-5"
+                class="ml-sm-5"
               ></v-img>
             </v-col>
 
@@ -153,7 +174,7 @@
         <div v-else-if="infoType === 'mobile'">
           <v-row>
             <v-col cols="12">
-              <v-chip class="ml-5">
+              <v-chip class="ml-sm-5">
                 <h3>1. 검색 및 약속 장소 찾기</h3>
               </v-chip>
             </v-col>
@@ -171,7 +192,7 @@
           </v-row>
           <v-row>
             <v-col cols="12">
-              <v-chip class="ml-5">
+              <v-chip class="ml-sm-5">
                 <h3>2. 채팅 및 위치 공유, 장소 투표</h3>
               </v-chip>
             </v-col>
@@ -190,7 +211,7 @@
           </v-row>
           <v-row>
             <v-col cols="12">
-              <v-chip class="ml-5">
+              <v-chip class="ml-sm-5">
                 <h3>3. 북마크 및 핫플레이스</h3>
               </v-chip>
             </v-col>
@@ -236,7 +257,6 @@ export default {
         { module:'http-errors', link:'https://github.com/jshttp/http-errors/blob/master/LICENSE'},
         { module:'express-session', link:'https://github.com/expressjs/session/blob/master/LICENSE'},
 
-        { module:'express', link:'https://github.com/expressjs/express/blob/master/LICENSE'},
         { module:'dotenv', link:'https://github.com/motdotla/dotenv/blob/master/LICENSE'},
         { module:'debug', link:'https://github.com/debug-js/debug/blob/master/LICENSE'},
         { module:'cookie-parser', link:'https://github.com/expressjs/cookie-parser/blob/master/LICENSE'},
@@ -259,7 +279,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 .license-list {
   border-radius: 5px;
   margin-top: 16px;
@@ -270,5 +290,7 @@ export default {
   justify-content: space-between;
   display: flex;
 }
-
+body {
+  overflow-y: unset !important;
+}
 </style>

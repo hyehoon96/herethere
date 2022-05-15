@@ -1,5 +1,5 @@
 <template>
-<div id="wrapper" style="background-color: #eeeeee; height: 100%;">
+<div id="wrapper" style="background-color: #eeeeee; height: 100%; overflow-y: hidden;">
   <v-row justify="center"  align="center" class="my-auto" style="">
     
     <v-col cols="10" sm="6">
@@ -143,11 +143,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 
-@media screen and (max-width: 600px) {
-  body {
-    overflow-y: hidden;
-  }
-}
+
 </style>
