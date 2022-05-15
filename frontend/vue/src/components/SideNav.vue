@@ -419,8 +419,7 @@
       <v-row>
         <v-col cols="12" class="my-5 ">
           <v-card 
-            style="overflow-y: scroll;"
-            :max-height="$vuetify.breakpoint.xs ? 'max-height: 15vh;' : 'max-height: 25vh;'"
+            :style="$vuetify.breakpoint.xs ? 'max-height: 15vh; overflow-y: scroll;' : 'max-height: 25vh; overflow-y: scroll;'"
             :elevation="latlngBundle.length > 0 ? 4 : 0"  
           >
             <transition-group name="list" tag="p" style="padding: 0; margin: 0;">
@@ -507,6 +506,9 @@ export default {
           onClick: async () => {
             if(self.$store.state.usingChat) {
               this.$store.commit('setUserView', 'chat');
+              if(!this.$vuetify.breakpoint.xs) {
+                alert('먼저 채팅방을 종료해주세요. 문제가 계속되면 새로고침해주세요.');
+              }
               return;
             } else {
               self.chatList = await self.$axiosAPI('api/room', 'get');  

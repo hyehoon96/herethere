@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center"  align="center" class="my-auto" style="height: 100%;">
+  <v-row justify="center"  align="center" class="my-auto" style="height: 100%; background-color: #eeeeee">
     <v-dialog
       v-model="displayDialog"
       max-width="500px"
@@ -20,7 +20,7 @@
         </template>
       </custom-dialog>
     </v-dialog>
-    <v-col cols="12" sm="10">
+    <v-col cols="12" sm="8">
       <v-card elevation="10">
         <v-toolbar color="primary">
           <v-toolbar-title style="color: white; font-weight: bold;">이용안내</v-toolbar-title>
@@ -30,7 +30,7 @@
             <v-tabs mobile-breakpoint="0" v-model="model">
               <v-tab @click="infoType = 'pc/tablet'" :href="`#tab-1`">PC / Tablet</v-tab>
               <v-tab @click="infoType = 'mobile'" :href="`#tab-2`">MOBILE</v-tab>
-              <v-tab @click="infoType = 'inquiry'">기타</v-tab>
+              <v-tab @click="infoType = 'inquiry'">소개/문의</v-tab>
             </v-tabs>
           </v-col>
         </v-row>
@@ -58,18 +58,21 @@
         </div>
         <!-- pc/tablet pc/tablet pc/tablet pc/tablet pc/tablet pc/tablet pc/tablet pc/tablet pc/tablet pc/tablet -->
         <div v-else-if="infoType === 'pc/tablet'">
-          <v-row>
+          <v-row justify="center" class="my-5">
             <v-col cols="12">
               <v-chip  class="ml-5">
                 <h3>1. 검색 및 약속 장소 찾기</h3>
               </v-chip>
               
             </v-col>
-            <v-col cols="12" sm="3">
-              GIF
+            <v-col cols="12" sm="5">
+              <v-img
+                src="../../public/gif/web-search-hq.gif"
+                class="ml-5"
+              ></v-img>
             </v-col>
 
-            <v-col cols="12" sm="9">
+            <v-col cols="12" sm="7">
               <v-card-title style="font-size: 18px;">
                 - 지역, 키워드를 검색하고, 클릭해주세요. <br>
                 - "어디서 만날까요?" 버튼을 눌러주세요. <br>
@@ -77,17 +80,20 @@
                </v-card-title>
             </v-col>
           </v-row>
-          <v-row>
+          <v-row justify="center" class="my-5">
             <v-col cols="12">
               <v-chip  class="ml-5">
                 <h3>2. 채팅 및 위치 공유, 장소 투표</h3>
               </v-chip>
             </v-col>
-            <v-col cols="12" sm="3">
-              GIF
+            <v-col cols="12" sm="5">
+              <v-img
+                src="../../public/gif/web-chat-hq.gif"
+                class="ml-5"
+              ></v-img>
             </v-col>
 
-            <v-col cols="12" sm="9">
+            <v-col cols="12" sm="7">
               <v-card-title style="font-size: 18px;">
                 - 채팅 버튼을 눌러 채팅방을 확인하세요. <br>
                 - 채팅방을 새로 생성하거나 기존 채팅방에 접속할 수 있습니다. <br>
@@ -97,17 +103,20 @@
 
             </v-col>
           </v-row>
-          <v-row>
+          <v-row justify="center" class="my-5">
             <v-col cols="12">
               <v-chip  class="ml-5">
                 <h3>3. 북마크 및 핫플레이스</h3>
               </v-chip>
             </v-col>
-            <v-col cols="12" sm="3">
-              GIF
+            <v-col cols="12" sm="5">
+              <v-img
+                src="../../public/gif/web-bookmark-hq.gif"
+                class="ml-5"
+              ></v-img>
             </v-col>
 
-            <v-col cols="12" sm="9">
+            <v-col cols="12" sm="7">
               <v-card-title style="font-size: 18px;">
                 - 마음에 드는 장소를 북마크에 추가하세요. <br>
                 - 북마크 버튼을 눌러 북마크를 조회하고, 지도에 나타낼 수 있습니다. <br>
@@ -115,7 +124,7 @@
               </v-card-title>
             </v-col>
           </v-row>
-          <v-row>
+          <v-row justify="center" class="my-5">
             <v-col cols="12">
               <v-chip  class="ml-5">
                 <h3 v-if="$vuetify.breakpoint.xs">※ 메뉴 축소화 버전</h3>
@@ -123,11 +132,14 @@
                 
               </v-chip>
             </v-col>
-            <v-col cols="12" sm="3">
-              GIF
+            <v-col cols="12" sm="5">
+              <v-img
+                src="../../public/gif/tablet-search-hq.gif"
+                class="ml-5"
+              ></v-img>
             </v-col>
 
-            <v-col cols="12" sm="9">
+            <v-col cols="12" sm="7">
               <v-card-title style="font-size: 18px;">
                 - 지역, 키워드를 검색하고, 클릭해주세요. <br>
                 - 아이콘을 클릭하여 목록과 검색 결과를 조회하실 수 있습니다. <br>
@@ -146,7 +158,7 @@
               </v-chip>
             </v-col>
             <v-col cols="12" sm="3">
-              GIF
+              
             </v-col>
             <v-col cols="12" sm="9">
               <v-card-title style="font-size: 18px;">
@@ -215,7 +227,22 @@ export default {
         { module:'vue-router', link:'https://github.com/vuejs/router/blob/main/LICENSE'},
         { module:'vuex', link:'https://github.com/vuejs/vuex/blob/main/LICENSE'},
         { module:'vuex-persistedstate', link:'https://github.com/robinvdvleuten/vuex-persistedstate/blob/master/LICENSE'},
-        // vuetify , socket.io-client + backend
+        { module:'socket.io-client', link:'https://github.com/socketio/socket.io-client/blob/main/LICENSE'},
+        { module:'vuetify', link:'https://github.com/vuetifyjs/vuetify/blob/master/LICENSE.md'},
+        
+        { module:'socket.io', link:'https://github.com/socketio/socket.io/blob/main/LICENSE'},
+        { module:'mysql', link:'https://github.com/mysqljs/mysql/blob/master/License'},
+        { module:'morgan', link:'https://github.com/expressjs/morgan/blob/master/LICENSE'},
+        { module:'http-errors', link:'https://github.com/jshttp/http-errors/blob/master/LICENSE'},
+        { module:'express-session', link:'https://github.com/expressjs/session/blob/master/LICENSE'},
+
+        { module:'express', link:'https://github.com/expressjs/express/blob/master/LICENSE'},
+        { module:'dotenv', link:'https://github.com/motdotla/dotenv/blob/master/LICENSE'},
+        { module:'debug', link:'https://github.com/debug-js/debug/blob/master/LICENSE'},
+        { module:'cookie-parser', link:'https://github.com/expressjs/cookie-parser/blob/master/LICENSE'},
+        { module:'bcrypt', link:'https://github.com/kelektiv/node.bcrypt.js/blob/master/LICENSE'},
+        { module:'nodemon', link:'https://github.com/remy/nodemon/blob/main/LICENSE'},
+        { module:'pug', link:'https://github.com/pugjs/pug/blob/master/packages/pug/LICENSE'},
       ]
     }
   },

@@ -127,6 +127,7 @@ export default {
         if( this.$vuetify.breakpoint.xs) {
           this.$refs.sideNav.showSearchResult = true; 
           this.$refs.sideNav.showList = false; 
+          this.$refs.sideNav.showSideNav = false;
         }
         this.closeInfowindow();
         

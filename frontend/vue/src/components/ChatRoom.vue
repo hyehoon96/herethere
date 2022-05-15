@@ -542,10 +542,16 @@ export default {
   //   console.log('before update', from, next);
   // },
   beforeRouteLeave: function (to, from, next) { 
-    const answer = window.confirm('페이지를 벗어나면 채팅방에서 퇴장하고, 대화 내용이 사라집니다. 페이지를 벗어날까요?') 
+    const answer = window.confirm('페이지를 벗어나면 채팅방에서 퇴장하고, 대화 내용이 사라집니다. 페이지를 벗어날까요?');
     if (answer) { 
       next();
       this.$emit('validMoved', true);
+      this.chatArr = [{ 
+        user:'', 
+        chat: '', 
+        isMine: false, 
+        systemMsg: '환영합니다. 방문해주셔서 감사합니다.\n - 채팅방에 접속한 사람이 없으면 방이 삭제됩니다.\n - 대화 내용은 저장되지 않습니다. ' 
+      }];
     } else {
       this.$emit('validMoved', false);
       this.$router.go();

@@ -14,6 +14,8 @@ router.get('/ranking', (req, res) => {
             return res.status(404).send({message: '데이터가 충분하지 않아 조회할 수 없습니다.'});
         }
     })
+    database.end(req.conn);
+    
 })
 router.route('/')
     .all((req, res, next) => {

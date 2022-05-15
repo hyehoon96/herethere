@@ -15,6 +15,7 @@ router.route('/')
       }
       return res.status(201).json(row)
     })
+    database.end(req.conn);
   })
   .post((req, res) => {
     if (!req.session.user) {
@@ -22,7 +23,6 @@ router.route('/')
             message: '로그인 되지 않은 사용자입니다.'
         });
     }
-    console.log(req.body);
     const params = [
       req.body.title,
       req.body.max,
@@ -59,7 +59,7 @@ router.route('/')
       
       if (err) { console.log(err); }
       if (!row[0]) {
-        return res.status(201).send({empty: 'empty'});
+        return res.status(200).send({empty: 'empty'});
       }
       return res.json(row[0]);
     });

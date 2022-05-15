@@ -30,6 +30,7 @@ export default {
       // eslint-disable-next-line
       if (!room.empty) {
         alert('다른 비밀번호를 사용해주세요.');
+        this.roomNumber = null;
       } else {
         let roomObj = {
           owner: '',
@@ -50,6 +51,7 @@ export default {
         }
         
         this.displayDialog = false;
+        this.roomNumber = null;
       }
     },
 

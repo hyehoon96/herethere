@@ -8,7 +8,6 @@ router.post('/login', (req, res) => {
     const password = req.body.password;
     const remember = req.body.remember;
     if (req.session.user) {
-        console.log(req.session.user);
         return res.status(400).json({
             message: '이미 로그인된 사용자입니다.'
         });
