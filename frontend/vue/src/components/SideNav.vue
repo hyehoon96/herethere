@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="48" tile :width="$vuetify.breakpoint.xs ? '100%' : '360px'">
+  <v-card elevation="48" tile :width="$vuetify.breakpoint.xs ? '100%' : '360px'" >
     <v-dialog
       v-model="displayDialog"
       max-width="500"
@@ -779,7 +779,5 @@ a {
   }
 
 }
-@media screen and (min-width: 600px) {
 
-}
 </style>

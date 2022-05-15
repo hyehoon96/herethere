@@ -179,7 +179,10 @@
               </v-chip>
             </v-col>
             <v-col cols="12" sm="3">
-              
+              <v-img
+                src="../../public/gif/mobile-search.gif"
+                class="ml-sm-5"
+              ></v-img>
             </v-col>
             <v-col cols="12" sm="9">
               <v-card-title style="font-size: 18px;">
@@ -197,7 +200,10 @@
               </v-chip>
             </v-col>
             <v-col cols="12" sm="3">
-              GIF
+              <v-img
+                src="../../public/gif/mobile-chat.gif"
+                class="ml-sm-5"
+              ></v-img>
             </v-col>
             <v-col cols="12" sm="9">
               <v-card-title style="font-size: 18px;">
@@ -216,7 +222,10 @@
               </v-chip>
             </v-col>
             <v-col cols="12" sm="3">
-              GIF
+              <v-img
+                src="../../public/gif/mobile-bookmark.gif"
+                class="ml-sm-5"
+              ></v-img>
             </v-col>
 
             <v-col cols="12" sm="9">

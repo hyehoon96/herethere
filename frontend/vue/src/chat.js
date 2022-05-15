@@ -52,6 +52,9 @@ export default {
         
         this.displayDialog = false;
         this.roomNumber = null;
+        if(this.$vuetify.breakpoint.xs) {
+          this.showSideNav = false;
+        }
       }
     },
 
@@ -69,7 +72,9 @@ export default {
         alert(e);
       }
       this.displayDialog = false;
-      
+      if(this.$vuetify.breakpoint.xs) {
+        this.showSideNav = false;
+      }
     },
 
     validConnection(item) {

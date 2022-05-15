@@ -90,7 +90,7 @@
       :style="$vuetify.breakpoint.lgAndUp 
       ? 'width: 25vw; min-width: 300px;' 
       : $vuetify.breakpoint.xs 
-        ? 'width: 100vw; min-width: 300px;'
+        ? 'width: 100vw; height:95vh; min-width: 300px;'
         : 'width: 30vw; min-width: 300px;'" 
       v-if="displayChatRoom"
     >

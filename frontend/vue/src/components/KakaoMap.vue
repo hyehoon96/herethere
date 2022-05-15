@@ -209,7 +209,6 @@ export default {
 
     addressSearch(text) {
       // 주소로 검색한 경우 
-      alert('키워드 검색 결과가 없습니다. addressSearch 함수로 검색합니다.');
       // this.$refs.sideNav.removePagination();
       // 주소로 좌표를 검색합니다
       this.geocoder.addressSearch(text, (result, status) => {
