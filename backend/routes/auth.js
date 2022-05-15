@@ -16,7 +16,7 @@ router.post('/login', (req, res) => {
         const selectUserSql = 'SELECT `id`,`userid`,`password`,`name`,`nickname` FROM user WHERE `userid`=?';
 
         conn.query(selectUserSql, userid, (err, row) => {
-            if (err) { console.log(err); }
+            if (err) { throw err; }
             var user = row[0];
 
             if (user === undefined || user === null) {
@@ -25,7 +25,7 @@ router.post('/login', (req, res) => {
                 });
             } else {
                 bcrypt.compare(password, user.password, (err, check) => {
-                    if (err) { console.log(err); }
+                    if (err) { throw err; }
                     if (check === true) {
                         req.session.user = {
                             id: user.id,
@@ -57,7 +57,7 @@ router.get('/logout', (req, res) => {
 
     if (req.session.user) {
         req.session.destroy(err => {
-            if (err) { console.log(err); }
+            if (err) { throw err; }
             res.clearCookie('session_cookie_name');
             return res.status(205).json({
                 message: '사용자의 세션을 삭제했습니다.'

@@ -10,7 +10,7 @@ router.route('/')
   .get((req, res) => {
     req.conn.query('SELECT * FROM room', (err, row) => {
       if(err) {
-        console.log(err);
+        throw err;
         return res.status(404).send('Not found');
       }
       return res.status(201).json(row)
@@ -31,7 +31,7 @@ router.route('/')
     ]
     req.conn.query('INSERT INTO room( `title`, `max`, `password`, `currentClient`) VALUES (?,?,?,?)', params, (err, row) => {
       if(err) { 
-        console.log(err); 
+        throw err;
         return res.status(404).send('Not found');
       }
       return res.status(201).json({
@@ -44,7 +44,7 @@ router.route('/')
   .delete((req, res) => {
     const roomNumber = req.body.password;
     req.conn.query('DELETE FROM room WHERE password = ?', roomNumber, (err, row) => {
-      if (err) { console.log(err); }
+      if (err) { throw err; }
       return res.status(204).send();
     });
     database.end(req.conn);
@@ -57,7 +57,7 @@ router.route('/')
     const roomNumber = req.params.password;
     req.conn.query('SELECT *  FROM room WHERE password = ?', roomNumber, (err, row) => {
       
-      if (err) { console.log(err); }
+      if (err) { throw err; }
       if (!row[0]) {
         return res.status(200).send({empty: 'empty'});
       }
@@ -98,7 +98,7 @@ router.route('/')
     req.conn = database.init();
     const roomNumber = req.params.password;
     req.conn.query(`UPDATE room SET currentClient=${req.body.currentClient}  WHERE password = ? `, roomNumber, (err, row) => {
-      if (err) { console.log(err); }
+      if (err) { throw err; }
       res.status(200).send();
     })
     database.end(req.conn);

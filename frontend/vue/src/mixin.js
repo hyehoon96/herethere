@@ -20,6 +20,9 @@ export default {
       }).catch ( e => {
         if ( e.response.data.message) {
           alert( e.response.data.message );
+          if(e.response.data.message === '로그인 되지 않은 사용자입니다.') {
+            localStorage.removeItem('isLogin');
+          }
           return;
         }
         switch(e.response.status) {

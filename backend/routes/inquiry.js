@@ -20,7 +20,7 @@ router.route('/')
     ]
     req.conn.query('INSERT INTO inquiry(`title`, `text`) VALUES (?, ?)', params, (err, row) => {
       if(err) {
-        console.log(err);
+        throw err;
         return res.status(404).send('error');
       } else {
         return res.status(201).json('ok');
@@ -31,7 +31,7 @@ router.route('/')
   .get((req, res) => {
     req.conn.query('SELECT * FROM inquiry', (err, row) => {
       if(err) {
-        console.log(err);
+        throw err;
         return res.status(404).send('Not found');
       } else {
         return res.status(200).json(row)

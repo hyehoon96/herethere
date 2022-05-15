@@ -27,7 +27,7 @@ router.post('/', (req, res) => {
 
   // 중복 아이디 확인
   conn.query(selectDuplicateUseridSql, params[0], (err, row) => {
-    if (err) { console.log(err); }
+    if (err) { throw err; }
     if (row[0]) {
       return res.status(409).json({
         message: '이미 존재하는 아이디입니다.'
@@ -41,7 +41,7 @@ router.post('/', (req, res) => {
     params[1] = hash;
 
     conn.query(insertUserSql, params, (err, row) => {
-      if (err) { console.log(err); }
+      if (err) { throw err; }
       return res.status(201).json({
         id: row.insertId,
         userid: params[0],
@@ -68,7 +68,7 @@ router.route('/reset/:userid/:nickname')
     ];
     req.conn.query('SELECT `question`,`answer` FROM user WHERE `userid`=? AND `nickname`=?', userParams, (err, row) => {
       if( err ) {
-        console.log(err);
+        throw err;
         return res.status(500).json({message: 'server error.'});
       }
       if( row[0]) {
@@ -90,7 +90,7 @@ router.route('/reset/:userid/:nickname')
     ]
     req.conn.query(`UPDATE user SET password=${req.body.rePassword} WHERE userid=? AND  nickname=?`, resetUserParams, (err, row) => {
       if( err ) {
-        console.log(err);
+        throw err;
         return res.status(500);
       } else {
         return res.status(200).json({
@@ -116,7 +116,7 @@ router.route('/:userid')
     const selectUserSql = 'SELECT `userid`,`password`,`name`,`nickname`,`age_group`,`gender` FROM user WHERE `userid`=? AND `locked`=\'N\'';
 
     req.conn.query(selectUserSql, userid, (err, row) => {
-      if (err) { console.log(err); }
+      if (err) { throw err; }
 
       if (row[0]) {
         return res.status(200).json({
@@ -144,7 +144,7 @@ router.route('/:userid')
     const deleteUserSql = 'UPDATE user SET `locked`=\'Y\', `deleted_date`=CURRENT_TIMESTAMP WHERE `userid`=?';
 
     req.conn.query(deleteUserSql, userid, (err, row) => {
-      if (err) { console.log(err); }
+      if (err) { throw err; }
       return res.status(204).send();
     });
     database.end(req.conn);
