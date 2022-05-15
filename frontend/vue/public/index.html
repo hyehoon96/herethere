@@ -4,8 +4,17 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" sizes="192x192" href="./icon-192x192.png">
+    <link rel="icon" sizes="512x512" href="./icon-512x512.png">
+    <link rel="icon" sizes="256x256" href="./icon-256x256.png">
+    <link rel="icon" sizes="384x384" href="./icon-384x384.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <meta name="theme-color" content="#039be5" />
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title><%= htmlWebpackPlugin.options.title %></title>
+    <title>HERETHERE</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
   </head>
@@ -17,3 +26,17 @@
     <!-- built files will be auto injected -->
   </body>
 </html>
+<script>
+  if ('serviceWorker' in navigator) {
+        
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('sw.js')
+            .then(reg => {
+              console.log('Service worker registered! 😎', reg);
+            })
+            .catch(err => {
+              console.log('😥 Service worker registration failed: ', err);
+            });
+        });
+    }
+</script>
