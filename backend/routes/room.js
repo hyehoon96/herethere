@@ -54,7 +54,6 @@ router.route('/')
 
   
   router.get('/:password', (req, res) => {
-    console.log(req.params.password);
     req.conn = database.init();
     const roomNumber = req.params.password;
     req.conn.query('SELECT *  FROM room WHERE password = ?', roomNumber, (err, row) => {
@@ -83,7 +82,7 @@ router.route('/')
       req.app.get('io').of('/room').to(req.params.password).emit('chat', chat);
       res.status(200).send();
     } catch (e) {
-      console.log(e);
+      logger.error(e);
     }
     
   })

@@ -7,7 +7,6 @@ const logger = require('../logger');
  * 유저 생성 API
  */
 router.post('/', (req, res) => {
-  console.log(req.body);
   const params = [
     req.body.userid,
     req.body.password,
@@ -61,7 +60,6 @@ router.route('/reset/:userid/:nickname')
     next();
   })
   .get((req, res) => {
-    console.log(req.body);
     const userParams = [
       req.params.userid,
       req.params.nickname,
@@ -103,7 +101,6 @@ router.route('/reset/:userid/:nickname')
 
 router.route('/:userid')
   .all((req, res, next) => {
-    console.log(router.route);
     req.conn = database.init();
     next();
   })

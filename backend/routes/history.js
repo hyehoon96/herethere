@@ -22,7 +22,6 @@ router.get('/ranking', (req, res) => {
 })
 router.route('/')
     .all((req, res, next) => {
-        console.log(router.route);
         if (!req.session.user) {
             return res.status(401).json({
                 message: '로그인 되지 않은 사용자입니다.'
@@ -93,7 +92,6 @@ router.route('/')
 
         req.conn.query(selectHistoryListSql, userId, (err, rows) => {
             if (err) { logger.error(err) }
-            console.log(rows);
             // todo: 응답에 히스토리 리스트 크기 추가하기
             return res.status(200).json(
                 JSON.parse(JSON.stringify(rows))
@@ -104,7 +102,6 @@ router.route('/')
 
 router.route('/:placeId')
     .all((req, res, next) => {
-        console.log(router.route);
         if (!req.session.user) {
             return res.status(401).json({
                 message: '로그인 되지 않은 사용자입니다.'

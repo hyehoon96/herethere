@@ -1,6 +1,6 @@
 const SocketIO = require('socket.io'); // 라이브러리를 불러옴
 const axios = require('axios');
-
+const logger = require('./logger');
 module.exports = (server, app, sessionMiddleware) => {
   const io = SocketIO(server, { //서버와 연결
     path: '/socket.io', //클라이언트가 접속할 경로
@@ -25,7 +25,6 @@ module.exports = (server, app, sessionMiddleware) => {
       roomId = data.roomId;
       user = data.user;
       currentClient = data.currentClient;
-      console.log(user);
       let systemMsg = {
         user: '',
         chat: '',
@@ -39,7 +38,7 @@ module.exports = (server, app, sessionMiddleware) => {
           console.log(`현재 인원 ${data.currentClient}`);
         })
         .catch((error) => {
-          console.log(error);
+          logger.error(error);
         })
     })
    
@@ -57,7 +56,7 @@ module.exports = (server, app, sessionMiddleware) => {
           console.log(`현재 인원 ${userCount}`);
         })
         .catch( (error)=> {
-          console.log(error);
+          logger.error(error);
         })
       // console.log(socket.adapter.rooms.get(roomId).size);
       socket.leave(roomId);
@@ -65,10 +64,10 @@ module.exports = (server, app, sessionMiddleware) => {
       if (userCount <= 0) {
         axios.delete(`http://localhost:8080/api/room/`, {data: {password: roomId} })
           .then(() => {
-            console.log('방 제거');
+            console.log('room deleted');
           })
           .catch((error) => {
-            console.log(error);
+            logger.error(error);
           })
       } else {
         let systemMsg = {
