@@ -3,9 +3,13 @@ var app = (module.exports = express());
 var session = require("express-session");
 var morgan = require('morgan'); // 클라이언트 요청에 따라 로그 기록
 var path = require('path');     // 파일과 디렉터리 경로를 편리하게 설정
+const helmet = require('helmet');
+const hpp = require('hpp');
+const logger = require('./logger');
 
 const database = require('./database.js');
 const webSocket = require('./socket.js');
+
 
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/user');
@@ -19,7 +23,14 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.set('port', process.env.PORT || 8080);
 
-app.use(morgan('dev'));
+//app.use(morgan('dev'));
+if (process.env.NODE_ENV === 'production') {
+    app.use(morgan('combined'));
+    app.use(helmet());
+    app.use(hpp());
+} else {
+    app.use(morgan('dev'));
+}
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -31,8 +42,13 @@ const sessionMiddleware = session({
     saveUninitialized: false,
     cookie: {
         maxAge: 1000 * 60 * 60 // 쿠키 유효기간 60분
-    }
+        //secure: true // https를 적용할 때 true로 변경
+    },
+    proxy: process.env.NODE_ENV === 'production' ? true : false
+    // https 적용을 위해 노드 서버 앞에 다른 서버를 둔 경우 true
 })
+
+
 app.use(sessionMiddleware);
 
 app.use('/', indexRouter);
@@ -45,6 +61,7 @@ app.use('/api/history', historyRouter);
 app.use((req, res, next) => {
     const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
     error.status = 404;
+    logger.error(error.message);
     next(error);
 });
 

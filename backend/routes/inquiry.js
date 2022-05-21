@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const database = require('../database');
+const logger = require('../logger');
 
 router.route('/')
   .all((req, res, next) => {
@@ -20,7 +21,7 @@ router.route('/')
     ]
     req.conn.query('INSERT INTO inquiry(`title`, `text`) VALUES (?, ?)', params, (err, row) => {
       if(err) {
-        throw err;
+        logger.error(err)
         return res.status(404).send('error');
       } else {
         return res.status(201).json('ok');
@@ -31,7 +32,7 @@ router.route('/')
   .get((req, res) => {
     req.conn.query('SELECT * FROM inquiry', (err, row) => {
       if(err) {
-        throw err;
+        logger.error(err)
         return res.status(404).send('Not found');
       } else {
         return res.status(200).json(row)
