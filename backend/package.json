@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "cross-env NODE_ENV=production PORT=80 pm2 start app.js -i -1",
-    "dev": "nodemon app"
+    "dev" : "cross-env NODE_ENV=development nodemon app",
+    "prod": "cross-env NODE_ENV=production PORT=80 pm2 start app.js -i -1"
   },
   "dependencies": {
     "axios": "^0.26.1",
