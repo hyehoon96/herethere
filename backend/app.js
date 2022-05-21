@@ -6,6 +6,9 @@ var path = require('path');     // 파일과 디렉터리 경로를 편리하게
 const helmet = require('helmet');
 const hpp = require('hpp');
 const logger = require('./logger');
+const redis = require('redis');
+const RedisStore = require('connect-redis')(session);
+
 
 const database = require('./database.js');
 const webSocket = require('./socket.js');
@@ -19,6 +22,11 @@ var inquiryRouter = require('./routes/inquiry');
 var historyRouter = require('./routes/history');
 
 require('dotenv').config();
+const redisClient = redis.createClient({
+    url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+    password: process.env.REDIS_PASSWORD,
+});
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.set('port', process.env.PORT || 8080);
@@ -44,8 +52,10 @@ const sessionMiddleware = session({
         maxAge: 1000 * 60 * 60 // 쿠키 유효기간 60분
         //secure: true // https를 적용할 때 true로 변경
     },
-    proxy: process.env.NODE_ENV === 'production' ? true : false
+    proxy: process.env.NODE_ENV === 'production' ? true : false,
     // https 적용을 위해 노드 서버 앞에 다른 서버를 둔 경우 true
+    store: new RedisStore({ client: redisClient }),
+    
 })
 
 
