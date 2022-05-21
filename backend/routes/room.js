@@ -31,7 +31,7 @@ router.route('/')
       req.body.password,
       0
     ]
-    req.conn.query('INSERT INTO room( `title`, `max`, `password`, `currentClient`) VALUES (?,?,?,?)', params, (err, row) => {
+    req.conn.query('INSERT INTO room( `title`, `max`, `password`, `current_client`) VALUES (?,?,?,?)', params, (err, row) => {
       if(err) { 
         logger.error(err)
         return res.status(404).send('Not found');
@@ -98,7 +98,7 @@ router.route('/')
   router.put('/:password', (req, res) => {
     req.conn = database.init();
     const roomNumber = req.params.password;
-    req.conn.query(`UPDATE room SET currentClient=${req.body.currentClient}  WHERE password = ? `, roomNumber, (err, row) => {
+    req.conn.query(`UPDATE room SET current_client=${req.body.currentClient}  WHERE password = ? `, roomNumber, (err, row) => {
       if (err) { logger.error(err) }
       res.status(200).send();
     })
