@@ -1,18 +1,28 @@
 var express = require('express');
 var app = (module.exports = express());
+
 var session = require("express-session");
-var morgan = require('morgan'); // 클라이언트 요청에 따라 로그 기록
-var path = require('path');     // 파일과 디렉터리 경로를 편리하게 설정
+var redis = require('redis');
+var redisStore = require('connect-redis')(session);
+
+const morgan = require('morgan');
+const path = require('path');
 const helmet = require('helmet');
 const hpp = require('hpp');
 const logger = require('./logger');
-const redis = require('redis');
-const RedisStore = require('connect-redis')(session);
 
+(() => {
+    const ENV = process.env.NODE_ENV; // NODE_ENV를 변수에 저장
+    if (!ENV || (ENV !== "development" && ENV !== "test" && ENV !== "production")) // ENV가 유효하지 않은 모드인지 검사
+        throw new Error("Unknown NODE_ENV"); // 유효하지 않다면 throwing
+    require('dotenv').config({
+        path: path.join(__dirname, ENV + ".env") // 모드에 따라 로딩되는 환경변수 파일 다름
+    });
+    console.log(ENV + " 모드에서 실행중");
+})();
 
 const database = require('./database.js');
 const webSocket = require('./socket.js');
-
 
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/user');
@@ -21,7 +31,6 @@ var authRouter = require('./routes/auth');
 var inquiryRouter = require('./routes/inquiry');
 var historyRouter = require('./routes/history');
 
-require('dotenv').config();
 const redisClient = redis.createClient({
     url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
     password: process.env.REDIS_PASSWORD,
@@ -31,7 +40,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.set('port', process.env.PORT || 8080);
 
-//app.use(morgan('dev'));
 if (process.env.NODE_ENV === 'production') {
     app.use(morgan('combined'));
     app.use(helmet());
@@ -52,12 +60,10 @@ const sessionMiddleware = session({
         maxAge: 1000 * 60 * 60 // 쿠키 유효기간 60분
         //secure: true // https를 적용할 때 true로 변경
     },
-    proxy: process.env.NODE_ENV === 'production' ? true : false,
-    // https 적용을 위해 노드 서버 앞에 다른 서버를 둔 경우 true
-    store: new RedisStore({ client: redisClient }),
+    proxy: process.env.NODE_ENV === 'production' ? true : false, // https 적용을 위해 노드 서버 앞에 다른 서버를 둔 경우 true
+    store: new redisStore({ client: redisClient }),
     
 })
-
 
 app.use(sessionMiddleware);
 

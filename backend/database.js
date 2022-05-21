@@ -1,4 +1,3 @@
-require('dotenv').config();
 const mysql = require('mysql');
 const db_config = {
     host: process.env.DB_HOST,
