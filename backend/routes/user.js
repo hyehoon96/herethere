@@ -7,6 +7,7 @@ const logger = require('../logger');
  * 유저 생성 API
  */
 router.post('/', (req, res) => {
+  console.log(req.body);
   const params = [
     req.body.userid,
     req.body.password,
