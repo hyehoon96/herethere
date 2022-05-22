@@ -86,17 +86,19 @@ router.route('/reset/:userid/:nickname')
       req.body.userid,
       req.body.nickname
     ]
-    req.conn.query(`UPDATE user SET password=${req.body.rePassword} WHERE userid=? AND  nickname=?`, resetUserParams, (err, row) => {
-      if( err ) {
-        logger.error(err)
-        return res.status(500);
-      } else {
-        return res.status(200).json({
-          message: '비밀번호가 변경되었습니다.'
-        });
-      }
-    });
-    database.end(req.conn);
+    bcrypt.hash(req.body.rePassword, 10, (err, hash) => {
+      req.conn.query(`UPDATE user SET password=${hash} WHERE userid=? AND  nickname=?`, resetUserParams, (err, row) => {
+        if( err ) {
+          logger.error(err)
+          return res.status(500);
+        } else {
+          return res.status(200).json({
+            message: '비밀번호가 변경되었습니다.'
+          });
+        }
+      });
+      database.end(req.conn);  
+    })
   })
 
 router.route('/:userid')
