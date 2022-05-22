@@ -17,7 +17,7 @@ const cors = require('cors');
     if (!ENV || (ENV !== "development" && ENV !== "test" && ENV !== "production")) // ENV가 유효하지 않은 모드인지 검사
         throw new Error("Unknown NODE_ENV"); // 유효하지 않다면 throwing
     require('dotenv').config({
-        path: path.join(__dirname, ENV + ".env") // 모드에 따라 로딩되는 환경변수 파일 다름
+        path: path.join(__dirname, ENV + ".env") // 모드에 따라 로딩되는 환경변수 파일 다름 
     });
     console.log(ENV + " 모드에서 실행중");
 })();
