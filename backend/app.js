@@ -32,14 +32,6 @@ var authRouter = require('./routes/auth');
 var inquiryRouter = require('./routes/inquiry');
 var historyRouter = require('./routes/history');
 
-const redisClient = redis.createClient({
-    url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
-    password: process.env.REDIS_PASSWORD,
-});
-redisClient.on('connect', () => console.log('Connected to Redis!'));
-redisClient.on('error', (err) => console.log('Redis Client Error', err));
-redisClient.connect();
-
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.set('port', process.env.PORT || 8080);
@@ -51,9 +43,17 @@ if (process.env.NODE_ENV === 'production') {
 } else {
     app.use(morgan('dev'));
 }
+app.use(express.urlencoded({extended: true}));
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
+
+const redisClient = redis.createClient({
+    url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+    password: process.env.REDIS_PASSWORD,
+});
+redisClient.on('connect', () => console.log('Connected to Redis!'));
+redisClient.on('error', (err) => console.log('Redis Client Error', err));
+redisClient.connect();
 
 const sessionMiddleware = session({
     key: "session_cookie_name",
