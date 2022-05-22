@@ -36,6 +36,9 @@ const redisClient = redis.createClient({
     url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
     password: process.env.REDIS_PASSWORD,
 });
+redisClient.on('connect', () => console.log('Connected to Redis!'));
+redisClient.on('error', (err) => console.log('Redis Client Error', err));
+redisClient.connect();
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
