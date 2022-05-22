@@ -4,13 +4,13 @@ var app = (module.exports = express());
 var session = require("express-session");
 var redis = require('redis');
 var redisStore = require('connect-redis')(session);
+var cors = require('cors');
 
 const morgan = require('morgan');
 const path = require('path');
 const helmet = require('helmet');
 const hpp = require('hpp');
 const logger = require('./logger');
-const cors = require('cors');
 
 (() => {
     const ENV = process.env.NODE_ENV; // NODE_ENV를 변수에 저장
@@ -71,7 +71,8 @@ const corsOptions = {
     origin: [
         "http://localhost:8081",  // 추가로 넣고 싶은 origin 작성
         "http://herethere-bucket.s3-website.ap-northeast-2.amazonaws.com",
-    ]
+    ],
+    credentials: true
 };
 app.use(cors(corsOptions));
 
