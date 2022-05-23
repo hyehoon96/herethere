@@ -4,13 +4,13 @@ var app = (module.exports = express());
 var session = require("express-session");
 var redis = require('redis');
 var redisStore = require('connect-redis')(session);
+var cors = require('cors');
 
 const morgan = require('morgan');
 const path = require('path');
 const helmet = require('helmet');
 const hpp = require('hpp');
 const logger = require('./logger');
-const cors = require('cors');
 
 (() => {
     const ENV = process.env.NODE_ENV; // NODE_ENV를 변수에 저장
@@ -32,11 +32,6 @@ var authRouter = require('./routes/auth');
 var inquiryRouter = require('./routes/inquiry');
 var historyRouter = require('./routes/history');
 
-const redisClient = redis.createClient({
-    url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
-    password: process.env.REDIS_PASSWORD,
-});
-
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.set('port', process.env.PORT || 8080);
@@ -48,9 +43,17 @@ if (process.env.NODE_ENV === 'production') {
 } else {
     app.use(morgan('dev'));
 }
+app.use(express.urlencoded({extended: true}));
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
+
+const redisClient = redis.createClient({
+    url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+    password: process.env.REDIS_PASSWORD,
+});
+redisClient.on('connect', () => console.log('Connected to Redis!'));
+redisClient.on('error', (err) => console.log('Redis Client Error', err));
+redisClient.connect();
 
 const sessionMiddleware = session({
     key: "session_cookie_name",
@@ -71,7 +74,8 @@ const corsOptions = {
     origin: [
         "http://localhost:8081",  // 추가로 넣고 싶은 origin 작성
         "http://herethere-bucket.s3-website.ap-northeast-2.amazonaws.com",
-    ]
+    ],
+    credentials: true
 };
 app.use(cors(corsOptions));
 
