@@ -56,7 +56,6 @@ export default {
     },
     async getVoteItem() {
       this.voteList = await this.$refs.map.returnSearchResult();
-      console.log(this.voteList);
     },
     validMoved(isMoved) {
       this.isMoved = isMoved;

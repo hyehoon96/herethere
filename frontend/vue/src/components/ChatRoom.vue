@@ -318,7 +318,6 @@ export default {
     });
     
     this.socket.on('chat', (data) => {
-      console.log('chat received', data);
       if( data.vapidKey === this.vapidKey ) {
         data.isMine = true;
       }
@@ -362,7 +361,6 @@ export default {
   watch: {
     '$route.name': {
       handler () {
-        console.log('라우터가 변경되었습니다.');
         this.socket.disconnect();
         this.$store.commit('setUsingChat', false);
       }
@@ -446,7 +444,6 @@ export default {
         vapidKey: this.vapidKey,
         systemMsg: null
       }
-      console.log('chat!', msg);
       await this.$axiosAPI('/api/room/'+ this.roomId, 'post', msg)
       this.chatInput = '';
     },

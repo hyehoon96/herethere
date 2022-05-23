@@ -597,7 +597,6 @@ export default {
     getCurrentLocate() {
       if('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition((position) => {
-          console.log(position);
           this.$emit('serachAddrFromCoords', {y: position.coords.latitude, x: position.coords.longitude});
         },
         error => alert(error, '에러가 발생하였습니다.'),
@@ -628,7 +627,6 @@ export default {
     },
 
     callSearchFunc() {
-      console.log(this.searchText);
       if (this.isEmpty(this.searchText)) {
         alert('키워드를 입력해주세요!');
         return false;
@@ -656,8 +654,6 @@ export default {
       }
       this.$emit('displayMarker', item);
 
-      console.log(this.searchResult);
-      console.log(this.latlngBundle);
     },
 
     moveMaptoTarget(item, i) {
@@ -673,7 +669,6 @@ export default {
         alert('장소를 최소 두 곳 입력해주세요!');
         return;
       }
-      console.log(this.latlngBundle);
       let latlngArr = [];
       this.latlngBundle.forEach( (element) => {
         let temp = {
@@ -710,7 +705,6 @@ export default {
       }
       let cookedItem = JSON.parse(JSON.stringify(item));
       delete cookedItem.distance;
-      console.log(cookedItem);
       await this.$axiosAPI('/api/history', 'post', cookedItem);
       alert('북마크가 추가되었습니다!');
     },

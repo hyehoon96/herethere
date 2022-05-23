@@ -250,7 +250,6 @@ export default {
       }
       let res = await this.$axiosAPI('/api/user/reset/' + this.forget.userid + '/' + this.forget.nickname, 'get');
       // 닉네임과 아이디로 계정의 질문과 답변을 가져온다.
-      console.log(res);
       this.userQuestion = res.question,
       this.correctAnswer = res.answer;
       

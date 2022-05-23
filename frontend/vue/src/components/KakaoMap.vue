@@ -316,7 +316,6 @@ export default {
     },
 
     removeMarker() {
-      console.log(this.markers);
       for ( let i = 0; i < this.markers.length; i++ ) {
         this.markers[i].setMap(null);
       }   
@@ -390,13 +389,10 @@ export default {
       })
     },
     moveMap(item) {
-      console.log(item.x, item.y);
       let moveLatLon = new kakao.maps.LatLng(item.y, item.x);
       this.map.panTo(moveLatLon);
-      console.log('move');
     },
     markCenterLatlng(latlng, latlngArr) {
-      console.log(latlng);
       this.currentCenterLatlng = latlng;
       this.removeMarker();
       this.bounds = new kakao.maps.LatLngBounds();
@@ -432,17 +428,14 @@ export default {
       this.placeObj = new kakao.maps.services.Places();
     },
     serachAddrFromCoords(coords) {
-      console.log(coords);
       let currentCoords = new kakao.maps.LatLng(coords.y, coords.x);
       this.geocoder.coord2RegionCode(currentCoords.getLng(), currentCoords.getLat(), (result, status) => {
-        console.log(result, status);
         if (status === kakao.maps.services.Status.OK) {
           //eslint-disable-next-line
           let detailAddr = !!(result[0].road_address) 
           ? result[0].road_address.address_name 
           : result[0].address_name; 
           //도로명 주소 : 지번 주소
-          console.log(detailAddr);
           let coordsObj = {
             place_name: detailAddr,
             y: coords.y,

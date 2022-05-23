@@ -9,8 +9,9 @@ export default {
     },
 
     async $axiosAPI(url, method, data) {
+      //axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
       return (await axios({
-        // baseURL: '/api/',
+        baseURL: process.env.NODE_ENV === 'production' ? 'http://ec2-3-35-126-2.ap-northeast-2.compute.amazonaws.com:80/' : 'http://localhost:8080',
         method,
         url,
         data,

@@ -86,7 +86,6 @@ export default {
   }),
   methods: {
     searchCategory(item) {
-      console.log(item);
       this.$emit('searchCategory', item);
 
     }

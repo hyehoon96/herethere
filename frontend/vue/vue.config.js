@@ -20,7 +20,9 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080/api/',
+        target: process.env.NODE_ENV === 'production' 
+                ? 'ec2-3-35-126-2.ap-northeast-2.compute.amazonaws.com:80/api/' 
+                : 'http://localhost:8080/api/',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
@@ -29,11 +31,12 @@ module.exports = {
     },
     
   },
+  
   productionSourceMap: false,
   configureWebpack: {
     plugins
   },
-  outputDir: '../../backend/public',
+  // outputDir: '../../backend/public',
 
   transpileDependencies: [
     'vuetify'

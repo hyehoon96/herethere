@@ -172,14 +172,9 @@ export default {
     
   },
   watch: {
-    '$route.name': {
-      handler () {
-        console.log('라우터가 변경되었습니다.');
-      }
-    },
+    
     '$store.state.userView': {
       handler() {
-        console.log(this.$store.state.userView);
         switch(this.$store.state.userView) {
           case 'chat':
             this.value = 0;
@@ -193,11 +188,7 @@ export default {
         }
       }
     },
-    'value': {
-      handler() {
-        console.log(this.value);
-      }
-    }
+    
   },
   methods: {
     async setPage(item) {
