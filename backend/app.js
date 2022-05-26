@@ -64,7 +64,7 @@ const sessionMiddleware = session({
         maxAge: 1000 * 60 * 60 // 쿠키 유효기간 60분
         //secure: true // https를 적용할 때 true로 변경
     },
-    proxy: process.env.NODE_ENV === 'production' ? true : false, // https 적용을 위해 노드 서버 앞에 다른 서버를 둔 경우 true
+    // proxy: process.env.NODE_ENV === 'production' ? true : false, // https 적용을 위해 노드 서버 앞에 다른 서버를 둔 경우 true
     store: new redisStore({ client: redisClient }),
     
 })
