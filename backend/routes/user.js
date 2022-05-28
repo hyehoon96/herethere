@@ -55,6 +55,7 @@ router.post('/', (req, res) => {
     database.end(conn);
   });
 })
+
 router.route('/reset/:userid/:nickname')
   .all((req, res, next) => {
     req.conn = database.init();
