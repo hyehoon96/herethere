@@ -5,13 +5,13 @@ const logger = require('../logger');
 
 router.route('/')
   .all((req, res, next) => {
-    if (!req.session.user) {
+    if (req.session.key) {
+      req.conn = database.init();
+      next();
+    } else {
       return res.status(401).json({
         message: '로그인 되지 않은 사용자입니다.'
       });
-    } else {
-        req.conn = database.init();
-        next();
     }
   })
   .post((req, res) => {

@@ -1,16 +1,16 @@
 var express = require('express');
 var app = (module.exports = express());
-
 var session = require("express-session");
+
 var redis = require('redis');
-var redisStore = require('connect-redis')(session);
-var cors = require('cors');
+var RedisStore = require('connect-redis')(session);
 
 const morgan = require('morgan');
 const path = require('path');
 const helmet = require('helmet');
 const hpp = require('hpp');
 const logger = require('./logger');
+var cors = require('cors');
 
 (() => {
     const ENV = process.env.NODE_ENV; // NODE_ENV를 변수에 저장
@@ -50,7 +50,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 const redisClient = redis.createClient({
     url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
     password: process.env.REDIS_PASSWORD,
+    legacyMode: true,
 });
+
 redisClient.on('connect', () => console.log('Connected to Redis!'));
 redisClient.on('error', (err) => console.log('Redis Client Error', err));
 redisClient.connect();
@@ -65,15 +67,18 @@ const sessionMiddleware = session({
         //secure: true // https를 적용할 때 true로 변경
     },
     // proxy: process.env.NODE_ENV === 'production' ? true : false, // https 적용을 위해 노드 서버 앞에 다른 서버를 둔 경우 true
-    store: new redisStore({ client: redisClient }),
-    
+    store: new RedisStore({
+        client: redisClient,
+        ttl: 60 * 30 // 30분
+    }),
 })
 app.use(sessionMiddleware);
 
 const corsOptions = {
     origin: [
-        "http://localhost:8081",  // 추가로 넣고 싶은 origin 작성
+        "http://localhost:8081",
         "http://herethere-bucket.s3-website.ap-northeast-2.amazonaws.com",
+        // 추가로 넣고 싶은 origin 작성
     ],
     credentials: true
 };

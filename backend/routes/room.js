@@ -20,7 +20,7 @@ router.route('/')
     database.end(req.conn);
   })
   .post((req, res) => {
-    if (!req.session.user) {
+    if (!req.session.key) {
         return res.status(401).json({
             message: '로그인 되지 않은 사용자입니다.'
         });
