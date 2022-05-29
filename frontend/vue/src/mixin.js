@@ -9,24 +9,21 @@ export default {
     },
 
     async $axiosAPI(url, method, data) {
-      //axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
-      //axios.defaults.withCredentials = true;
+      // axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+      // axios.defaults.withCredentials = true;
       return (await axios({
         baseURL: process.env.NODE_ENV === 'production' ? 'http://ec2-3-35-126-2.ap-northeast-2.compute.amazonaws.com:80/' : 'http://localhost:8080',
         method,
         url,
         data,
-        
+        withCredentials: true,
+        timeout: 4000,
         // headers: {
         //   Authorization: `Bearer ${this.$store.state.accessToken}`
         // },
       }).catch ( e => {
         if ( e.response.data.message) {
           alert( e.response.data.message );
-          if(e.response.data.message === '로그인 되지 않은 사용자입니다.') {
-            localStorage.removeItem('isLogin');
-          }
-          return;
         }
         switch(e.response.status) {
           case 400 :
