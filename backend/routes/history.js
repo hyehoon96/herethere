@@ -3,9 +3,9 @@ const router = express.Router();
 const database = require('../database');
 const logger = require('../logger');
 
-
 router.get('/ranking', (req, res) => {
     req.conn = database.init();
+
     req.conn.query('SELECT * FROM place WHERE (updated_date BETWEEN DATE_ADD(NOW(),INTERVAL -1 MONTH ) AND NOW()) AND views > 0 ORDER BY views DESC LIMIT 10 ', (err, row) => {
         if(err) {
             logger.error(err)
@@ -18,24 +18,24 @@ router.get('/ranking', (req, res) => {
         }
     })
     database.end(req.conn);
-    
 })
+
 router.route('/')
     .all((req, res, next) => {
-        if (!req.session.user) {
+        if (req.session.key) {
+            req.conn = database.init();
+            next();
+        } else {
             return res.status(401).json({
                 message: '로그인 되지 않은 사용자입니다.'
             });
-        } else {
-            req.conn = database.init();
-            next();
         }
     })
     /**
      * 히스토리 생성 API
      */
     .post((req, res) => {
-        var userId  = req.session.user.id;
+        var userId  = req.session.key.id;
         var placeId = req.body.id;
 
         const selectPlaceSql = 'SELECT `id`, `views` FROM place WHERE `id`=?';
@@ -86,9 +86,9 @@ router.route('/')
      * 히스토리 목록 조회 API
      */
     .get((req, res) => {
-        var userId  = req.session.user.id;
 
         const selectHistoryListSql = 'SELECT p.id, p.name, p.category_name, p.category_group_code, p.category_group_name, p.phone, p.address_name, p.road_address_name, p.x, p.y, p.url FROM history h JOIN place p ON h.place_id = p.id WHERE h.user_id = ? AND h.locked = \'N\' AND p.locked = \'N\' ORDER BY h.created_date DESC';
+        var userId  = req.session.key.id;
 
         req.conn.query(selectHistoryListSql, userId, (err, rows) => {
             if (err) { logger.error(err) }
@@ -102,20 +102,20 @@ router.route('/')
 
 router.route('/:placeId')
     .all((req, res, next) => {
-        if (!req.session.user) {
+        if (req.session.key) {
+            req.conn = database.init();
+            next();
+        } else {
             return res.status(401).json({
                 message: '로그인 되지 않은 사용자입니다.'
             });
-        } else {
-            req.conn = database.init();
-            next();
         }
     })
     /**
      * 히스토리 삭제 API
      */
     .delete((req, res) => {
-        var userId  = req.session.user.id;
+        var userId  = req.session.key.id;
         var placeId = req.params.placeId;
 
         const deleteHistorySql = 'UPDATE history SET `locked` = \'Y\', `deleted_date` = CURRENT_TIMESTAMP WHERE `user_id`=? AND `place_id`=?';
