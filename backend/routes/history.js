@@ -38,13 +38,13 @@ router.route('/')
         var userId  = req.session.key.id;
         var placeId = req.body.id;
 
-        const selectPlaceSql = 'SELECT `id`, `views` FROM place WHERE `id`=?';
-        const insertPlaceSql = 'INSERT INTO place(`id`,`name`,`category_name`,`category_group_code`,`category_group_name`,`phone`,`address_name`,`road_address_name`,`x`,`y`,`url`) VALUES (?,?,?,?,?,?,?,?,?,?,?)';
-        const updatePlaceViewsSql = 'UPDATE `place` SET `views`=`views`+1, `updated_date`=CURRENT_TIMESTAMP WHERE `id`=?';
-        const insertHistorySql = 'INSERT INTO history(`user_id`,`place_id`) VALUES (?,?)';
+        const selectPlaceStmt = 'SELECT `id`, `views` FROM place WHERE `id`=?';
+        const insertPlaceStmt = 'INSERT INTO place(`id`,`name`,`category_name`,`category_group_code`,`category_group_name`,`phone`,`address_name`,`road_address_name`,`x`,`y`,`url`) VALUES (?,?,?,?,?,?,?,?,?,?,?)';
+        const updatePlaceViewsStmt = 'UPDATE `place` SET `views`=`views`+1, `updated_date`=CURRENT_TIMESTAMP WHERE `id`=?';
+        const insertHistoryStmt = 'INSERT INTO history(`user_id`,`place_id`) VALUES (?,?)';
 
         // 1. fetch place
-        req.conn.query(selectPlaceSql, placeId, (err, row) => {
+        req.conn.query(selectPlaceStmt, placeId, (err, row) => {
             if (err) { logger.error(err) }
             if (!row[0]) {
                 // 1-1. 없으면 insert place
@@ -62,18 +62,18 @@ router.route('/')
                     req.body.place_url
                 ]
 
-                req.conn.query(insertPlaceSql, params, (err, row) => {
+                req.conn.query(insertPlaceStmt, params, (err, row) => {
                     if (err) { logger.error(err) }
                 });
             } else {
                 // 1-2. 있으면 views 증가
-                req.conn.query(updatePlaceViewsSql, placeId, (err, row) => {
+                req.conn.query(updatePlaceViewsStmt, placeId, (err, row) => {
                     if (err) { logger.error(err) }
                 });
             }
 
             // 2. insert history
-            req.conn.query(insertHistorySql, [userId, placeId], (err, row) => {
+            req.conn.query(insertHistoryStmt, [userId, placeId], (err, row) => {
                 return res.status(201).json({
                     userId: userId,
                     placeId: placeId
@@ -87,10 +87,10 @@ router.route('/')
      */
     .get((req, res) => {
 
-        const selectHistoryListSql = 'SELECT p.id, p.name, p.category_name, p.category_group_code, p.category_group_name, p.phone, p.address_name, p.road_address_name, p.x, p.y, p.url FROM history h JOIN place p ON h.place_id = p.id WHERE h.user_id = ? AND h.locked = \'N\' AND p.locked = \'N\' ORDER BY h.created_date DESC';
         var userId  = req.session.key.id;
+        const selectHistoryListStmt = 'SELECT p.id, p.name, p.category_name, p.category_group_code, p.category_group_name, p.phone, p.address_name, p.road_address_name, p.x, p.y, p.url FROM history h JOIN place p ON h.place_id = p.id WHERE h.user_id = ? AND h.locked = \'N\' AND p.locked = \'N\' ORDER BY h.created_date DESC';
 
-        req.conn.query(selectHistoryListSql, userId, (err, rows) => {
+        req.conn.query(selectHistoryListStmt, userId, (err, rows) => {
             if (err) { logger.error(err) }
             // todo: 응답에 히스토리 리스트 크기 추가하기
             return res.status(200).json(
@@ -118,15 +118,13 @@ router.route('/:placeId')
         var userId  = req.session.key.id;
         var placeId = req.params.placeId;
 
-        const deleteHistorySql = 'UPDATE history SET `locked` = \'Y\', `deleted_date` = CURRENT_TIMESTAMP WHERE `user_id`=? AND `place_id`=?';
+        const deleteHistoryStmt = 'UPDATE history SET `locked` = \'Y\', `deleted_date` = CURRENT_TIMESTAMP WHERE `user_id`=? AND `place_id`=?';
 
-        req.conn.query(deleteHistorySql, [userId, placeId], (err, row) => {
+        req.conn.query(deleteHistoryStmt, [userId, placeId], (err, row) => {
             if (err) { logger.error(err) }
             return res.status(204).send();
         });
         database.end(req.conn);
     })
-
-
 
 module.exports = router;
