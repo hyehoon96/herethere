@@ -16,7 +16,7 @@ export default {
         method,
         url,
         data,
-        
+        withCredentials: true
         // headers: {
         //   Authorization: `Bearer ${this.$store.state.accessToken}`
         // },
