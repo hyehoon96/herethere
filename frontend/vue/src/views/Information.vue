@@ -28,7 +28,7 @@
         <v-row>
           <v-col cols="12">
             <v-tabs mobile-breakpoint="0" v-model="model">
-              <!-- <v-tab @click="infoType = 'pc/tablet'" :href="`#tab-1`">PC / Tablet</v-tab> -->
+              <v-tab @click="infoType = 'pc/tablet'" :href="`#tab-1`">PC / Tablet</v-tab>
               <v-tab @click="infoType = 'mobile'" :href="`#tab-2`">MOBILE</v-tab>
               <v-tab @click="infoType = 'inquiry'">소개/문의</v-tab>
             </v-tabs>
@@ -182,6 +182,9 @@
               <v-img
                 src="../../public/gif/mobile-search.gif"
                 class="ml-sm-5"
+                contain
+                max-width="400"
+                height="440"
               ></v-img>
             </v-col>
             <v-col cols="12" sm="9">
@@ -203,6 +206,9 @@
               <v-img
                 src="../../public/gif/mobile-chat.gif"
                 class="ml-sm-5"
+                contain
+                max-width="400"
+                height="440"
               ></v-img>
             </v-col>
             <v-col cols="12" sm="9">
@@ -225,6 +231,9 @@
               <v-img
                 src="../../public/gif/mobile-bookmark.gif"
                 class="ml-sm-5"
+                contain
+                max-width="400"
+                height="440"
               ></v-img>
             </v-col>
 
@@ -274,16 +283,16 @@ export default {
       ]
     }
   },
-  mounted() {
-    // let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    // if (isMobile) {
-    //   this.infoType = 'mobile';
-    //   this.model = 'tab-2';
-    // } else {
-    //   this.infoType = 'pc/tablet';
-    //   this.model = 'tab-1';
-    // }
-    this.model ='tab-2';
+  beforeMount() {
+    let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+      this.infoType = 'mobile';
+      this.model = 'tab-2';
+    } else {
+      this.infoType = 'pc/tablet';
+      this.model = 'tab-1';
+    }
+    // this.model ='tab-2';
   }
 }
 </script>

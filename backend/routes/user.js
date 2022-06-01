@@ -54,8 +54,8 @@ router.post('/', (req, res) => {
         gender: params[5]
       });
     });
-    database.end(conn);
   });
+  database.end(conn);
 })
 
 router.route('/reset/:userid/:nickname')

@@ -163,7 +163,7 @@
         <v-btn  
           style="height: 100%;"
           elevation="0" 
-          @click="showSideNav = !showSideNav"
+          @click="showSideNav = !showSideNav; $emit('relayout', 'pc');"
           icon
         >
           <v-icon v-text="'mdi-menu'"></v-icon>
@@ -288,7 +288,7 @@
             <h1>HereThere</h1>
           </div>
           <div class="text-end" style="width: 10%;">
-            <v-btn icon @click="showSideNav = !showSideNav;">
+            <v-btn icon @click="showSideNav = !showSideNav; $emit('relayout', 'tab');">
               <v-icon size="36px">mdi-menu</v-icon>
             </v-btn>
           </div>
@@ -536,7 +536,7 @@ export default {
       latlngBundle: [],
       inquiry: {
         title: '문의',
-        text: ''
+        text: '또는 hungry0developer@gmail.com    ' +'(숫자 0)으로 메일주시면 감사하겠습니다.'
       },
       debounce1: null,
       debounce2: null,

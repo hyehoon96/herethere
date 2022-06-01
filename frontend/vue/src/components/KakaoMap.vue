@@ -15,6 +15,7 @@
       @markCenterLatlng="markCenterLatlng"
       @serachAddrFromCoords="serachAddrFromCoords"
       @removeMarker="removeMarker"
+      @relayout="relayout"
     />
     
     <div class="map_wrap">
@@ -27,7 +28,7 @@
           centered
           app
           top
-          color="blue lighten-2"
+          color="pink darken-1"
         >
         화면 우측 하단의 <strong>카테고리</strong>를 선택하세요.
       </v-snackbar>
@@ -274,6 +275,9 @@ export default {
         image: newMarker
       })
       let tempMarker = this.marker;
+      if(image) {
+        this.map.setCenter(tempMarker.getPosition());
+      }
       this.markers.push(tempMarker);
       this.bounds.extend(new kakao.maps.LatLng(place.y, place.x));
       this.map.setBounds(this.bounds);
@@ -302,10 +306,10 @@ export default {
         center : new kakao.maps.LatLng(place.y, place.x),  // 원의 중심좌표 입니다 
         radius: 1500, // 미터 단위의 원의 반지름입니다 
         strokeWeight: 5, // 선의 두께입니다 
-        strokeColor: '#0039cb', // 선의 색깔입니다
+        strokeColor: '#039BE5', // 선의 색깔입니다
         strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
         strokeStyle: 'dashed', // 선의 스타일 입니다
-        fillColor: '#2962ff', // 채우기 색깔입니다
+        fillColor: '#039BE5', // 채우기 색깔입니다
         fillOpacity: 0.2  // 채우기 불투명도 입니다   
       }); 
       
@@ -411,6 +415,7 @@ export default {
 
     searchCategory(item) {
       this.removeMarker();
+      this.snackbar = false;
       this.placeObj = new kakao.maps.services.Places(this.map);
       //console.log(placeObj);
       if ( this.isEmpty(this.currentCenterLatlng) ) {
@@ -460,6 +465,16 @@ export default {
         this.$refs.sideNav.paginationObj.gotoPage(i);
       }
       return this.$store.state.searchResult;
+    },
+
+    relayout(type) {
+      this.$nextTick(function() {
+        let mapContainer = document.getElementById('map');
+        type === 'pc' 
+        ? mapContainer.style.width = '100%'
+        : mapContainer.style.width = '100vw'
+        this.map.relayout();
+      })
     }
   } 
 }
@@ -469,7 +484,7 @@ export default {
 .map_wrap {
   position: absolute;
   overflow:hidden;
-  width:100vw;
+  width:100%;
   height:100vh;
 }
 #map {
