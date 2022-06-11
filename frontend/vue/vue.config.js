@@ -1,21 +1,21 @@
-// const CompressionPlugin = require("compression-webpack-plugin")
+const CompressionPlugin = require("compression-webpack-plugin")
 
-// let plugins = []
+let plugins = []
 
-// if (process.env.NODE_ENV === "production") {
-//     const compressionTest = /\.(js|css|html|ico)(\?.*)?$/i
-//     plugins = [
-//         new CompressionPlugin({
-//             algorithm: "gzip",
-//             compressionOptions: {
-//                 numiterations: 15
-//             },
-//             minRatio: 0.8,
-//             test: compressionTest,
-//             threshold: 10240
-//         }),
-//     ]
-// }
+if (process.env.NODE_ENV === "production") {
+    const compressionTest = /\.(js|css|html|ico)(\?.*)?$/i
+    plugins = [
+        new CompressionPlugin({
+            algorithm: "gzip",
+            compressionOptions: {
+                numiterations: 15
+            },
+            minRatio: 0.8,
+            test: compressionTest,
+            threshold: 10240
+        }),
+    ]
+}
 module.exports = {
   devServer: {
     proxy: {
@@ -33,9 +33,9 @@ module.exports = {
   },
   
   productionSourceMap: false,
-  // configureWebpack: {
-  //   plugins
-  // },
+  configureWebpack: {
+    plugins
+  },
   // outputDir: '../../backend/public',
 
   transpileDependencies: [
