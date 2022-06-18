@@ -76,9 +76,9 @@ app.use(sessionMiddleware);
 
 const corsOptions = {
     origin: [
-        "http://localhost:8081",
-        "http://herethere-bucket.s3-website.ap-northeast-2.amazonaws.com",
-        // 추가로 넣고 싶은 origin 작성
+        "https://dym310jllxiz3.cloudfront.net",
+        "https://herethere.link",
+        "https://localhost:8081",
     ],
     credentials: true
 };
