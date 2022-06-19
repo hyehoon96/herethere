@@ -354,6 +354,10 @@ export default {
         this.currentVoteList[data.index[i]].vote +=1;
       }
       this.chatArr.push(tempData);
+      this.$nextTick(() => {
+        let chat = document.getElementById("chat-area");
+        chat.scrollTo(0, chat.offsetHeight);
+      })
     })
     
   },
