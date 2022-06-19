@@ -32,6 +32,7 @@ var authRouter = require('./routes/auth');
 var inquiryRouter = require('./routes/inquiry');
 var historyRouter = require('./routes/history');
 
+app.set('trust proxy', 1)
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.set('port', process.env.PORT || 8080);
@@ -63,10 +64,10 @@ const sessionMiddleware = session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 1000 * 60 * 60 // 쿠키 유효기간 60분
-        //secure: true // https를 적용할 때 true로 변경
+        maxAge: 1000 * 60 * 60, // 쿠키 유효기간 60분
+        secure: true // https를 적용할 때 true로 변경
     },
-    // proxy: process.env.NODE_ENV === 'production' ? true : false, // https 적용을 위해 노드 서버 앞에 다른 서버를 둔 경우 true
+    proxy: process.env.NODE_ENV === 'production' ? true : false, // https 적용을 위해 노드 서버 앞에 다른 서버를 둔 경우 true
     store: new RedisStore({
         client: redisClient,
         ttl: 60 * 30 // 30분
