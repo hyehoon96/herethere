@@ -200,7 +200,7 @@ export default {
           this.chatList = await this.$axiosAPI('api/room', 'get');  
           this.displayDialog = true;
         } 
-        this.roomTitle = `${this.$store.state.nickname} 님의 채팅방`;
+        this.roomTitle = this.$store.state.nickname + '님의 채팅방';
       }
       if ((this.$store.state.userView === 'map' && item.label === 'chat') || 
           (this.$store.state.userView === 'chat' && item.label === 'map')) {

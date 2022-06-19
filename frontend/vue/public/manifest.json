@@ -4,8 +4,8 @@
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
-  "name": "sampleApp",
-  "short_name": "sampleApp",
+  "name": "HereThere",
+  "short_name": "HereThere",
   "icons": [
       {
           "src": "./icon-192x192.png",
