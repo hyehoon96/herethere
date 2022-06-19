@@ -3,23 +3,6 @@ const router = express.Router();
 const database = require('../database');
 const logger = require('../logger');
 
-router.get('/ranking', (req, res) => {
-    req.conn = database.init();
-
-    req.conn.query('SELECT * FROM place WHERE (updated_date BETWEEN DATE_ADD(NOW(),INTERVAL -1 MONTH ) AND NOW()) AND views > 0 ORDER BY views DESC LIMIT 10 ', (err, row) => {
-        if(err) {
-            logger.error(err)
-            return res.status(500).send({message: '서버 오류가 발생했습니다.'});
-        } 
-        if (row) {
-            return res.status(200).json(row);
-        } else {
-            return res.status(404).send({message: '데이터가 충분하지 않아 조회할 수 없습니다.'});
-        }
-    })
-    database.end(req.conn);
-})
-
 router.route('/')
     .all((req, res, next) => {
         if (req.session.key) {
@@ -124,6 +107,24 @@ router.route('/:placeId')
             if (err) { logger.error(err) }
             return res.status(204).send();
         });
+        database.end(req.conn);
+    })
+
+router.route('/ranking')
+    .get((req, res) => {
+        req.conn = database.init();
+
+        req.conn.query('SELECT * FROM place WHERE (updated_date BETWEEN DATE_ADD(NOW(),INTERVAL -1 MONTH ) AND NOW()) AND views > 0 ORDER BY views DESC LIMIT 10 ', (err, row) => {
+            if (err) {
+                logger.error(err)
+                return res.status(500).send({message: '서버 오류가 발생했습니다.'});
+            }
+            if (row) {
+                return res.status(200).json(row);
+            } else {
+                return res.status(404).send({message: '데이터가 충분하지 않아 조회할 수 없습니다.'});
+            }
+        })
         database.end(req.conn);
     })
 
