@@ -78,7 +78,7 @@ export default {
     },
 
     validConnection(item) {
-      if (item.currentClient >= item.max) {
+      if (item.current_client >= item.max) {
         alert('채팅방 인원이 초과하였습니다.');
         return;
       }

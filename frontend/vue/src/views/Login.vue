@@ -224,7 +224,7 @@ export default {
           }
         })
       }     
-      let res = await this.$axiosAPI('/api/user/', 'post', userInfo);
+      let res = await this.$axiosAPI('/api/user', 'post', userInfo);
       if( res.userid ) {
         alert('회원가입이 완료되었습니다.');
         this.displayDialog = false;

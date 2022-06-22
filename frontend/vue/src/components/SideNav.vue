@@ -68,7 +68,7 @@
               <template v-slot:item.title="{ item }">
                 <v-chip
                   dark
-                  :color="item.max <= item.currentClient ? 'amber' : 'success'"
+                  :color="item.max <= item.current_client ? 'amber' : 'success'"
                 >
                   {{ item.title }}
                 </v-chip>
@@ -480,7 +480,7 @@ export default {
       headers: [
         { text: '제목', align: 'center', sortable: false, value: 'title',},
         { text: '최대인원', align: 'center', sortable: false, value: 'max' },
-        { text: '현재인원', align: 'center', sortable: false, value: 'currentClient' },
+        { text: '현재인원', align: 'center', sortable: false, value: 'current_client' },
       ],
       chatList: [],
       rules: {
