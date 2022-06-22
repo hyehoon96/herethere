@@ -162,8 +162,8 @@ export default {
         model: null, 
         list: ['애완동물의 이름은?', '좋아하는 음식은?', '추억의 장소는?' ,'친한 친구의 별명은?', '좋아하는 캐릭터는?', '보물 1호는?']},
       {label : '답변 *', prop: 'answer', icon: 'mdi-forum', model: null},
-      {label : '연령대', prop: 'age', icon: 'mdi-tag-faces', model: null, list: ['10대', '20대', '30대', '40대', '50대', '60대 이상']},
-      {label : '성별', prop: 'gender', icon: 'mdi-human-male-female', model: null, list: ['여성', '남성']},
+      {label : '연령대 *', prop: 'ageGroup', icon: 'mdi-tag-faces', model: null, list: ['10대', '20대', '30대', '40대', '50대', '60대 이상']},
+      {label : '성별 *', prop: 'gender', icon: 'mdi-human-male-female', model: null, list: ['여성', '남성']},
       
     ],
     userid: null,

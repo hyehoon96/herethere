@@ -285,7 +285,7 @@
       <v-card color="primary" dark tile>
         <div class="d-flex justify-center py-3">
           <div style="width: 80%; text-align: center;">
-            <h1>HereThere</h1>
+            <h1 @click="getInquiry">HereThere</h1>
           </div>
           <div class="text-end" style="width: 10%;">
             <v-btn icon @click="showSideNav = !showSideNav; $emit('relayout', 'tab');">
@@ -540,6 +540,7 @@ export default {
       },
       debounce1: null,
       debounce2: null,
+      inqCount: 0,
       searchChanged: false,
       ranking: null
     }
@@ -698,6 +699,16 @@ export default {
     setSearchText(text) {
       this.searchText = text;
     },
+    async getInquiry() {
+      if(this.inqCount === 13) {
+        let inq = await this.$axiosAPI('/api/inquiry', 'get');
+        console.log(inq);
+        this.inqCount = 0;
+      }
+      this.inqCount += 1;
+
+    },
+
     async addBookmark(item) {
       if (this.isEmpty(localStorage.getItem('isLogin')) || this.isEmpty(this.$store.state.nickname) ) {
         alert('로그인 후 이용할 수 있습니다.');
