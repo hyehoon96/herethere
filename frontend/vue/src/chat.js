@@ -86,7 +86,14 @@ export default {
       this.dialogType = 'find';
 
     },
-
+    validLogin() {
+      if(!this.$store.state.nickname || !localStorage.getItem('isLogin')) {
+        alert('로그인된 유저만 채팅방을 생성할 수 있습니다. 비로그인 유저는 채팅방 참여만 가능합니다.');
+        return;
+      }
+      this.beforeConnect = true; 
+      this.dialogType = 'create';
+    },
     closeChatRoom() {
       
       let result = window.confirm('채팅방을 종료하시겠습니까?');

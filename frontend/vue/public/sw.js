@@ -1,6 +1,6 @@
 const cacheName = "cache"; 
 const precacheResources = ["/", "index.html", "favicon.ico"];
-const version = 'updatedAt6.19.1'; // 프로젝트 수정시 배포 하기 전에 반드시 이 값을 바꿔주세요.
+const version = 'updatedAt6.22'; // 프로젝트 수정시 배포 하기 전에 반드시 이 값을 바꿔주세요.
 
 self.addEventListener('install', res => {
   caches.open(version).then(cache => {

@@ -35,7 +35,7 @@ module.exports = (server, app, sessionMiddleware) => {
       socket.to(roomId).emit('join',systemMsg);
 
       // todo: 환경변수로 내보내기
-      axios.put(`https://alb.herethere.link:443/api/room/${roomId}`, {currentClient})
+      axios.put(`https://alb.herethere.link/api/room/${roomId}`, {currentClient})
         .then(() => {
           console.log(`현재 인원 ${data.currentClient}`);
         })
@@ -54,7 +54,7 @@ module.exports = (server, app, sessionMiddleware) => {
       const userCount = currentRoom ? currentRoom.size : 0;
 
       // todo: 환경변수로 내보내기
-      axios.put(`https://alb.herethere.link:443/api/room/${roomId}`, {currentClient: userCount})
+      axios.put(`https://alb.herethere.link/api/room/${roomId}`, {currentClient: userCount})
         .then(() => {
           console.log(`현재 인원 ${userCount}`);
         })
@@ -66,7 +66,7 @@ module.exports = (server, app, sessionMiddleware) => {
       
       if (userCount <= 0) {
         // todo: 환경변수로 내보내기
-        axios.delete(`https://alb.herethere.link:443/api/room/`, {data: {password: roomId} })
+        axios.delete(`https://alb.herethere.link/api/room/`, {data: {password: roomId} })
           .then(() => {
             console.log('room deleted');
           })

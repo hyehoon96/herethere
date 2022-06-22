@@ -49,7 +49,7 @@
                   color="primary"
                   dark
                   class="my-5 pa-3 mr-3"
-                  @click="beforeConnect = true; dialogType = 'create';"
+                  @click="validLogin"
                 >
                   채팅방 생성
                 </v-btn>
