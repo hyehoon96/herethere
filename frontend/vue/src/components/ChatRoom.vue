@@ -334,12 +334,24 @@ export default {
     })
     this.socket.on('join', (data) => {
       this.chatArr.push(data);
+      this.$nextTick(() => {
+        let chat = document.getElementById("chat-area");
+        chat.scrollTo(0, chat.offsetHeight);
+      })
     })
     this.socket.on('exit', (data) => {
       this.chatArr.push(data); 
+      this.$nextTick(() => {
+        let chat = document.getElementById("chat-area");
+        chat.scrollTo(0, chat.offsetHeight);
+      })
     })
     this.socket.on('system', (data) => {
       this.chatArr.push(data);
+      this.$nextTick(() => {
+        let chat = document.getElementById("chat-area");
+        chat.scrollTo(0, chat.offsetHeight);
+      })
     })
     this.socket.on('voteChat', (data) => {
       let tempData = {
@@ -411,7 +423,7 @@ export default {
         alert('잘못된 링크입니다.');
         this.$router.push('/');
       } 
-      this.currentClient = findRoom.currentClient;
+      this.currentClient = findRoom.current_client;
       // 방장, 로그인한 게스트, 로그인 안한 게스트 - 비번 치고 접속, 로그인 안한 게스트 - 링크 타고 접속
       // if( this.$store.state.chatRole === 'owner' || (this.$store.state.nickname && localStorage.getItem('isLogin') && this.$store.state.chatRole === 'guest')) {
       //   // 방장 + 로그인 한 게스트

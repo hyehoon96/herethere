@@ -41,6 +41,7 @@ router.post('/', (req, res) => {
     params[1] = hash;
 
     conn.query(insertUserStmt, params, (err, row) => {
+      database.end(conn);
       if (err) {
         logger.error(err)
       }
@@ -55,7 +56,7 @@ router.post('/', (req, res) => {
       });
     });
   });
-  database.end(conn);
+  //database.end(conn);
 })
 
 router.route('/reset/:userid/:nickname')
@@ -94,7 +95,7 @@ router.route('/reset/:userid/:nickname')
       req.body.nickname
     ]
     bcrypt.hash(req.body.rePassword, 10, (err, hash) => {
-      req.conn.query(`UPDATE user SET password=${hash} WHERE userid=? AND nickname=?`, resetUserParams, (err, row) => {
+      req.conn.query(`UPDATE user SET \`password\`= '${hash}' WHERE userid=? AND nickname=?`, resetUserParams, (err, row) => {
         if (err) {
           logger.error(err);
           return res.status(500);

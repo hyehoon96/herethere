@@ -512,6 +512,9 @@ export default {
               return;
             } else {
               self.chatList = await self.$axiosAPI('api/room', 'get');  
+              if ( self.chatList[0] ) {
+                console.log(self.chatList[0].current_client);
+              }
               self.displayDialog = true;
             }
             self.roomTitle = self.$store.state.nickname + '님의 채팅방' // user Id
