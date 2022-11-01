@@ -81,8 +81,9 @@ export default {
     if( !window.kakao || !window.kakao.maps) {
       const script = document.createElement('script');
       const lib = document.createElement('script');
-      script.src = '//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=';
-      lib.src = "//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=&libraries=services"
+      const key = config.key;
+      script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${key}`;
+      lib.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${key}&libraries=services`
       /* global kakao */
       script.addEventListener("load", () => {
         kakao.maps.load(this.loadMap);
