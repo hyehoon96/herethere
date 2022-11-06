@@ -54,6 +54,11 @@
 ## 2. 구현 방법
 
 ### 중간 지점 찾기
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/65713958/200161552-20ddc621-1d33-4110-9d47-f7ddd5ee0718.gif">
+</p>  
+
+
 - 상, 하, 좌, 우 4방향 좌표를 잡아 x축 y축 중간점을 계산
 
 ```javascript
@@ -75,6 +80,11 @@ let ySmallest = ySort[0].y;
 
 
 ### 채팅 및 투표
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/65713958/200161554-1f174c65-0411-4dff-b7c0-9ac53d27a4c9.gif">
+</p>  
+
+
 - socket.io 라이브러리를 활용하여, 이벤트 기반의 실시간 통신
 - 투표 시 투표 항목 데이터를 객체 property로 담아 http 요청
 - 서버에서 투표 데이터를 broadcasting
@@ -112,6 +122,12 @@ if (userCount <= 0) {
 
 
 ### 핫플레이스
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/65713958/200161556-34b33631-fbbc-4160-ac2a-09fcf58fae62.gif">
+</p>  
+
+
+
 - 사용자가 장소를 검색할 때마다 해당 장소의 views 데이터를 증가시키고 DB에 저장 
 - views가 높은 장소는 사용자의 관심도가 높은 장소로 판단
 
