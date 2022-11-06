@@ -29,12 +29,20 @@
 
 ###   검색 및 약속 장소 찾기
 
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/65713958/200161552-20ddc621-1d33-4110-9d47-f7ddd5ee0718.gif">
+</p>  
+
 #####                - 지역, 키워드를 검색하고, 클릭해주세요. <br>
 #####                - "어디서 만날까요?" 버튼을 눌러주세요. <br>
 #####                - 카테고리를 설정해주세요.
 ---
 
 ### 채팅 및 위치 공유, 장소 투표
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/65713958/200161554-1f174c65-0411-4dff-b7c0-9ac53d27a4c9.gif">
+</p>  
 
 #####                - 채팅 버튼을 눌러 채팅방을 확인하세요.
 #####                - 채팅방을 새로 생성하거나 기존 채팅방에 접속할 수 있습니다.
@@ -44,6 +52,9 @@
 
 ### 북마크 및 핫플레이스
 
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/65713958/200161556-34b33631-fbbc-4160-ac2a-09fcf58fae62.gif">
+</p>  
 
 #####                - 마음에 드는 장소를 북마크에 추가하세요.
 #####                - 북마크 버튼을 눌러 북마크를 조회하고, 지도에 나타낼 수 있습니다.
@@ -54,10 +65,6 @@
 ## 2. 구현 방법
 
 ### 중간 지점 찾기
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/65713958/200161552-20ddc621-1d33-4110-9d47-f7ddd5ee0718.gif">
-</p>  
-
 
 - 상, 하, 좌, 우 4방향 좌표를 잡아 x축 y축 중간점을 계산
 
@@ -80,10 +87,6 @@ let ySmallest = ySort[0].y;
 
 
 ### 채팅 및 투표
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/65713958/200161554-1f174c65-0411-4dff-b7c0-9ac53d27a4c9.gif">
-</p>  
-
 
 - socket.io 라이브러리를 활용하여, 이벤트 기반의 실시간 통신
 - 투표 시 투표 항목 데이터를 객체 property로 담아 http 요청
@@ -122,11 +125,6 @@ if (userCount <= 0) {
 
 
 ### 핫플레이스
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/65713958/200161556-34b33631-fbbc-4160-ac2a-09fcf58fae62.gif">
-</p>  
-
-
 
 - 사용자가 장소를 검색할 때마다 해당 장소의 views 데이터를 증가시키고 DB에 저장 
 - views가 높은 장소는 사용자의 관심도가 높은 장소로 판단
