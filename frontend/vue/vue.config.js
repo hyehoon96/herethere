@@ -21,7 +21,7 @@ module.exports = {
     proxy: {
       '/api': {
         target: process.env.NODE_ENV === 'production' 
-                ? 'https://alb.herethere.link:443/api/' 
+                ? '' 
                 : 'http://localhost:8080/api/',
         changeOrigin: true,
         pathRewrite: {

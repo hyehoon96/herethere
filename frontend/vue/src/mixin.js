@@ -12,7 +12,7 @@ export default {
       //axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
       //axios.defaults.withCredentials = true;
       return (await axios({
-        baseURL: process.env.NODE_ENV === 'production' ? 'https://alb.herethere.link:443' : 'http://localhost:8080',
+        baseURL: process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8080',
         method,
         url,
         data,

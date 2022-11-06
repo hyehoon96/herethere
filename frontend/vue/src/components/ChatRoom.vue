@@ -313,7 +313,7 @@ export default {
     this.$store.commit('setChatRole', this.role);
     
     this.beforeEnter();
-    this.socket = io('https://alb.herethere.link/room', { // 네임스페이스
+    this.socket = io('', { // 네임스페이스
       path: '/socket.io',
     });
     
